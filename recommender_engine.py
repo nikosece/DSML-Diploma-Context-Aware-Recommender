@@ -3,7 +3,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from rating_extractor import RatingExtractor
 import operator
-import json
 
 
 class RecommenderEngine:
@@ -50,7 +49,6 @@ class RecommenderEngine:
             index = df.iloc[[ids[0]]].index[0]
             rating = df.iloc[[ids[0]]].stars.values[0]
             rating_count = df.iloc[[ids[0]]].review_count.values[0]
-            threshold = 1000
             rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, 50)
             final_score = RecommenderEngine.calculate_final_score(ids[1][0], rating_contribution)
             score_dict[index] = final_score
@@ -65,8 +63,6 @@ class RecommenderEngine:
 
         # get highest scored 5 cities.
         for i in sorted_scores:
-            # print index and score of the city.
-            # print(i[0], i[1])
             resulted = resulted.append({'id': i[0], 'Name': df.loc[i[0]]['name'], 'city': df.loc[i[0]]['city'],
                                         'category': df.loc[i[0]]['categories'], 'stars': df.loc[i[0]]['stars'],
                                         'score': i[1]}, ignore_index=True)
@@ -75,6 +71,4 @@ class RecommenderEngine:
             if counter > 4:
                 break
 
-        # convert DF to json.
-        # json_result = json.dumps(resulted.to_dict('records'))
         return resulted
