@@ -20,7 +20,7 @@ class RecommenderEngine:
         :return: Returns value between 0 and 100"""
         cs_normalize = cs * 100
         r_normalize = 100 * r / 5
-        amount = cs_normalize * 0.35 + r_normalize * 0.55 - distance*100*0.1
+        amount = cs_normalize * 0.25 + r_normalize * 0.65 - distance*100*0.1
         return amount
 
     # Version-2
@@ -29,11 +29,14 @@ class RecommenderEngine:
         """Based on user's keywords find the most relevant
         business. Then based on that look for similar businesses.
         After that, recalculate the score based on review and
-        the total number of reviews. At the end the top five
+        the total number of reviews. Also normalized distance
+        is used in the final score.
+        At the end the top five
         are returned."""
         # At this point category filtering is completed in two steps
         # 1) Find the most similar business with keyword
         # 2) Find the most similar businesses withe the above business
+        # I may use only step1, it seems more accurate
         tfidf = TfidfVectorizer(stop_words='english')
         tfidf_matrix = tfidf.fit_transform(df['categories'])
         tfidf_keywords = tfidf.transform(keywords)
