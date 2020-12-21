@@ -3,25 +3,6 @@ import json
 import pandas as pd
 
 
-# def categorize(top=10, category=False):
-#     """Select a specific category or sub-category to be involved
-#     If category is True then user have to choose one,
-#     else the top category is selected by default"""
-#     df_explode = df_b.assign(categories=df_b.categories.str.split(', ')).explode('categories')["categories"]
-#     print("There are the top {} categories".format(top))
-#     print(df_explode.value_counts(normalize=True).nlargest(top))
-#     if category:
-#         a = input("Please specify category string")
-#         print("{} selected".format(a))
-#         df_b_specific = df_b[df_b['categories'].str.contains(a, na=False)]
-#     else:
-#         for val, cnt in df_explode.value_counts(normalize=True).nlargest(1).iteritems():
-#             print("{} selected".format(val))
-#             df_b_specific = df_b[df_b['categories'].str.contains(val, na=False)]
-#     df_r_specific = df_r[df_r['business_id'].isin(df_b_specific.index)]
-#     return df_b_specific, df_r_specific
-
-
 def get_recommendations_include_rating(keywords, df):
     return RecommenderEngine.get_recommendations_include_rating(keywords, df)
 
