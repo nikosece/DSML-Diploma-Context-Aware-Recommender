@@ -38,7 +38,7 @@ df_explode = df_b.assign(categories=df_b.categories.str.split(', ')).explode('ca
 a = df_explode.categories.value_counts()
 categories = set(df_explode.categories.values.tolist())
 cities = set(df_b.city.values.tolist())
-states = set(df_b.state.values.tolist())
+#states = set(df_b.state.values.tolist())
 
 
 # Restaurants and Food is almost in any category, and that is not helpful so i will remove it
