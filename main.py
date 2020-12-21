@@ -1,5 +1,10 @@
 from recommender_engine import RecommenderEngine
+from functions import Functions
 import pandas as pd
+
+
+def filtering_city(df, star):
+    return Functions.filtering_city(df, star)
 
 
 def get_recommendations_include_rating(keywords, df):
@@ -19,10 +24,22 @@ df_b = pd.read_csv('bussines_R.csv', dtype={'name': str,
 #                                                    'weekday': np.int8, 'season': np.int8,
 #                                                    'session': str}, parse_dates=["date"], index_col='business_id')
 
-# Version 2 requests are below:
-print("#################")
-top_5_recommendations = get_recommendations_include_rating(["Bars"], df_b)
+# Store all cities reverse sorted
+cities = df_b.city.value_counts()
+# print top 12
+for i in range(0, 12):
+    print(cities.index[i])
+city = input("Please type city name and hit ENTER")
+df_new = filtering_city(df_b, city)
+df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
+categories = df_explode.categories.value_counts()
+# print top 20 categories starting from third
+for i in range(2, 22):
+    print(categories.index[i])
+category = input("Please one or more categories with comma separated")
+top_5_recommendations = get_recommendations_include_rating([category], df_new)
+print("#####################################################################################")
 pd.set_option('display.max_columns', None)
 print(top_5_recommendations)
 pd.reset_option('display.max_rows')
-print("#################")
+print("#####################################################################################")
