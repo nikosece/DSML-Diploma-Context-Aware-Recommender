@@ -34,10 +34,10 @@ df_weekday = pd.read_csv("checkin_Season.csv", dtype={'Friday': float,
                                                       'Tuesday': float,
                                                       'Wednesday': float}, index_col='business_id')
 
-df_explode = df_b.assign(categories=df_b.categories.str.split(', ')).explode('categories')
-a = df_explode.categories.value_counts()
-categories = set(df_explode.categories.values.tolist())
-cities = set(df_b.city.values.tolist())
+#df_explode = df_b.assign(categories=df_b.categories.str.split(', ')).explode('categories')
+#a = df_explode.categories.value_counts()
+#categories = set(df_explode.categories.values.tolist())
+#cities = set(df_b.city.values.tolist())
 #states = set(df_b.state.values.tolist())
 
 
