@@ -24,3 +24,14 @@ class Functions:
     def calculate_distance(origin, dist):
         # (latitude, longitude) don't confuse
         return geodesic(origin, dist).kilometers
+
+    @staticmethod
+    def remove_categories(df):
+        """As food and Restaurants not specify important information
+        when they are combined with other categories, the are removed
+        for better classification"""
+        df.categories.replace('(^Food, |, Food$)', '', regex=True, inplace=True)
+        df.categories.replace(', Food,', ',', regex=True, inplace=True)
+        df.categories.replace('(^Restaurants, |, Restaurants$)', '', regex=True, inplace=True)
+        df.categories.replace(', Restaurants,', ',', regex=True, inplace=True)
+        return df
