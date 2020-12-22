@@ -1,7 +1,6 @@
 from recommender_engine import RecommenderEngine
 from functions import Functions
 import pandas as pd
-import numpy as np
 
 
 def filtering_city(df, star):
@@ -40,7 +39,7 @@ categories = df_explode.categories.value_counts()
 for i in range(2, 22):
     print(categories.index[i])
 category = input("Please one or more categories with comma separated")
-origin = (51.0480042, -114.0966936) # Calgary
+origin = (51.0480042, -114.0966936)  # Calgary
 df_new["Distance"] = df_new.apply(lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
                                   axis=1)
 top_5_recommendations = get_recommendations_include_rating([category], df_new)

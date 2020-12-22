@@ -44,7 +44,7 @@ class RecommenderEngine:
         sim_scores1 = list(enumerate(cosine_sim1))
         sim_scores1 = sorted(sim_scores1, key=lambda x: x[1], reverse=True)
         sim_scores = sim_scores1
-        sim_scores1 = sim_scores1[0][0]
+        # sim_scores1 = sim_scores1[0][0]
         # a = [df.iloc[sim_scores1].categories.__str__()]
         # tfidf_res = tfidf.transform(a)
         # cosine_sim = linear_kernel(tfidf_matrix, tfidf_res)
