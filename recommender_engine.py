@@ -73,7 +73,7 @@ class RecommenderEngine:
         # create an empty results data frame.
         resulted = pd.DataFrame(columns=('Name', 'city', 'category', 'stars', 'total_reviews', 'score', 'distance'))
 
-        # get highest scored 5 cities.
+        # get highest scored 5 businesses.
         for i in sorted_scores:
             resulted = resulted.append({'Name': df.loc[i[0]]['name'], 'city': df.loc[i[0]]['city'],
                                         'category': df.loc[i[0]]['categories'], 'stars': df.loc[i[0]]['stars'],
