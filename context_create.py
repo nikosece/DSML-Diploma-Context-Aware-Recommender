@@ -36,7 +36,7 @@ class Context_create:
     @staticmethod
     def season(df):
         maping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
-        df["Season"] = df.weekday.map(maping)
+        df["Season"] = df.season.map(maping)
         count = df.groupby(df.index)['Season'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
 
@@ -50,11 +50,18 @@ class Context_create:
 
     @staticmethod
     def session_context(df_b, df_c, top=20):
+        """ At this point the code creates plots
+        for the seasons of the years, but with 2 or 3
+        changes it creates for weekdays and sessions 
+        of the day """
         df_b = df_b.filter(["categories"])
-        df_c = df_c.filter(["session"])
+        df_c = df_c.filter(["season"])
+        maping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
+        df_c["Season"] = df_c.season.map(maping)
+        df_c.filter(["Season"])
         df = pd.merge(df_b, df_c, on='business_id', how='inner')
         df_explode = df.assign(categories=df.categories.str.split(', ')).explode('categories')
-        count = df_explode.groupby(df_explode.categories)['session'].value_counts().unstack().fillna(0)
+        count = df_explode.groupby(df_explode.categories)['Season'].value_counts().unstack().fillna(0)
         sessions = list(count.columns)
         fig, ax = plt.subplots(figsize=(80, 60), dpi=250, subplot_kw=dict(aspect="equal"))
         for session in sessions:
