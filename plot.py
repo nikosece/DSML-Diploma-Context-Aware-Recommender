@@ -14,4 +14,4 @@ df_c = pd.read_csv("checkin_R.csv", dtype={'weekday': np.int8, 'season': np.int8
 
 df_b = Functions.remove_categories(df_b)
 
-df = Context_create.session_context(df_b, df_c, 20)
+df = Context_create.session_context(df_b, df_c)
