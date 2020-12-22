@@ -50,8 +50,8 @@ class Context_create:
         df_explode = df.assign(categories=df.categories.str.split(', ')).explode('categories')
         count = df_explode.groupby(df_explode.categories)['session'].value_counts().unstack().fillna(0)
         sessions = list(count.columns)
+        fig, ax = plt.subplots(figsize=(80, 60), dpi=250, subplot_kw=dict(aspect="equal"))
         for session in sessions:
-            fig, ax = plt.subplots(figsize=(80, 60), dpi=250, subplot_kw=dict(aspect="equal"))
             data = count[session].to_dict()
             sorted_data = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
             sorted_data = sorted_data[0:top]
@@ -71,7 +71,7 @@ class Context_create:
             ax.set_title("Preference {} for top {} categories".format(a, top),
                          fontdict={'fontsize': 90, 'fontweight': 'medium'})
             plt.savefig(session+'.png', dpi='figure')
-            plt.close()
+            plt.cla()
         # a = list(count.columns)
         # for i in a:
         #     print(count[i].describe().filter(["25%", "50%", "75%"]))
