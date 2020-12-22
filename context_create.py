@@ -1,4 +1,6 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import operator
 
 
 def compute_sum(count):
@@ -41,10 +43,36 @@ class Context_create:
         count.to_csv("review_sessions.csv")
 
     @staticmethod
-    def session_context(df_b, df_c):
+    def session_context(df_b, df_c, top=20):
         df_b = df_b.filter(["categories"])
         df_c = df_c.filter(["session"])
         df = pd.merge(df_b, df_c, on='business_id', how='inner')
-        df["categories"] = df.categories.str.replace("Restaurants, ", "")
-        df["categories"] = df.categories.str.replace("Restaurants", "")
         df_explode = df.assign(categories=df.categories.str.split(', ')).explode('categories')
+        count = df_explode.groupby(df_explode.categories)['session'].value_counts().unstack().fillna(0)
+        sessions = list(count.columns)
+        for session in sessions:
+            fig, ax = plt.subplots(figsize=(80, 60), dpi=250, subplot_kw=dict(aspect="equal"))
+            data = count[session].to_dict()
+            sorted_data = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
+            sorted_data = sorted_data[0:top]
+            values = [x[1] for x in sorted_data]
+            wedges, texts = ax.pie(values, textprops=dict(color="w"))
+            ingredients = [x[0] for x in sorted_data]
+            ax.legend(wedges, ingredients,
+                      title="Categories",
+                      loc="center left",
+                      title_fontsize=80,
+                      bbox_to_anchor=(1, 0, 0.5, 1),
+                      prop={'size': 60})
+            if session == "Morning":
+                a = "in " + session
+            else:
+                a = "at " + session
+            ax.set_title("Preference {} for top {} categories".format(a, top),
+                         fontdict={'fontsize': 90, 'fontweight': 'medium'})
+            plt.savefig(session+'.png', dpi='figure')
+            plt.close()
+        # a = list(count.columns)
+        # for i in a:
+        #     print(count[i].describe().filter(["25%", "50%", "75%"]))
+        # return count

@@ -1,6 +1,7 @@
 from recommender_engine import RecommenderEngine
 from functions import Functions
 import pandas as pd
+import numpy as np
 
 
 def filtering_city(df, star):
@@ -24,6 +25,8 @@ df_b = pd.read_csv('bussines_R.csv', dtype={'name': str,
 #                                                    'weekday': np.int8, 'season': np.int8,
 #                                                    'session': str}, parse_dates=["date"], index_col='business_id')
 
+# df_c = pd.read_csv("checkin_R.csv", dtype={'weekday': np.int8, 'season': np.int8,
+#                                            'session': str}, parse_dates=["date"], index_col='business_id')
 # Store all cities reverse sorted
 cities = df_b.city.value_counts()
 # print top 12
