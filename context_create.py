@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import operator
+import numpy as np
 
 
 def compute_sum(count):
@@ -12,6 +13,11 @@ def compute_sum(count):
     for i in a:
         count[i] = 100 * count[i]
     return count
+
+
+def func(pct, allvals):
+    res = (100 * pct) / np.sum(allvals)
+    return "{:.1f} %".format(res)
 
 
 class Context_create:
@@ -56,21 +62,24 @@ class Context_create:
             sorted_data = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
             sorted_data = sorted_data[0:top]
             values = [x[1] for x in sorted_data]
-            wedges, texts = ax.pie(values, textprops=dict(color="w"))
             ingredients = [x[0] for x in sorted_data]
+            wedges, texts, autotexts = ax.pie(values, autopct='%.2f',
+                                              textprops=dict(color="w"))
             ax.legend(wedges, ingredients,
                       title="Categories",
                       loc="center left",
                       title_fontsize=80,
                       bbox_to_anchor=(1, 0, 0.5, 1),
                       prop={'size': 60})
+            plt.setp(autotexts, size=50, weight="bold")
+
             if session == "Morning":
                 a = "in " + session
             else:
                 a = "at " + session
             ax.set_title("Preference {} for top {} categories".format(a, top),
                          fontdict={'fontsize': 90, 'fontweight': 'medium'})
-            plt.savefig(session+'.png', dpi='figure')
+            plt.savefig(session + '.png', dpi='figure')
             plt.cla()
         # a = list(count.columns)
         # for i in a:
