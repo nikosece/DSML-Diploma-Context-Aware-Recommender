@@ -36,7 +36,7 @@ def plot(cols, count):
         plot_pie(sorted_data, ax)
         ax.set_title("Top {} categories for {}.".format(top, col),
                      fontdict={'fontsize': 90, 'fontweight': 'medium'})
-        plt.savefig(col + '.png', dpi='figure')
+        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/context_plots/' + col + '.png', dpi='figure')
         plt.cla()
 
 
