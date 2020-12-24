@@ -147,7 +147,7 @@ class Functions:
                     plot_pie(sorted_data, ax)
                     ax.set_title(key,
                                  fontdict={'fontsize': 90, 'fontweight': 'medium'})
-                    plt.savefig('/home/anonymous/Documents/Diploma-Recommender/attribute_plots/' + key + '.png',
+                    plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/attribute_plots/' + key + '.png',
                                 dpi='figure')
                     plt.cla()
             else:
@@ -157,7 +157,6 @@ class Functions:
                         plot_pie(sorted_data, ax)
                         ax.set_title(key + " " + sub_key,
                                      fontdict={'fontsize': 90, 'fontweight': 'medium'})
-                        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/attribute_plots/Sub/' + key + "_"
-                                    + sub_key + '.png',
-                                    dpi='figure')
+                        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/attribute_plots/Sub/'
+                                    + key + "_" + sub_key + '.png', dpi='figure')
                         plt.cla()
