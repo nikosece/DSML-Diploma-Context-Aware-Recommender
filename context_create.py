@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import operator
 import numpy as np
+from functions import plot_pie
 
 
 def compute_sum(count):
@@ -32,17 +33,7 @@ def plot(cols, count):
         data = count[col].to_dict()
         sorted_data = sorted(data.items(), key=operator.itemgetter(1), reverse=True)
         sorted_data = sorted_data[0:top]
-        values = [x[1] for x in sorted_data]
-        ingredients = [x[0] for x in sorted_data]
-        wedges, texts, autotexts = ax.pie(values, autopct=lambda p: f'{p:.2f}%',
-                                          textprops=dict(color="w"))
-        ax.legend(wedges, ingredients,
-                  title="Categories",
-                  loc="center left",
-                  title_fontsize=80,
-                  bbox_to_anchor=(1, 0, 0.5, 1),
-                  prop={'size': 60})
-        plt.setp(autotexts, size=50, weight="bold")
+        plot_pie(sorted_data, ax)
         ax.set_title("Top {} categories for {}.".format(top, col),
                      fontdict={'fontsize': 90, 'fontweight': 'medium'})
         plt.savefig(col + '.png', dpi='figure')

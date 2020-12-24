@@ -1,7 +1,22 @@
 from geopy.distance import geodesic
 import json
 from collections import Counter
-from pprint import pprint as pp
+import matplotlib.pyplot as plt
+import operator
+
+
+def plot_pie(sorted_data, ax):
+    values = [x[1] for x in sorted_data]
+    ingredients = [x[0] for x in sorted_data]
+    wedges, texts, autotexts = ax.pie(values, autopct=lambda p: f'{p:.2f}%',
+                                      textprops=dict(color="w"))
+    ax.legend(wedges, ingredients,
+              title="Categories",
+              loc="center left",
+              title_fontsize=80,
+              bbox_to_anchor=(1, 0, 0.5, 1),
+              prop={'size': 60})
+    plt.setp(autotexts, size=50, weight="bold")
 
 
 class Functions:
@@ -121,3 +136,28 @@ class Functions:
                                 json_file[i][key][sub_key] = "None"
 
         return json_file
+
+    @staticmethod
+    def plot_attributes(pairs, freq):
+        fig, ax = plt.subplots(figsize=(80, 60), dpi=100, subplot_kw=dict(aspect="equal"))
+        for key in list(pairs.keys()):
+            if isinstance(pairs[key], set):
+                if freq[key]["None"] < 25682:
+                    sorted_data = sorted(freq[key].items(), key=operator.itemgetter(1), reverse=True)
+                    plot_pie(sorted_data, ax)
+                    ax.set_title(key,
+                                 fontdict={'fontsize': 90, 'fontweight': 'medium'})
+                    plt.savefig('/home/anonymous/Documents/Diploma-Recommender/attribute_plots/' + key + '.png',
+                                dpi='figure')
+                    plt.cla()
+            else:
+                for sub_key in list(pairs[key].keys()):
+                    if freq[key][sub_key]["None"] < 25682:
+                        sorted_data = sorted(freq[key][sub_key].items(), key=operator.itemgetter(1), reverse=True)
+                        plot_pie(sorted_data, ax)
+                        ax.set_title(key + " " + sub_key,
+                                     fontdict={'fontsize': 90, 'fontweight': 'medium'})
+                        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/attribute_plots/Sub/' + key + "_"
+                                    + sub_key + '.png',
+                                    dpi='figure')
+                        plt.cla()
