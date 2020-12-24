@@ -8,8 +8,7 @@ import operator
 def plot_pie(sorted_data, ax):
     values = [x[1] for x in sorted_data]
     ingredients = [x[0] for x in sorted_data]
-    wedges, texts, autotexts = ax.pie(values, autopct=lambda p: f'{p:.2f}%',
-                                      textprops=dict(color="w"))
+    wedges, texts, autotexts = ax.pie(values, autopct=lambda p: f'{p:.2f}%', textprops=dict(color="w"))
     ax.legend(wedges, ingredients,
               title="Categories",
               loc="center left",

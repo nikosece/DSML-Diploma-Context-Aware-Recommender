@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import operator
-import numpy as np
 from functions import plot_pie
 
 
@@ -20,14 +19,9 @@ def extract(target, df_explode):
     return df_explode.groupby(df_explode.categories)[target].value_counts().unstack().fillna(0)
 
 
-def func(pct, allvals):
-    res = (100 * pct) / np.sum(allvals)
-    return "{:.1f} %".format(res)
-
-
 def plot(cols, count):
     top = 20
-    fig, ax = plt.subplots(figsize=(80, 60), dpi=180, subplot_kw=dict(aspect="equal"))
+    fig, ax = plt.subplots(figsize=(12, 8), dpi=140, subplot_kw=dict(aspect="equal"))
     for col in cols:
         print("Plotting {} subplot".format(col))
         data = count[col].to_dict()
@@ -35,7 +29,7 @@ def plot(cols, count):
         sorted_data = sorted_data[0:top]
         plot_pie(sorted_data, ax)
         ax.set_title("Top {} categories for {}.".format(top, col),
-                     fontdict={'fontsize': 90, 'fontweight': 'medium'})
+                     fontdict={'fontsize': 20, 'fontweight': 'medium'})
         plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/context_plots/' + col + '.png', dpi='figure')
         plt.cla()
 
