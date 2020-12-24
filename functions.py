@@ -15,7 +15,7 @@ def plot_pie(sorted_data, ax):
               title_fontsize=12,
               bbox_to_anchor=(1, 0, 0.5, 1),
               prop={'size': 11})
-    plt.setp(autotexts, size=10, weight="bold")
+    plt.setp(autotexts, size=8, weight="bold")
 
 
 class Functions:

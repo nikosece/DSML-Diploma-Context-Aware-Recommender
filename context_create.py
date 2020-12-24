@@ -21,7 +21,7 @@ def extract(target, df_explode):
 
 def plot(cols, count):
     top = 20
-    fig, ax = plt.subplots(figsize=(12, 8), dpi=140, subplot_kw=dict(aspect="equal"))
+    fig, ax = plt.subplots(figsize=(11, 6), dpi=100, subplot_kw=dict(aspect="equal"))
     for col in cols:
         print("Plotting {} subplot".format(col))
         data = count[col].to_dict()
