@@ -13,10 +13,10 @@ def plot_pie(sorted_data, ax):
     ax.legend(wedges, ingredients,
               title="Categories",
               loc="center left",
-              title_fontsize=80,
+              title_fontsize=12,
               bbox_to_anchor=(1, 0, 0.5, 1),
-              prop={'size': 60})
-    plt.setp(autotexts, size=50, weight="bold")
+              prop={'size': 11})
+    plt.setp(autotexts, size=10, weight="bold")
 
 
 class Functions:
@@ -139,14 +139,15 @@ class Functions:
 
     @staticmethod
     def plot_attributes(pairs, freq):
-        fig, ax = plt.subplots(figsize=(80, 60), dpi=100, subplot_kw=dict(aspect="equal"))
+        """ Plot only attributes which None is less than 60 % """
+        fig, ax = plt.subplots(figsize=(8, 5), dpi=100, subplot_kw=dict(aspect="equal"))
         for key in list(pairs.keys()):
             if isinstance(pairs[key], set):
                 if freq[key]["None"] < 25682:
                     sorted_data = sorted(freq[key].items(), key=operator.itemgetter(1), reverse=True)
                     plot_pie(sorted_data, ax)
                     ax.set_title(key,
-                                 fontdict={'fontsize': 90, 'fontweight': 'medium'})
+                                 fontdict={'fontsize': 20, 'fontweight': 'medium'})
                     plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/attribute_plots/' + key + '.png',
                                 dpi='figure')
                     plt.cla()
@@ -156,7 +157,7 @@ class Functions:
                         sorted_data = sorted(freq[key][sub_key].items(), key=operator.itemgetter(1), reverse=True)
                         plot_pie(sorted_data, ax)
                         ax.set_title(key + " " + sub_key,
-                                     fontdict={'fontsize': 90, 'fontweight': 'medium'})
+                                     fontdict={'fontsize': 20, 'fontweight': 'medium'})
                         plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/attribute_plots/Sub/'
                                     + key + "_" + sub_key + '.png', dpi='figure')
                         plt.cla()
