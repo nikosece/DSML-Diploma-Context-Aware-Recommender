@@ -1,0 +1,23 @@
+.idea/
+System Volume Information/
+__pycache__/
+bussines.csv
+bussines_R.csv
+checkin.csv
+checkin_R.csv
+checkin_Season.csv
+checkin_sessions.csv
+checkin_weekdays.csv
+ldlinux.sys
+my_key.txt
+my_key.txt.pub
+plan-2.png
+review_Season.csv
+review_sessions.csv
+review_weekdays.csv
+reviews_R_context.csv
+reviews_cleared.csv
+tips.csv
+tips_R.csv
+try.txt
+users.csv
