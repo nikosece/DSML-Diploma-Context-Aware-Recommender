@@ -86,41 +86,38 @@ class Functions:
     @staticmethod
     def attributes_frequency(pairs, json_file):
         c = dict()
+        sub_j = dict()
         for key in list(pairs.keys()):
             if isinstance(pairs[key], set):
-                sub_j = list()
-                for tr in json_file:
-                    if key in tr:
-                        sub_j.append(tr)
-                c[key] = Counter(ob[key] for ob in sub_j)
-
+                c[key] = Counter(ob[key] for ob in json_file)
+            else:
+                sub_j[key] = [j[key] for j in json_file]
+                c[key] = dict()
+                for sub_key in list(pairs[key].keys()):
+                    c[key][sub_key] = Counter(ob[sub_key] for ob in sub_j[key])
+                    c[key] = dict(c[key])
         c = dict(c)
         return c
 
-    # @staticmethod
-    # def fill_missing_keys(pairs, json_file):
-    #     """There are some businesses where where some
-    #     attributes are missing, i could fill them with None"""
-    #     for key in list(pairs.keys()):
-    #         if isinstance(pairs[key], set):
-    #             for i in range(len(json_file)):
-    #                 if key not in json_file[i]:
-    #                     json_file[i][key] = "None"
-    #         else:
-    #             for i in range(len(json_file)):
-    #                 if key not in json_file[i]:
-    #                     fill = dict()
-    #                     for sub_key in list(pairs[key].keys()):
-    #                         fill[sub_key] = "None"
-    #                     json_file[i][key] = fill
-    #                 else:
-    #                     for sub_key in list(pairs[key].keys()):
-    #                         if sub_key not in json_file[i][key]:
-    #                             try:
-    #                                 json_file[i][key][sub_key] = "None"
-    #                             except:
-    #                                 print(key, sub_key)
-    #                                 print(type(json_file[i][key]))
-    #                                 print(json_file[i][key])
-    #                                 break
-    #     return json_file
+    @staticmethod
+    def fill_missing_keys(pairs, json_file):
+        """There are some businesses where where some
+        attributes are missing, i could fill them with None"""
+        for key in list(pairs.keys()):
+            if isinstance(pairs[key], set):
+                for i in range(len(json_file)):
+                    if key not in json_file[i]:
+                        json_file[i][key] = "None"
+            else:
+                for i in range(len(json_file)):
+                    if key not in json_file[i] or isinstance(json_file[i][key], str):
+                        to_fill = dict()
+                        for sub_key in list(pairs[key].keys()):
+                            to_fill[sub_key] = "None"
+                        json_file[i][key] = to_fill
+                    else:
+                        for sub_key in list(pairs[key].keys()):
+                            if sub_key not in json_file[i][key]:
+                                json_file[i][key][sub_key] = "None"
+
+        return json_file
