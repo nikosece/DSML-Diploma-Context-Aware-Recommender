@@ -32,7 +32,45 @@ class Corellation:
         print("Context create initialized")
 
     @staticmethod
-    def corr(pairs, json_file):
+    def category_cor(pairs, json_file, categories):
+        category_cor = dict()
+        for key1 in list(pairs.keys()):
+            if isinstance(pairs[key1], set):
+                test1 = [j[key1] for j in json_file]
+                a = list()
+                b = list()
+                for i in range(len(test1)):
+                    if test1[i] != "None":
+                        a.append(categories[i])
+                        b.append(test1[i])
+                df = pd.DataFrame()
+                df["category"] = a
+                df[key1] = b
+                confusion_matrix = pd.crosstab(df["category"], df[key1]).values
+                result = cramers_v(confusion_matrix)
+                print("Corellation for {} was : {:.2f}".format(key1, result))
+                category_cor[key1] = result
+            else:
+                for sub1 in list(pairs[key1].keys()):
+                    test1 = [j[key1][sub1] for j in json_file]
+                    a = list()
+                    b = list()
+                    for i in range(len(test1)):
+                        if test1[i] != "None":
+                            a.append(categories[i])
+                            b.append(test1[i])
+
+                    df = pd.DataFrame()
+                    df["category"] = a
+                    df[key1 + "_" + sub1] = b
+                    confusion_matrix = pd.crosstab(df["category"], df[key1 + "_" + sub1]).values
+                    result = cramers_v(confusion_matrix)
+                    print("Corellation for {} was : {:.2f}".format(key1 + "_" + sub1, result))
+                    category_cor[key1 + "_" + sub1] = result
+        return category_cor
+
+    @staticmethod
+    def corr_attributes(pairs, json_file):
         corellation = dict()
         for key1 in list(pairs.keys()):
             for key2 in list(pairs.keys()):
