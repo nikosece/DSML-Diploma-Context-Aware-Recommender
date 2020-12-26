@@ -57,9 +57,9 @@ class Corellation:
                                         if j[key1] != "None" and j[key2][sub2] != "None":
                                             a.append(j[key1])
                                             b.append(j[key2][sub2])
-                                            if len(a) > 10:
-                                                result = calculate(a, b, key1, key2 + "_" + sub2)
-                                                corellation[(key1, key2 + "_" + sub2)] = result
+                                    if len(a) > 10:
+                                        result = calculate(a, b, key1, key2 + "_" + sub2)
+                                        corellation[(key1, key2 + "_" + sub2)] = result
                     else:
                         if isinstance(pairs[key2], set):
                             for sub1 in list(pairs[key1].keys()):
@@ -70,9 +70,9 @@ class Corellation:
                                         if j[key2] != "None" and j[key1][sub1] != "None":
                                             a.append(j[key1][sub1])
                                             b.append(j[key2])
-                                            if len(a) > 10:
-                                                result = calculate(a, b, key1 + "_" + sub1, key2)
-                                                corellation[(key1 + "_" + sub1, key2)] = result
+                                    if len(a) > 10:
+                                        result = calculate(a, b, key1 + "_" + sub1, key2)
+                                        corellation[(key1 + "_" + sub1, key2)] = result
                         else:
                             for sub1 in list(pairs[key1].keys()):
                                 for sub2 in list(pairs[key2].keys()):
@@ -83,7 +83,7 @@ class Corellation:
                                             if j[key1][sub1] != "None" and j[key2][sub2] != "None":
                                                 a.append(j[key1][sub1])
                                                 b.append(j[key2][sub2])
-                                                if len(a) > 10:
-                                                    result = calculate(a, b, key1 + "_" + sub1, key2 + "_" + sub2)
-                                                    corellation[(key1 + "_" + sub1, key2 + "_" + sub2)] = result
+                                        if len(a) > 10:
+                                            result = calculate(a, b, key1 + "_" + sub1, key2 + "_" + sub2)
+                                            corellation[(key1 + "_" + sub1, key2 + "_" + sub2)] = result
         return corellation
