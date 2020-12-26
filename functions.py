@@ -58,7 +58,9 @@ class Functions:
         """Creates a dictionary containing all of the attributes keys.
          The value of each item is either a list with all the values of the
          key, or a dictionary with all sub key-value combinations for
-         that key."""
+         that key. Businesses with missing attributes columns were
+         1161. Most of them had less than 20 reviews and star
+         value was less than 3, so they were removed"""
         # There some jsons, that contain sub-json
         # First I will analyze the globals
         # Goal is to find a set of keys and a set
@@ -66,8 +68,7 @@ class Functions:
         to_json = list()
         attributes = df_b.attributes.to_list()
         for i in attributes:
-            if i != "" and i != " ":
-                to_json.append(json.loads(i))
+            to_json.append(json.loads(i))
         json_keys = [list(i.keys()) for i in to_json]
         keys_set = [set(i) for i in json_keys]
         keys_set = set.union(*keys_set)
@@ -95,7 +96,7 @@ class Functions:
                     if sub_key in j:
                         sub_pairs[sub_key].add(j[sub_key])
             pairs[key] = sub_pairs
-        return pairs
+        return pairs, to_json
 
     @staticmethod
     def attributes_frequency(pairs, json_file):
@@ -135,6 +136,51 @@ class Functions:
                                 json_file[i][key][sub_key] = "None"
 
         return json_file
+
+    @staticmethod
+    def remove_attributes(pairs, json_file, freq):
+        """Remove the attribute which None value is
+        greater than 80% as they are not representative variables"""
+        for key in list(pairs.keys()):
+            if isinstance(pairs[key], set):
+                percentage = (100 * freq[key]["None"]) / len(json_file)
+                if percentage > 80:
+                    del pairs[key]
+                    del freq[key]
+                    for j in json_file:
+                        del j[key]
+            else:
+                sub_key = list(pairs[key].keys())
+                sub_key = sub_key[0]
+                percentage = (100 * freq[key][sub_key]["None"]) / len(json_file)
+                if percentage > 80:
+                    del pairs[key]
+                    del freq[key]
+                    for j in json_file:
+                        del j[key]
+        for key in list(pairs.keys()):
+            if not isinstance(pairs[key], set):
+                for j in json_file:
+                    flag = True
+                    for k in list(pairs[key].keys()):
+                        if j[key][k] != "None":
+                            flag = False
+                            break
+                    if flag:
+                        j[key] = "None"
+        return pairs, json_file, freq
+
+    @staticmethod
+    def fix_attribute_column(df_b):
+        pairs, json_file = Functions.convert_to_json(df_b)
+        json_file = Functions.fill_missing_keys(pairs, json_file)
+        freq = Functions.attributes_frequency(pairs, json_file)
+        pairs, json_file, freq = Functions.remove_attributes(pairs, json_file, freq)
+        json_str = list()
+        for i in range(len(json_file)):
+            json_str.append(json.dumps(json_file[i]))
+        df_b["attributes"] = json_str
+        return pairs, json_file, freq
 
     @staticmethod
     def plot_attributes(pairs, freq):

@@ -39,28 +39,28 @@ class Context_create:
         print("Context create initialized")
 
     @staticmethod
-    def weekdays(df):
+    def weekdays(df, name):
         df = df.sort_index()
         maping = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday", 4: "Friday", 5: "Saturday", 6: "Sunday"}
         df["Weekday"] = df.weekday.map(maping)
         count = df.groupby(df.index)['Weekday'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
-        count.to_csv("review_weekdays.csv")
+        count.to_csv(name+"_weekdays.csv")
 
     @staticmethod
-    def season(df):
+    def season(df, name):
         maping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
         df["Season"] = df.season.map(maping)
         count = df.groupby(df.index)['Season'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
 
-        count.to_csv("review_Season.csv")
+        count.to_csv(name+"_Season.csv")
 
     @staticmethod
-    def session(df):
+    def session(df, name):
         count = df.groupby(df.index)['session'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
-        count.to_csv("review_sessions.csv")
+        count.to_csv(name+"_sessions.csv")
 
     @staticmethod
     def session_context(df_b, df_c):
