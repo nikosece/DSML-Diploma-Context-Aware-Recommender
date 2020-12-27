@@ -14,9 +14,9 @@ def get_recommendations_include_rating(keywords, df):
 
 
 # All of the below files have been filtered to contain Restaurants sub-categories
-cols = list(range(0, 3)) + list(range(5, 8)) + list(range(9, 50))
+cols = list(range(0, 4)) + list(range(5, 8)) + list(range(9, 50))
 df_b = pd.read_csv('bussines_R_attributes.csv', usecols=cols, dtype={'name': str,
-                                                                     'city': str,
+                                                                     'city': str, 'state': str,
                                                                      'latitude': float, 'longitude': float,
                                                                      'business_id': str, 'stars': np.float32,
                                                                      'categories': str,
