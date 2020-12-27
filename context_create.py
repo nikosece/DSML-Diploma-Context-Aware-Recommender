@@ -4,22 +4,24 @@ import operator
 from functions import plot_pie
 
 
-def compute_sum(count):
-    a = list(count.columns)
-    count["total"] = count.sum(axis=1)
+def compute_sum(df):
+    """df contains how many times a specific
+    context was seen and total is the sum of them"""
+    a = list(df.columns)
+    df["total"] = df.sum(axis=1)
     for i in a:
-        count[i] = count[i] / count["total"]
-
-    for i in a:
-        count[i] = 100 * count[i]
-    return count
+        df[i] = 100 * df[i] / df["total"]
+    return df
 
 
 def extract(target, df_explode):
+    """" Group by categories and count values
+    for each context variable"""
     return df_explode.groupby(df_explode.categories)[target].value_counts().unstack().fillna(0)
 
 
 def plot(cols, count):
+    """Plot pie diagrams for each context"""
     top = 20
     fig, ax = plt.subplots(figsize=(11, 6), dpi=100, subplot_kw=dict(aspect="equal"))
     for col in cols:
@@ -40,34 +42,38 @@ class Context_create:
 
     @staticmethod
     def weekdays(df, name):
+        """Group by business_id and
+        save weekdays context variable"""
         df = df.sort_index()
         maping = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday", 4: "Friday", 5: "Saturday", 6: "Sunday"}
         df["Weekday"] = df.weekday.map(maping)
         count = df.groupby(df.index)['Weekday'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
-        count.to_csv(name+"_weekdays.csv")
+        count.to_csv(name + "_weekdays.csv")
 
     @staticmethod
     def season(df, name):
+        """Group by business_id and
+                save season context variable"""
         maping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
         df["Season"] = df.season.map(maping)
         count = df.groupby(df.index)['Season'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
 
-        count.to_csv(name+"_Season.csv")
+        count.to_csv(name + "_Season.csv")
 
     @staticmethod
     def session(df, name):
+        """Group by business_id and
+                        save session context variable"""
         count = df.groupby(df.index)['session'].value_counts().unstack().fillna(0)
         count = compute_sum(count)
-        count.to_csv(name+"_sessions.csv")
+        count.to_csv(name + "_sessions.csv")
 
     @staticmethod
     def session_context(df_b, df_c):
-        """ At this point the code creates plots
-        for the seasons of the years, but with 2 or 3
-        changes it creates for weekdays and sessions 
-        of the day """
+        """ At this point the code creates pie plots
+        for all of the three context variables"""
         df_b = df_b.filter(["categories"])
         maping = {1: "Spring", 2: "Summer", 3: "Fall", 4: "Winter"}
         df_c["season"] = df_c.season.map(maping)

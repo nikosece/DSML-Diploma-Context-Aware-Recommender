@@ -51,9 +51,7 @@ df_b = pd.read_csv('bussines_R_attributes.csv', usecols=cols, dtype={'name': str
                                                                      'Alcohol': str, 'WiFi': str,
                                                                      'RestaurantsAttire': str
                                                                      }, index_col='business_id')
-pairs, json_file = Functions.convert_to_json(df_b)
-json_file = Functions.fill_missing_keys(pairs, json_file)
-df_b = Corellation.attribute_to_column(pairs, json_file, df_b)
+
 
 # At this point there is no need to read the reviews file
 # df_r = pd.read_csv("reviews_R_context.csv", dtype={'user_id': str,

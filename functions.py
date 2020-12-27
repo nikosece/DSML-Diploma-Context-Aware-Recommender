@@ -53,8 +53,7 @@ class Functions:
     def remove_categories(df):
         """As food and Restaurants not specify important information
         when they are combined with other categories, the are removed
-        for better classification. This function has already be executed
-        and another execution will not change anything."""
+        for better classification. """
         df.categories.replace('(^Food, |, Food$)', '', regex=True, inplace=True)
         df.categories.replace(', Food,', ',', regex=True, inplace=True)
         df.categories.replace('(^Restaurants, |, Restaurants$)', '', regex=True, inplace=True)
@@ -68,7 +67,10 @@ class Functions:
          key, or a dictionary with all sub key-value combinations for
          that key. Businesses with missing attributes columns were
          1161. Most of them had less than 20 reviews and star
-         value was less than 3, so they were removed"""
+         value was less than 3, so they were removed
+         This function is used ONLY WHEN reading business_R,
+         as at business_R_attributes there are columns with
+         all the attributes"""
         # There some jsons, that contain sub-json
         # First I will analyze the globals
         # Goal is to find a set of keys and a set
@@ -127,7 +129,7 @@ class Functions:
     @staticmethod
     def fill_missing_keys(pairs, json_file):
         """There are some businesses where where some
-        attributes are missing, i could fill them with None."""
+        attributes are missing, i could fill them with np.nan"""
         for key in list(pairs.keys()):
             if isinstance(pairs[key], set):
                 for i in range(len(json_file)):
@@ -183,7 +185,8 @@ class Functions:
     def fix_attribute_column(df_b):
         """This function fixed the original dateset json errors.
         After all the json were loaded and processed, they were
-        transformed into str and were saved to business_R.csv"""
+        transformed into str and were saved to business_R.csv
+        There is NO NEED TO RUN AGAIN this function"""
         pairs, json_file = Functions.convert_to_json(df_b)
         json_file = Functions.fill_missing_keys(pairs, json_file)
         freq = Functions.attributes_frequency(pairs, json_file)
