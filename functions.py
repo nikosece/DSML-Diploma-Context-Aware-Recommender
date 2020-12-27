@@ -3,9 +3,11 @@ import json
 from collections import Counter
 import matplotlib.pyplot as plt
 import operator
+import numpy as np
 
 
 def plot_pie(sorted_data, ax):
+    """Plot a pie diagram """
     values = [x[1] for x in sorted_data]
     ingredients = [x[0] for x in sorted_data]
     wedges, texts, autotexts = ax.pie(values, autopct=lambda p: f'{p:.2f}%', textprops=dict(color="w"))
@@ -24,21 +26,26 @@ class Functions:
 
     @staticmethod
     def filtering_city(df, city):
+        """keep only rows which city value is equal to input"""
         new_df = df[(df.city == city)]
         return new_df
 
     @staticmethod
     def filtering_state(df, state):
+        """keep only rows which state value is equal to input"""
         new_df = df[(df.state == state)]
         return new_df
 
     @staticmethod
     def filtering_stars(df, star):
+        """keep only rows which star value is greater or equal to input"""
         new_df = df[(df.stars >= star)]
         return new_df
 
     @staticmethod
     def calculate_distance(origin, dist):
+        """Calculate distance between user's location and business location.
+        This distance IS NOT driving distance, it is geodesic distance"""
         # (latitude, longitude) don't confuse
         return geodesic(origin, dist).kilometers
 
@@ -46,7 +53,8 @@ class Functions:
     def remove_categories(df):
         """As food and Restaurants not specify important information
         when they are combined with other categories, the are removed
-        for better classification"""
+        for better classification. This function has already be executed
+        and another execution will not change anything."""
         df.categories.replace('(^Food, |, Food$)', '', regex=True, inplace=True)
         df.categories.replace(', Food,', ',', regex=True, inplace=True)
         df.categories.replace('(^Restaurants, |, Restaurants$)', '', regex=True, inplace=True)
@@ -100,6 +108,8 @@ class Functions:
 
     @staticmethod
     def attributes_frequency(pairs, json_file):
+        """This function counts how many times a value of
+         an attributed is found"""
         c = dict()
         sub_j = dict()
         for key in list(pairs.keys()):
@@ -117,24 +127,23 @@ class Functions:
     @staticmethod
     def fill_missing_keys(pairs, json_file):
         """There are some businesses where where some
-        attributes are missing, i could fill them with None"""
+        attributes are missing, i could fill them with None."""
         for key in list(pairs.keys()):
             if isinstance(pairs[key], set):
                 for i in range(len(json_file)):
-                    if key not in json_file[i]:
-                        json_file[i][key] = "None"
+                    if key not in json_file[i] or json_file[i][key] == "None" or json_file[i][key] == "none":
+                        json_file[i][key] = np.nan
             else:
                 for i in range(len(json_file)):
                     if key not in json_file[i] or isinstance(json_file[i][key], str):
                         to_fill = dict()
                         for sub_key in list(pairs[key].keys()):
-                            to_fill[sub_key] = "None"
+                            to_fill[sub_key] = np.nan
                         json_file[i][key] = to_fill
                     else:
                         for sub_key in list(pairs[key].keys()):
-                            if sub_key not in json_file[i][key]:
-                                json_file[i][key][sub_key] = "None"
-
+                            if sub_key not in json_file[i][key] or json_file[i][key][sub_key] == "None":
+                                json_file[i][key][sub_key] = np.nan
         return json_file
 
     @staticmethod
@@ -172,6 +181,9 @@ class Functions:
 
     @staticmethod
     def fix_attribute_column(df_b):
+        """This function fixed the original dateset json errors.
+        After all the json were loaded and processed, they were
+        transformed into str and were saved to business_R.csv"""
         pairs, json_file = Functions.convert_to_json(df_b)
         json_file = Functions.fill_missing_keys(pairs, json_file)
         freq = Functions.attributes_frequency(pairs, json_file)

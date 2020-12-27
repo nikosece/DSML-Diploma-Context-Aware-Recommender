@@ -3,6 +3,27 @@ import numpy as np
 import scipy.stats as ss
 
 
+def create_df(test1, categories):
+    a = list()
+    b = list()
+    for i in range(len(test1)):
+        if test1[i] != "None":
+            a.append(categories[i])
+            b.append(test1[i])
+    df = pd.DataFrame()
+    df["category"] = a
+    return df, b
+
+
+def map_attributes(value):
+    mapper = {"False": 0, "True": 1, "quiet": 0, "average": 1, "loud": 2, "very_loud": 3, "1": 1, "2": 2, "3": 3,
+              "4": 4}
+    if value in mapper:
+        return mapper[value]
+    else:
+        return value
+
+
 def cramers_v(confusion_matrix):
     """ calculate Cramers V statistic for categorical-categorical association.
         uses correction from Bergsma and Wicher,
@@ -32,19 +53,22 @@ class Corellation:
         print("Context create initialized")
 
     @staticmethod
+    def attribute_to_column(pairs, json_file, df_b):
+        for key in list(pairs.keys()):
+            if isinstance(pairs[key], set):
+                df_b[key] = [map_attributes(j[key]) for j in json_file]
+            else:
+                for sub_key in list(pairs[key].keys()):
+                    df_b[sub_key] = [map_attributes(j[key][sub_key]) for j in json_file]
+        return df_b
+
+    @staticmethod
     def category_cor(pairs, json_file, categories):
         category_cor = dict()
         for key1 in list(pairs.keys()):
             if isinstance(pairs[key1], set):
                 test1 = [j[key1] for j in json_file]
-                a = list()
-                b = list()
-                for i in range(len(test1)):
-                    if test1[i] != "None":
-                        a.append(categories[i])
-                        b.append(test1[i])
-                df = pd.DataFrame()
-                df["category"] = a
+                df, b = create_df(test1, categories)
                 df[key1] = b
                 confusion_matrix = pd.crosstab(df["category"], df[key1]).values
                 result = cramers_v(confusion_matrix)
@@ -53,15 +77,7 @@ class Corellation:
             else:
                 for sub1 in list(pairs[key1].keys()):
                     test1 = [j[key1][sub1] for j in json_file]
-                    a = list()
-                    b = list()
-                    for i in range(len(test1)):
-                        if test1[i] != "None":
-                            a.append(categories[i])
-                            b.append(test1[i])
-
-                    df = pd.DataFrame()
-                    df["category"] = a
+                    df, b = create_df(test1, categories)
                     df[key1 + "_" + sub1] = b
                     confusion_matrix = pd.crosstab(df["category"], df[key1 + "_" + sub1]).values
                     result = cramers_v(confusion_matrix)

@@ -1,6 +1,8 @@
 from recommender_engine import RecommenderEngine
 from functions import Functions
 import pandas as pd
+import numpy as np
+from corellation import Corellation
 
 
 def filtering_city(df, star):
@@ -12,19 +14,54 @@ def get_recommendations_include_rating(keywords, df):
 
 
 # All of the below files have been filtered to contain Restaurants sub-categories
-df_b = pd.read_csv('bussines_R.csv', dtype={'name': str,
-                                            'city': str, 'state': str, 'postal_code': str,
-                                            'latitude': float, 'longitude': float,
-                                            'business_id': str, 'stars': float,
-                                            'attributes': str, 'categories': str}, index_col='business_id')
+cols = list(range(0, 3)) + list(range(5, 8)) + list(range(9, 50))
+df_b = pd.read_csv('bussines_R_attributes.csv', usecols=cols, dtype={'name': str,
+                                                                     'city': str,
+                                                                     'latitude': float, 'longitude': float,
+                                                                     'business_id': str, 'stars': np.float32,
+                                                                     'categories': str,
+                                                                     'review_count': np.int32,
+                                                                     'RestaurantsPriceRange2': np.float16,
+                                                                     'valet': np.float16,
+                                                                     'street': np.float16,
+                                                                     'validated': np.float16, 'lot': np.float16,
+                                                                     'garage': np.float16,
+                                                                     'RestaurantsTableService': np.float16,
+                                                                     'RestaurantsTakeOut': np.float16,
+                                                                     'GoodForKids': np.float16,
+                                                                     'Caters': np.float16,
+                                                                     'RestaurantsReservations': np.float16,
+                                                                     'HappyHour': np.float16,
+                                                                     'WheelchairAccessible': np.float16,
+                                                                     'BikeParking': np.float16,
+                                                                     'RestaurantsDelivery': np.float16,
+                                                                     'classy': np.float16, 'romantic': np.float16,
+                                                                     'divey': np.float16, 'hipster': np.float16,
+                                                                     'upscale': np.float16, 'trendy': np.float16,
+                                                                     'touristy': np.float16,
+                                                                     'intimate': np.float16, 'casual': np.float16,
+                                                                     'HasTV': np.float16, 'NoiseLevel': np.float16,
+                                                                     'BusinessAcceptsCreditCards': np.float16,
+                                                                     'RestaurantsGoodForGroups': np.float16,
+                                                                     'DogsAllowed': np.float16,
+                                                                     'latenight': np.float16, 'dessert': np.float16,
+                                                                     'lunch': np.float16, 'dinner': np.float16,
+                                                                     'brunch': np.float16, 'breakfast': np.float16,
+                                                                     'OutdoorSeating': np.float16,
+                                                                     'Alcohol': str, 'WiFi': str,
+                                                                     'RestaurantsAttire': str
+                                                                     }, index_col='business_id')
+pairs, json_file = Functions.convert_to_json(df_b)
+json_file = Functions.fill_missing_keys(pairs, json_file)
+df_b = Corellation.attribute_to_column(pairs, json_file, df_b)
 
 # At this point there is no need to read the reviews file
 # df_r = pd.read_csv("reviews_R_context.csv", dtype={'user_id': str,
-#                                                    'review_stars': np.int8, 'text': str,
-#                                                    'weekday': np.int8, 'season': np.int8,
+#                                                    'review_stars': np.float16, 'text': str,
+#                                                    'weekday': np.float16, 'season': np.float16,
 #                                                    'session': str}, parse_dates=["date"], index_col='business_id')
 
-# df_c = pd.read_csv("checkin_R.csv", dtype={'weekday': np.int8, 'season': np.int8,
+# df_c = pd.read_csv("checkin_R.csv", dtype={'weekday': np.float16, 'season': np.float16,
 #                                            'session': str}, parse_dates=["date"], index_col='business_id')
 # Store all cities reverse sorted
 cities = df_b.city.value_counts()
