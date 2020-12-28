@@ -1,4 +1,5 @@
 import folium
+from folium.plugins import Search
 
 
 class Create_map:
@@ -7,14 +8,49 @@ class Create_map:
 
     @staticmethod
     def plot(df, city):
+        """This function will be used to plot the recommended places
+        I have to add at the html:"""
+
+        # var geojsonMarkerOptions = {
+        #     radius: 6,
+        #     fillColor: "#ff7800",
+        #     color: "#000",
+        #     weight: 1,
+        #     opacity: 1,
+        #     fillOpacity: 0.8
+        # };
+        # var geo_json_81ba1ab92ce54e2e9b4f488fdcddaff5 = L.geoJson(null, {
+        #     onEachFeature: geo_json_81ba1ab92ce54e2e9b4f488fdcddaff5_onEachFeature,
+        #     pointToLayer: function(feature, latlng) {
+        # return L.circleMarker(latlng, geojsonMarkerOptions);
+        # },
+
         filtered = df[df.city == city]
         filtered = filtered.filter(["name", "latitude", "longitude"])
         lat_list = filtered.latitude.to_list()
         long_list = filtered.longitude.to_list()
         names_list = filtered.name.to_list()
         my_map = folium.Map(location=[lat_list[0], long_list[0]], zoom_start=10, prefer_canvas=True)
-        feature_group = folium.FeatureGroup("Locations")
+        my_list = list()
         for lat, lng, name in zip(lat_list, long_list, names_list):
-            feature_group.add_child(folium.CircleMarker(location=(lat, lng), popup=name, radius=6))
-        my_map.add_child(feature_group)
+            my_dict = dict()
+            my_dict["type"] = "Feature"
+            my_dict["geometry"] = {"type": "Point", "coordinates": [lng, lat]}
+            my_dict["properties"] = {"name": name}
+            my_list.append(my_dict)
+        geojson_file = dict()
+        geojson_file["type"] = "FeatureCollection"
+        geojson_file["features"] = my_list
+        geo = folium.GeoJson(geojson_file, name="Location",
+                             tooltip=folium.GeoJsonTooltip(fields=["name"], labels=False))
+        my_map.add_child(geo)
+        Search(
+            layer=geo,
+            geom_type='Point',
+            placeholder='Search for a place',
+            search_label="name",
+            search_zoom=18,
+            collapsed=False,
+        ).add_to(my_map)
+        folium.LayerControl().add_to(my_map)
         my_map.save(city + ".html")
