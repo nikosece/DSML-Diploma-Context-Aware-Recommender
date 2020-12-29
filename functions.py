@@ -50,14 +50,12 @@ class Functions:
         return geodesic(origin, dist).kilometers
 
     @staticmethod
-    def remove_categories(df):
+    def remove_categories(df, word):
         """As food and Restaurants not specify important information
         when they are combined with other categories, the are removed
         for better classification. """
-        df.categories.replace('(^Food, |, Food$)', '', regex=True, inplace=True)
-        df.categories.replace(', Food,', ',', regex=True, inplace=True)
-        df.categories.replace('(^Restaurants, |, Restaurants$)', '', regex=True, inplace=True)
-        df.categories.replace(', Restaurants,', ',', regex=True, inplace=True)
+        df.categories.replace('(^' + word + ', |, '+word+'$)', '', regex=True, inplace=True)
+        df.categories.replace(', ' + word + ',', ',', regex=True, inplace=True)
         return df
 
     @staticmethod
@@ -151,7 +149,7 @@ class Functions:
     @staticmethod
     def remove_attributes(pairs, json_file, freq):
         """Remove the attribute which None value is
-        greater than 80% as they are not representative variables"""
+        greater than 62% as they are not representative variables"""
         for key in list(pairs.keys()):
             if isinstance(pairs[key], set):
                 percentage = (100 * freq[key]["None"]) / len(json_file)

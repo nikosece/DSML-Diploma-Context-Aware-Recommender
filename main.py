@@ -2,7 +2,6 @@ from recommender_engine import RecommenderEngine
 from functions import Functions
 import pandas as pd
 import numpy as np
-from corellation import Corellation
 
 
 def filtering_city(df, star):
@@ -14,7 +13,7 @@ def get_recommendations_include_rating(keywords, df):
 
 
 # All of the below files have been filtered to contain Restaurants sub-categories
-cols = list(range(0, 4)) + list(range(5, 8)) + list(range(9, 50))
+cols = list(range(0, 43))
 df_b = pd.read_csv('bussines_R_attributes.csv', usecols=cols, dtype={'name': str,
                                                                      'city': str, 'state': str,
                                                                      'latitude': float, 'longitude': float,
@@ -26,13 +25,10 @@ df_b = pd.read_csv('bussines_R_attributes.csv', usecols=cols, dtype={'name': str
                                                                      'street': np.float16,
                                                                      'validated': np.float16, 'lot': np.float16,
                                                                      'garage': np.float16,
-                                                                     'RestaurantsTableService': np.float16,
                                                                      'RestaurantsTakeOut': np.float16,
                                                                      'GoodForKids': np.float16,
                                                                      'Caters': np.float16,
                                                                      'RestaurantsReservations': np.float16,
-                                                                     'HappyHour': np.float16,
-                                                                     'WheelchairAccessible': np.float16,
                                                                      'BikeParking': np.float16,
                                                                      'RestaurantsDelivery': np.float16,
                                                                      'classy': np.float16, 'romantic': np.float16,
@@ -43,12 +39,10 @@ df_b = pd.read_csv('bussines_R_attributes.csv', usecols=cols, dtype={'name': str
                                                                      'HasTV': np.float16, 'NoiseLevel': np.float16,
                                                                      'BusinessAcceptsCreditCards': np.float16,
                                                                      'RestaurantsGoodForGroups': np.float16,
-                                                                     'DogsAllowed': np.float16,
                                                                      'latenight': np.float16, 'dessert': np.float16,
                                                                      'lunch': np.float16, 'dinner': np.float16,
                                                                      'brunch': np.float16, 'breakfast': np.float16,
-                                                                     'OutdoorSeating': np.float16,
-                                                                     'Alcohol': str, 'WiFi': str,
+                                                                     'OutdoorSeating': np.float16, 'WiFi': str,
                                                                      'RestaurantsAttire': str
                                                                      }, index_col='business_id')
 

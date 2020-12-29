@@ -12,6 +12,6 @@ df_b = pd.read_csv('bussines_R.csv', dtype={'name': str,
 df_c = pd.read_csv("checkin_R.csv", dtype={'weekday': np.int8, 'season': np.int8,
                                            'session': str}, parse_dates=["date"], index_col='business_id')
 
-df_b = Functions.remove_categories(df_b)
+# df_b = Functions.remove_categories(df_b)
 
 df = Context_create.session_context(df_b, df_c)
