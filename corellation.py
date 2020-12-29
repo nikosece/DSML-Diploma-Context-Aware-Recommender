@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import scipy.stats as ss
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 def create_df(test1, categories):
@@ -57,6 +59,15 @@ def calculate(a, b, key1, key2):
     confusion_matrix = pd.crosstab(df[key1], df[key2]).values
     result = cramers_v(confusion_matrix)
     return result
+
+
+def cor_map(corr):
+    f, ax = plt.subplots(figsize=(16, 15), dpi=200)
+    # corr = df.corr()
+    sns.heatmap(corr, vmin=-0.43, vmax=1, center=0, cmap=sns.diverging_palette(20, 220, n=200), square=True, ax=ax,
+                annot=True, annot_kws={"fontsize": 6}, fmt=".2f")
+    ax.set_title("Corellation between attributes and context information", fontsize=20)
+    plt.show()
 
 
 class Corellation:

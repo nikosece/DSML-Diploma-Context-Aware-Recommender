@@ -7,10 +7,11 @@ from functions import plot_pie
 def compute_sum(df):
     """df contains how many times a specific
     context was seen and total is the sum of them"""
-    a = list(df.columns)
-    df["total"] = df.sum(axis=1)
-    for i in a:
-        df[i] = 100 * df[i] / df["total"]
+    # a = list(df.columns)
+    df["total"] = int(df.sum(axis=1))
+    # Use this only if you want percentage values
+    # for i in a:
+    #     df[i] = 100 * df[i] / df["total"]
     return df
 
 
@@ -48,6 +49,7 @@ class Context_create:
         maping = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday", 4: "Friday", 5: "Saturday", 6: "Sunday"}
         df["Weekday"] = df.weekday.map(maping)
         count = df.groupby(df.index)['Weekday'].value_counts().unstack().fillna(0)
+        count = count.astype(int)
         count = compute_sum(count)
         count.to_csv(name + "_weekdays.csv")
 
