@@ -3,6 +3,7 @@ import numpy as np
 import scipy.stats as ss
 import seaborn as sns
 import matplotlib.pyplot as plt
+from kmodes.kmodes import KModes
 
 
 def create_df(test1, categories):
@@ -85,6 +86,39 @@ class Corellation:
                 for sub_key in list(pairs[key].keys()):
                     df_b[sub_key] = [map_attributes(j[key][sub_key]) for j in json_file]
         return df_b
+
+    @staticmethod
+    def clustering(df, k, init='Cao', attributes=True):
+        """ Create cluster based on attributes or category"""
+        if attributes:
+            df2 = df.copy()
+            a = list(df2.columns)
+            a = a[8:42]
+            df2 = df2.filter(a)
+            maping = {"casual": 0, "dressy": 1, 'formal': 2}
+            df2["RestaurantsAttire"] = df2.RestaurantsAttire.map(maping)
+            df2 = df2.drop(
+                ["BusinessAcceptsCreditCards", "RestaurantsGoodForGroups", "latenight", "OutdoorSeating", "dessert",
+                 "HasTV", "intimate", "divey"], axis=1)
+            df2 = df2.drop(["validated"], axis=1)
+            df2 = df2.drop(["romantic"], axis=1)
+            df2 = df2.drop(["NoiseLevel"], axis=1)
+            df2 = df2.drop(["RestaurantsDelivery"], axis=1)
+            df2 = df2.drop(["Caters", "WiFi"], axis=1)
+            df2 = df2.fillna(-1)
+            km = KModes(n_clusters=k, init=init, n_init=1, verbose=1, n_jobs=12, random_state=0)
+            clusters = km.fit_predict(df2)
+        else:
+            df_explode = df.assign(categories=df.categories.str.split(', ')).explode('categories')
+            df_explode = df_explode.filter(["categories"])
+            df2 = pd.get_dummies(df_explode)
+            km = KModes(n_clusters=k, init=init, n_init=1, verbose=1, n_jobs=12, random_state=0)
+            clusters_names = km.fit_predict(df2)
+            df2["Clusters"] = clusters_names
+            df2 = df2[~df2.index.duplicated(keep='first')]
+            df2 = df2.filter(["Clusters"])
+            clusters = df2.Clusters.to_list()
+        return clusters
 
     @staticmethod
     def category_cor(pairs, json_file, categories):
