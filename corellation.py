@@ -88,8 +88,10 @@ class Corellation:
         return df_b
 
     @staticmethod
-    def clustering(df, k, init='Cao', attributes=True):
-        """ Create cluster based on attributes or category"""
+    def clustering(df, k=5, init='Cao', attributes=True):
+        """ Create cluster based on attributes or category
+        !!! dropping not common categories gives exactly
+        the same cluster!!"""
         if attributes:
             df2 = df.copy()
             a = list(df2.columns)
@@ -111,7 +113,14 @@ class Corellation:
         else:
             df_explode = df.assign(categories=df.categories.str.split(', ')).explode('categories')
             df_explode = df_explode.filter(["categories"])
+            c = df_explode.categories.value_counts()
+            c = c[c > 50]
+            c = c[c < 42176]
+            my_keys = list(c.index)
             df2 = pd.get_dummies(df_explode)
+            for i in range(len(my_keys)):
+                my_keys[i] = 'categories_' + my_keys[i]
+            df2 = df2.filter(my_keys)
             km = KModes(n_clusters=k, init=init, n_init=1, verbose=1, n_jobs=12, random_state=0)
             clusters_names = km.fit_predict(df2)
             df2["Clusters"] = clusters_names
