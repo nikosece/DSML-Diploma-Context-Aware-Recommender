@@ -1,5 +1,6 @@
 from recommender_engine import RecommenderEngine
 from functions import Functions
+from create_map import Create_map
 import pandas as pd
 import numpy as np
 
@@ -69,9 +70,10 @@ category = input("Please one or more categories with comma separated")
 origin = (51.0480042, -114.0966936)  # Calgary
 df_new["Distance"] = df_new.apply(lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
                                   axis=1)
-top_5_recommendations = get_recommendations_include_rating([category], df_new)
+top_10_recommendations = get_recommendations_include_rating([category], df_new)
+Create_map.plot(top_10_recommendations, city, True)
 print("#####################################################################################")
 pd.set_option('display.max_columns', None)
-print(top_5_recommendations)
+print(top_10_recommendations)
 pd.reset_option('display.max_rows')
 print("#####################################################################################")

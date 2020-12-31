@@ -20,7 +20,7 @@ class RecommenderEngine:
         :return: Returns value between 0 and 100"""
         cs_normalize = cs * 100
         r_normalize = 100 * r / 5
-        amount = cs_normalize * 0.25 + r_normalize * 0.65 - distance*100*0.1
+        amount = cs_normalize * 0.25 + r_normalize * 0.65 - distance * 100 * 0.1
         return amount
 
     # Version-2
@@ -61,7 +61,7 @@ class RecommenderEngine:
             distance = df.iloc[[ids[0]]].Distance.values[0]
             rating_count = df.iloc[[ids[0]]].review_count.values[0]
             rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, 50)
-            normalized_di = (distance-min_di)/(max_di - min_di)
+            normalized_di = (distance - min_di) / (max_di - min_di)
             final_score = RecommenderEngine.calculate_final_score(ids[1][0], rating_contribution, normalized_di)
             score_dict[index] = final_score
 
@@ -71,18 +71,27 @@ class RecommenderEngine:
         counter = 0
 
         # create an empty results data frame.
-        resulted = pd.DataFrame(columns=('Name', 'city', 'category', 'stars', 'total_reviews', 'score', 'distance'))
+        resulted = pd.DataFrame(columns=('name', 'city', 'category', 'stars', 'total_reviews', 'score', 'distance',
+                                         'attribute_c', 'attribute_h', 'category_c', 'category_h',
+                                         'latitude', 'longitude'))
 
-        # get highest scored 5 businesses.
+        # get highest scored 10 businesses.
         for i in sorted_scores:
-            resulted = resulted.append({'Name': df.loc[i[0]]['name'], 'city': df.loc[i[0]]['city'],
+            resulted = resulted.append({'name': df.loc[i[0]]['name'], 'city': df.loc[i[0]]['city'],
                                         'category': df.loc[i[0]]['categories'], 'stars': df.loc[i[0]]['stars'],
                                         'total_reviews': df.loc[i[0]]['review_count'],
                                         'distance': df.loc[i[0]]['Distance'],
-                                        'score': i[1]}, ignore_index=True)
+                                        'score': i[1], 'attribute_c': df.loc[i[0]]['attribute_c'],
+                                        'attribute_h': df.loc[i[0]]['attribute_h'],
+                                        'category_c': df.loc[i[0]]['category_c'],
+                                        'category_h': df.loc[i[0]]['category_h'],
+                                        'latitude': df.loc[i[0]]['latitude'],
+                                        'longitude': df.loc[i[0]]['longitude']
+                                        },
+                                       ignore_index=True)
             counter += 1
 
-            if counter > 10:
+            if counter >= 10:
                 break
 
         return resulted

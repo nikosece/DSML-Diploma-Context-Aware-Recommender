@@ -7,7 +7,7 @@ class Create_map:
         print("Create map initialized")
 
     @staticmethod
-    def plot(df, city):
+    def plot(df, city, include=False):
         """This function will be used to plot the recommended places
         I have to add at the html:"""
         # var geojsonMarkerOptions = {
@@ -23,32 +23,36 @@ class Create_map:
         #     pointToLayer: function(feature, latlng) {
         # return L.circleMarker(latlng, geojsonMarkerOptions);
         # },
-
+        fields = ["Name", "City", "Stars"]
+        if include:
+            fields.append("Preference")
         filtered = df[df.city == city]
-        filtered = filtered.filter(["name", "latitude", "longitude", "city"])
+        filtered = filtered.filter(["name", "latitude", "longitude", "city","stars"])
         lat_list = filtered.latitude.to_list()
         long_list = filtered.longitude.to_list()
         names_list = filtered.name.to_list()
         city_list = filtered.city.to_list()
+        stars_list = filtered.stars.to_list()
+        position = range(1, len(stars_list)+1)
         my_map = folium.Map(location=[lat_list[0], long_list[0]], zoom_start=10, prefer_canvas=True)
         my_list = list()
-        for lat, lng, name, city in zip(lat_list, long_list, names_list, city_list):
+        for lat, lng, name, city, star, i in zip(lat_list, long_list, names_list, city_list, stars_list, position):
             my_dict = dict()
             my_dict["type"] = "Feature"
             my_dict["geometry"] = {"type": "Point", "coordinates": [lng, lat]}
-            my_dict["properties"] = {"Name": name, "City": city}
+            my_dict["properties"] = {"Name": name, "City": city, "Stars": star, "Preference": i}
             my_list.append(my_dict)
         geojson_file = dict()
         geojson_file["type"] = "FeatureCollection"
         geojson_file["features"] = my_list
         geo = folium.GeoJson(geojson_file, name="Location",
-                             tooltip=folium.GeoJsonTooltip(fields=["name", "city"]))
+                             tooltip=folium.GeoJsonTooltip(fields=fields))
         my_map.add_child(geo)
         Search(
             layer=geo,
             geom_type='Point',
             placeholder='Search for a place',
-            search_label="name",
+            search_label="Name",
             search_zoom=18,
             collapsed=False,
         ).add_to(my_map)
