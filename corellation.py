@@ -92,6 +92,10 @@ class Corellation:
         """ Create cluster based on attributes or category
         !!! dropping not common categories gives exactly
         the same cluster!!"""
+        if init == 'Cao':
+            n_init = 1
+        else:
+            n_init = 11
         if attributes:
             df2 = df.copy()
             a = list(df2.columns)
@@ -108,7 +112,7 @@ class Corellation:
             df2 = df2.drop(["RestaurantsDelivery"], axis=1)
             df2 = df2.drop(["Caters", "WiFi"], axis=1)
             df2 = df2.fillna(-1)
-            km = KModes(n_clusters=k, init=init, n_init=1, verbose=1, n_jobs=12, random_state=0)
+            km = KModes(n_clusters=k, init=init, n_init=n_init, verbose=1, n_jobs=12, random_state=0)
             clusters = km.fit_predict(df2)
         else:
             df_explode = df.assign(categories=df.categories.str.split(', ')).explode('categories')
@@ -121,7 +125,7 @@ class Corellation:
             for i in range(len(my_keys)):
                 my_keys[i] = 'categories_' + my_keys[i]
             df2 = df2.filter(my_keys)
-            km = KModes(n_clusters=k, init=init, n_init=1, verbose=1, n_jobs=12, random_state=0)
+            km = KModes(n_clusters=k, init=init, n_init=n_init, verbose=1, n_jobs=12, random_state=0)
             clusters_names = km.fit_predict(df2)
             df2["Clusters"] = clusters_names
             df2 = df2[~df2.index.duplicated(keep='first')]
