@@ -53,7 +53,6 @@ class RecommenderEngine:
         sim_scores = sim_scores[0:50]
         new_df = df.iloc[[ids[0] for ids in sim_scores]]
         moderate = new_df.review_count.describe()[4]
-        print(moderate)
         max_di = new_df.Distance.max()
         min_di = new_df.Distance.min()
         score_dict = {}

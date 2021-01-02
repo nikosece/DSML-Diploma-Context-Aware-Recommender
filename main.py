@@ -61,13 +61,22 @@ for i in range(0, 12):
     print(cities.index[i])
 city = input("Please type city name and hit ENTER")
 df_new = filtering_city(df_b, city)
+df_new = Functions.remove_categories(df_new, "Restaurants")
+df_new = Functions.remove_categories(df_new, "Food")
 df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
 categories = df_explode.categories.value_counts()
+to_show = [categories.index[i] for i in range(0, 20)]
+categories = categories.to_frame()
+categories = categories[categories.categories <= categories.categories.describe()[5]]
+to_delete = list(categories.index)
+for d in reversed(to_delete):
+    df_new = Functions.remove_categories(df_new, d)
+
 # print top 20 categories starting from third
-for i in range(2, 22):
-    print(categories.index[i])
+for i in to_show:
+    print(i)
 category = input("Please one or more categories with comma separated")
-origin = (51.0480042, -114.0966936)  # Calgary
+origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
 df_new = Functions.remove_categories(df_new, "Restaurants")
 df_new = Functions.remove_categories(df_new, "Food")
 
