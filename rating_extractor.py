@@ -18,7 +18,7 @@ class RatingExtractor:
         if rating > 5 or rating < 0:
             return None
         else:
-            a = -moderate / np.log(0.5)
+            a = -moderate / np.log(0.35)    # if les than 0.35, moderate has less effect
             rating = rating / 2
             res = rating * (1 - e ** (-quantity / a))
             return rating + res

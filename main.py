@@ -68,12 +68,15 @@ for i in range(2, 22):
     print(categories.index[i])
 category = input("Please one or more categories with comma separated")
 origin = (51.0480042, -114.0966936)  # Calgary
+df_new = Functions.remove_categories(df_new, "Restaurants")
+df_new = Functions.remove_categories(df_new, "Food")
+
 df_new["Distance"] = df_new.apply(lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
                                   axis=1)
 top_10_recommendations = get_recommendations_include_rating([category], df_new)
-Create_map.plot(top_10_recommendations, city, True)
+Create_map.plot(top_10_recommendations, city, origin, True)
 print("#####################################################################################")
 pd.set_option('display.max_columns', None)
-print(top_10_recommendations)
+print(top_10_recommendations.filter(["name", "category", "stars", "total_reviews", "distance", "score"]))
 pd.reset_option('display.max_rows')
 print("#####################################################################################")

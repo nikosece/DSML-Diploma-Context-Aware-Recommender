@@ -19,8 +19,8 @@ class RecommenderEngine:
         :param r: review stars between 0 and 5
         :return: Returns value between 0 and 100"""
         cs_normalize = cs * 100
-        r_normalize = 100 * r / 5
-        amount = cs_normalize * 0.25 + r_normalize * 0.65 - distance * 100 * 0.1
+        r_normalize = 100 * (r - 0.5) / 4.5     # (r-min_r)/(max_r - min_r)
+        amount = cs_normalize * 0.20 + r_normalize * 0.60 + distance * 100 * 0.2
         return amount
 
     # Version-2
@@ -51,8 +51,11 @@ class RecommenderEngine:
         # sim_scores = list(enumerate(cosine_sim))
         # sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
         sim_scores = sim_scores[0:50]
-        max_di = df.Distance.max()
-        min_di = df.Distance.min()
+        new_df = df.iloc[[ids[0] for ids in sim_scores]]
+        moderate = new_df.review_count.describe()[4]
+        print(moderate)
+        max_di = new_df.Distance.max()
+        min_di = new_df.Distance.min()
         score_dict = {}
 
         for ids in sim_scores:
@@ -60,8 +63,8 @@ class RecommenderEngine:
             rating = df.iloc[[ids[0]]].stars.values[0]
             distance = df.iloc[[ids[0]]].Distance.values[0]
             rating_count = df.iloc[[ids[0]]].review_count.values[0]
-            rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, 50)
-            normalized_di = (distance - min_di) / (max_di - min_di)
+            rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
+            normalized_di = (max_di - distance) / (max_di - min_di)
             final_score = RecommenderEngine.calculate_final_score(ids[1][0], rating_contribution, normalized_di)
             score_dict[index] = final_score
 
@@ -69,7 +72,6 @@ class RecommenderEngine:
         sorted_scores = sorted(score_dict.items(), key=operator.itemgetter(1), reverse=True)
 
         counter = 0
-
         # create an empty results data frame.
         resulted = pd.DataFrame(columns=('name', 'city', 'category', 'stars', 'total_reviews', 'score', 'distance',
                                          'attribute_c', 'attribute_h', 'category_c', 'category_h',
