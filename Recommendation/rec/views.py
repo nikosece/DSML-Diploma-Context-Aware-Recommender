@@ -37,18 +37,20 @@ df_b = pd.read_csv('/home/anonymous/Documents/Diploma-Recommender/Recommendation
                           'RestaurantsAttire': str
                           }, index_col='business_id')
 
-city = df_b.city.value_counts()
-city_list = list(city.index)
-# a = dict(zip(df_b.city, df_b.state))
-# my_dict = dict()
-# for v in list(a.values()):
-#     my_dict[v] = set()
-# for  in list(my_dict.keys()):
-#     my_dict[i] = my_dict[i]
+# city = df_b.city.value_counts()
+# city_list = list(city.index)
+grouped = {k: set(v) for k, v in df_b.groupby('state')['city']}
+grouped = {k: list(v) for k, v in grouped.items()}
 tuple_list = tuple()
-for i in range(len(city_list)):
-    # tuple_list = tuple_list + ((a[city_list[i]], (i, city_list[i],),),)
-    tuple_list = tuple_list + ((i, city_list[i]),)
+i = 0
+city_dict = dict()
+for k, v in grouped.items():
+    tuple2 = tuple()
+    for city in v:
+        tuple2 = tuple2 + ((i, city),)
+        city_dict[i] = city
+        i = i + 1
+    tuple_list = tuple_list + ((k, tuple2,),)
 
 
 # Create your views here.
@@ -64,7 +66,7 @@ def index(request):
             # ...
             # redirect to a new URL:
             choice = int(request.POST["City"])
-            print(tuple_list[choice][1])
+            print(city_dict[choice])
         else:
             print("not Valid")
 
