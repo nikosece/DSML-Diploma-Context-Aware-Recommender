@@ -13,15 +13,20 @@ body {
 </head>
 <body>
 
-<h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
-<p>Edit the code in the window to the left, and click "Run" to view the result.</p>
+<h1>Welcome to Context Aware Recommender</h1>
+<p>Select one of the below available cities</p>
+
 <form action="" method="POST">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Submit">
+    <input type="submit" value="Submit City">
+</form>
+<p>Now select one or more categories you are interested in</p>
+<form method="POST">
+    {% csrf_token %}
+    {{ form2.as_p }}
+    <input type="submit" value="Submit Category">
 </form>
 
-</form>
 </body>
 </html>
