@@ -108,6 +108,11 @@ def index(request):
             axis=1)
         top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category], df_new)
         Create_map.plot(top_10_recommendations, selected_city, origin, True)
+        print("#####################################################################################")
+        pd.set_option('display.max_columns', None)
+        print(top_10_recommendations.filter(["name", "category", "stars", "total_reviews", "distance", "score"]))
+        pd.reset_option('display.max_rows')
+        print("#####################################################################################")
         return render(request, 'rec/'+selected_city+'.html')
     # if a GET (or any other method) we'll create a blank form
     else:
