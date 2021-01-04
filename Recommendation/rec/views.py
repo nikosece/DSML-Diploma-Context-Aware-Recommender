@@ -3,9 +3,9 @@ from django.shortcuts import render
 from .forms import CityForm, CategoryForm
 from recommender_engine import RecommenderEngine
 from functions import Functions
-
-
-# from create_map import Create_map
+from create_map import Create_map
+import os.path
+from os import path
 
 
 def create_categories_form():
@@ -30,7 +30,7 @@ def create_categories_form():
 
 
 def index(request):
-    global selected_city, df_new, df_explode, categories, to_show, form2
+    global selected_city, df_new, df_explode, categories, to_show, form2, cols, row_list, top_10_recommendations, origin
     # This request happens each time the user selects a city from the dropdown list
     if request.method == 'POST' and "City" in request.POST:
         form = CityForm(City=tuple_list, data=request.POST)
@@ -70,9 +70,17 @@ def index(request):
     return render(request, 'rec/index.html', {'form': form, 'form2': form2})
 
 
-def results(city_name, request):
-    print("Inside results")
-    print(city_name, request)
+def results(request):
+    return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
+
+
+def show_map(request):
+    map_path = 'rec/' + selected_city + '.html'
+    if not path.exists(
+            "/home/anonymous/Documents/Diploma-Recommender/Recommendation/rec/templates/rec/" + selected_city +
+            '.html'):
+        Create_map.plot(top_10_recommendations, selected_city, origin, True)
+    return render(request, map_path)
 
 
 df_b = Functions.read_business()
@@ -90,6 +98,6 @@ for k, v in grouped.items():
         i = i + 1
     tuple_list = tuple_list + ((k, tuple2,),)  # grouped by state
 
-df_new = df_explode = categories = to_show = form2 = None
+df_new = df_explode = categories = to_show = form2 = cols = row_list = top_10_recommendations = origin = None
 selected_city = city_dict[0]  # Choose the first available city to initialize index forms
 create_categories_form()
