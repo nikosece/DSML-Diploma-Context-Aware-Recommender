@@ -60,12 +60,26 @@ df_explode = ""
 categories = ""
 to_show = ""
 selected_city = ""
+city_choice = city_dict[0]
+df_new = Functions.filtering_city(df_b, city_choice)
+df_new = Functions.remove_categories(df_new, "Restaurants")
+df_new = Functions.remove_categories(df_new, "Food")
+df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
+categories = df_explode.categories.value_counts()
+max_va = 20
+if categories.shape[0] < 20:
+    max_va = categories.shape[0]
+to_show = [categories.index[c] for c in range(0, max_va)]
+category_tuple = tuple()
+for j in range(len(to_show)):
+    category_tuple = category_tuple + ((j, to_show[j]),)
+form2 = CategoryForm(Category=category_tuple)
 
 
 # Create your views here.
 
 def index(request):
-    global selected_city, df_new, df_explode, categories, to_show
+    global selected_city, df_new, df_explode, categories, to_show, form2
     # if this is a POST request we need to process the form data
     if request.method == 'POST' and "City" in request.POST:
         # create a form instance and populate it with data from the request:
@@ -108,12 +122,6 @@ def index(request):
             axis=1)
         top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category], df_new)
         # Create_map.plot(top_10_recommendations, selected_city, origin, True)
-        # print("#####################################################################################")
-        # pd.set_option('display.max_columns', None)
-        # print(top_10_recommendations.filter(["name", "category", "stars", "total_reviews", "distance", "score"]))
-        # pd.reset_option('display.max_rows')
-        # print("#####################################################################################")
-        # return render(request, 'rec/' + selected_city + '.html')
         cols = ["Name", "Category", "Stars", "Distance", "Score"]
         name_list = top_10_recommendations.name.to_list()
         cat_list = top_10_recommendations.category.to_list()
@@ -121,7 +129,7 @@ def index(request):
         distance_list = top_10_recommendations.distance.to_list()
         distance_list = ["{:.2f}".format(a) for a in distance_list]
         score_list = top_10_recommendations.score.to_list()
-        score_list = ["{:.2f}".format(a) for a in score_list]
+        score_list = ["{:.2f} %".format(a) for a in score_list]
         row_list = []
         for m in range(len(name_list)):
             row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
@@ -130,7 +138,6 @@ def index(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = CityForm(City=tuple_list)
-        form2 = CategoryForm(Category=())
     return render(request, 'rec/index.html', {'form': form, 'form2': form2})
 
 

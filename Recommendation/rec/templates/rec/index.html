@@ -4,10 +4,21 @@
 <title>Page Title</title>
 <style>
 body {
-  background-color: black;
+  background-color: white;
   text-align: center;
-  color: white;
+  color: black;
   font-family: Arial, Helvetica, sans-serif;
+}
+label {
+    padding: 5px;
+
+}
+h1 {
+    font-style: italic;
+    font-size: 40px;
+}
+p {
+    font-size: 20px;
 }
 </style>
 </head>
@@ -18,8 +29,7 @@ body {
 
 <form action="" method="POST">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit City">
+    {{ form.as_p }}
 </form>
 <p>Now select one or more categories you are interested in</p>
 <form action="" method="POST">
@@ -27,6 +37,5 @@ body {
     {{ form2.as_p }}
     <input type="submit" value="Submit Category">
 </form>
-
 </body>
 </html>
