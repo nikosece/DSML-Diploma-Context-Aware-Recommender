@@ -13,4 +13,4 @@ class CategoryForm(forms.Form):
         categories = kwargs.pop("Category")
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["Category"] = forms.MultipleChoiceField(choices=categories, label='Select categories')
-                                                           # widget=forms.CheckboxSelectMultiple())
+        # widget=forms.CheckboxSelectMultiple())

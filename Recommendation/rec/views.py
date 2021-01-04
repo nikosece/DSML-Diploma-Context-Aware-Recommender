@@ -107,15 +107,32 @@ def index(request):
             lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
             axis=1)
         top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category], df_new)
-        Create_map.plot(top_10_recommendations, selected_city, origin, True)
-        print("#####################################################################################")
-        pd.set_option('display.max_columns', None)
-        print(top_10_recommendations.filter(["name", "category", "stars", "total_reviews", "distance", "score"]))
-        pd.reset_option('display.max_rows')
-        print("#####################################################################################")
-        return render(request, 'rec/'+selected_city+'.html')
+        # Create_map.plot(top_10_recommendations, selected_city, origin, True)
+        # print("#####################################################################################")
+        # pd.set_option('display.max_columns', None)
+        # print(top_10_recommendations.filter(["name", "category", "stars", "total_reviews", "distance", "score"]))
+        # pd.reset_option('display.max_rows')
+        # print("#####################################################################################")
+        # return render(request, 'rec/' + selected_city + '.html')
+        cols = ["Name", "Category", "Stars", "Distance", "Score"]
+        name_list = top_10_recommendations.name.to_list()
+        cat_list = top_10_recommendations.category.to_list()
+        star_list = top_10_recommendations.stars.to_list()
+        distance_list = top_10_recommendations.distance.to_list()
+        distance_list = ["{:.2f}".format(a) for a in distance_list]
+        score_list = top_10_recommendations.score.to_list()
+        score_list = ["{:.2f}".format(a) for a in score_list]
+        row_list = []
+        for m in range(len(name_list)):
+            row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
+                             "distance": distance_list[m], "score": score_list[m]})
+        return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
     # if a GET (or any other method) we'll create a blank form
     else:
         form = CityForm(City=tuple_list)
         form2 = CategoryForm(Category=())
     return render(request, 'rec/index.html', {'form': form, 'form2': form2})
+
+
+def results(city_name, request):
+    print("Inside results")

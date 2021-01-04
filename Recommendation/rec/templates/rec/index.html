@@ -22,7 +22,7 @@ body {
     <input type="submit" value="Submit City">
 </form>
 <p>Now select one or more categories you are interested in</p>
-<form method="POST">
+<form action="" method="POST">
     {% csrf_token %}
     {{ form2.as_p }}
     <input type="submit" value="Submit Category">

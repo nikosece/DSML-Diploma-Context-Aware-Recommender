@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+<style>
+body {
+  background-color: black;
+  text-align: center;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+table, th, td {
+  border: 1px solid white;
+  border-collapse: collapse;
+}
+
+table {
+    margin: 0 auto;
+    width: 100%;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>Recommendation results</h1>
+<table class="table">
+    <thead>
+        <tr>
+            {% for k in header %}
+            <th>{{k}}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in rows %}
+            <tr>
+                <td>{{r.name}}</td>
+                <td>{{r.category}}</td>
+                <td>{{r.stars}}</td>
+                <td>{{r.distance}}</td>
+                <td>{{r.score}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>
+
