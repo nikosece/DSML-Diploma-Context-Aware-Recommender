@@ -11,8 +11,15 @@ from functions import Functions
 def create_categories_form():
     global selected_city, df_new, df_explode, categories, to_show, form2
     df_new = Functions.filtering_city(df_b, selected_city)
+    df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
+    categories = df_explode.categories.value_counts()
+    categories = categories.to_frame()
+    categories = categories[categories.categories <= categories.categories.describe()[5]]
+    to_delete = list(categories.index)
     df_new = Functions.remove_categories(df_new, "Restaurants")
     df_new = Functions.remove_categories(df_new, "Food")
+    for d in reversed(to_delete):
+        df_new = Functions.remove_categories(df_new, d)
     df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
     categories = df_explode.categories.value_counts()
     to_show = [categories.index[c] for c in range(0, categories.shape[0])]
@@ -35,13 +42,6 @@ def index(request):
         selected_category = request.POST.getlist('Category')
         selected_category = [to_show[int(s)] for s in selected_category]
         selected_category = ", ".join(selected_category)  # Combine all selected categories into one string
-        categories = categories.to_frame()
-        categories = categories[categories.categories <= categories.categories.describe()[5]]
-        to_delete = list(categories.index)
-        df_new = Functions.remove_categories(df_new, "Restaurants")
-        df_new = Functions.remove_categories(df_new, "Food")
-        for d in reversed(to_delete):
-            df_new = Functions.remove_categories(df_new, d)
         origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
 
         df_new["Distance"] = df_new.apply(
