@@ -63,7 +63,10 @@ class RecommenderEngine:
             distance = df.iloc[[ids[0]]].Distance.values[0]
             rating_count = df.iloc[[ids[0]]].review_count.values[0]
             rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
-            normalized_di = (max_di - distance) / (max_di - min_di)
+            if max_di == min_di:
+                normalized_di = 1
+            else:
+                normalized_di = (max_di - distance) / (max_di - min_di)
             final_score = RecommenderEngine.calculate_final_score(ids[1][0], rating_contribution, normalized_di)
             score_dict[index] = final_score
 

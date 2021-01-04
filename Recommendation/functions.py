@@ -28,7 +28,7 @@ class Functions:
     @staticmethod
     def filtering_city(df, city):
         """keep only rows which city value is equal to input"""
-        new_df = df[(df.city == city)]
+        new_df = df[(df.city == city)].copy()
         return new_df
 
     @staticmethod
