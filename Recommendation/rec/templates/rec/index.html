@@ -30,7 +30,16 @@
             });}
     });
     </script>
-
+    <script>
+        $(document).ready(function(){
+            $("#id_City").change(function(){
+                if($(this).val() == "") {
+                    $('#id_Category').prop({"disabled": true});
+                    $('#id_Category').prop({"placeholder": 'First select a city'});
+                }
+            })
+        })
+    </script>
     <style>
         body {
           background-color: white;
