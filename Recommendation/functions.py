@@ -44,6 +44,21 @@ class Functions:
         return new_df
 
     @staticmethod
+    def map_hour(hour):
+        if hour in range(0, 5):
+            return 'ch_Late Night'
+        elif hour in range(5, 9):
+            return 'ch_Early Morning'
+        elif hour in range(9, 13):
+            return 'ch_Morning'
+        elif hour in range(13, 17):
+            return 'ch_Noon'
+        elif hour in range(17, 21):
+            return 'ch_Eve'
+        else:
+            return 'ch_Night'
+
+    @staticmethod
     def calculate_distance(origin, dist):
         """Calculate distance between user's location and business location.
         This distance IS NOT driving distance, it is geodesic distance"""
