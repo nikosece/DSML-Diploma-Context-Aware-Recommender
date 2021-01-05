@@ -23,7 +23,7 @@ def create_categories_form():
     df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
     categories = df_explode.categories.value_counts()
     to_show = [categories.index[c] for c in range(0, categories.shape[0])]
-    category_tuple = (('', '----'),)
+    category_tuple = (('', ''),)
     for j in range(len(to_show)):
         category_tuple = category_tuple + ((j, to_show[j]),)
     form2 = CategoryForm(Category=category_tuple)
@@ -89,7 +89,7 @@ def show_map(request):
 df_b = Functions.read_business()
 grouped = {k: set(v) for k, v in df_b.groupby('state')['city']}  # group by cities by state
 grouped = {k: list(v) for k, v in grouped.items()}
-tuple_list = (('', '----'),)
+tuple_list = (('', ''),)
 i = 0  # i keeps city number
 city_dict = dict()
 # Create the tuple needed for city choices in django form

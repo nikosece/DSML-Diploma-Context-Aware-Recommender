@@ -8,16 +8,26 @@
     <script>
         $(document).ready(function() {
         $('#id_City').select2({
-        placeholder: "Select a city",
+        placeholder: "Available cities",
+        theme : "classic",
         allowClear: true
     });
     });
     </script>
     <script>
         $(document).ready(function() {
-        $('#id_Category').select2({
-        placeholder: 'Select categories'
-        });
+        if($("#id_City").val()==""){
+            $('#id_Category').select2({
+            placeholder: 'First select a city',
+            disabled : true,
+            theme : "classic"
+            });}
+        else{
+            $('#id_Category').select2({
+            placeholder: 'Available categories',
+            disabled : false,
+            theme : "classic"
+            });}
     });
     </script>
 
@@ -68,14 +78,12 @@
   <a class="active" href="/">Home</a>
 </div>
 <h1>Welcome to Context Aware Recommender</h1>
-<p>Select one of the below available cities</p>
 
 <form action="" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
 </form>
 
-<p>Now select one or more categories you are interested in</p>
 
 <form action="/results/" method="POST">
     {% csrf_token %}
