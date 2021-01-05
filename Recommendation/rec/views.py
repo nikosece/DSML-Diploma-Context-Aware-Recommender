@@ -9,7 +9,7 @@ from os import path
 
 
 def create_categories_form():
-    global selected_city, df_new, df_explode, categories, to_show, form2
+    global selected_city, df_new, df_explode, categories, to_show, form2, category_tuple
     df_new = Functions.filtering_city(df_b, selected_city)
     df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
     categories = df_explode.categories.value_counts()
@@ -32,14 +32,13 @@ def create_categories_form():
 def index(request):
     global selected_city, df_new, df_explode, categories, to_show, form2
     # This request happens each time the user selects a city from the dropdown list
-    if request.method == 'POST' and "City" in request.POST:
+    if request.method == 'POST':
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
             selected_city = city_dict[int(request.POST["City"])]
             create_categories_form()
     # This request happens each time the user submits categories from the dropdown list
 
-    # if a GET (or any other method) we'll create a blank form
     else:
         form = CityForm(City=tuple_list)
         selected_city = city_dict[0]
@@ -48,31 +47,32 @@ def index(request):
 
 
 def results(request):
-    global df_new, cols, row_list, top_10_recommendations, origin
+    global df_new, cols, row_list, top_10_recommendations, origin, form2
     if request.method == 'POST':
-        selected_category = request.POST.getlist('Category')
-        selected_category = [to_show[int(s)] for s in selected_category]
-        selected_category = ", ".join(selected_category)  # Combine all selected categories into one string
-        origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
+        form2 = CategoryForm(Category=category_tuple, data=request.POST)
+        if form2.is_valid():
+            selected_category = request.POST.getlist('Category')
+            selected_category = [to_show[int(s)] for s in selected_category]
+            selected_category = ", ".join(selected_category)  # Combine all selected categories into one string
+            origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
 
-        df_new["Distance"] = df_new.apply(
-            lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
-            axis=1)
-        top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category], df_new)
-        # Create_map.plot(top_10_recommendations, selected_city, origin, True)
-        cols = ["Name", "Category", "Stars", "Distance", "Score"]
-        name_list = top_10_recommendations.name.to_list()
-        cat_list = top_10_recommendations.category.to_list()
-        star_list = top_10_recommendations.stars.to_list()
-        distance_list = top_10_recommendations.distance.to_list()
-        distance_list = ["{:.2f}".format(a) for a in distance_list]
-        score_list = top_10_recommendations.score.to_list()
-        score_list = ["{:.2f} %".format(a) for a in score_list]
-        row_list = []
-        for m in range(len(name_list)):
-            row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
-                             "distance": distance_list[m], "score": score_list[m]})
-        return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
+            df_new["Distance"] = df_new.apply(
+                lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
+                axis=1)
+            top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category], df_new)
+            cols = ["Name", "Category", "Stars", "Distance", "Score"]
+            name_list = top_10_recommendations.name.to_list()
+            cat_list = top_10_recommendations.category.to_list()
+            star_list = top_10_recommendations.stars.to_list()
+            distance_list = top_10_recommendations.distance.to_list()
+            distance_list = ["{:.2f}".format(a) for a in distance_list]
+            score_list = top_10_recommendations.score.to_list()
+            score_list = ["{:.2f} %".format(a) for a in score_list]
+            row_list = []
+            for m in range(len(name_list)):
+                row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
+                                 "distance": distance_list[m], "score": score_list[m]})
+            return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
 
@@ -101,6 +101,6 @@ for k, v in grouped.items():
         i = i + 1
     tuple_list = tuple_list + ((k, tuple2,),)  # grouped by state
 
-df_new = df_explode = categories = to_show = form2 = cols = row_list = top_10_recommendations = origin = None
+df_new = df_explode = categories = to_show = form2 = cols = row_list = top_10_recommendations = origin = category_tuple = None
 selected_city = city_dict[0]  # Choose the first available city to initialize index forms
 create_categories_form()
