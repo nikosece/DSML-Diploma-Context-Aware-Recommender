@@ -30,7 +30,7 @@ def create_categories_form():
 
 
 def index(request):
-    global selected_city, df_new, df_explode, categories, to_show, form2, cols, row_list, top_10_recommendations, origin
+    global selected_city, df_new, df_explode, categories, to_show, form2
     # This request happens each time the user selects a city from the dropdown list
     if request.method == 'POST' and "City" in request.POST:
         form = CityForm(City=tuple_list, data=request.POST)
@@ -38,7 +38,18 @@ def index(request):
             selected_city = city_dict[int(request.POST["City"])]
             create_categories_form()
     # This request happens each time the user submits categories from the dropdown list
-    elif request.method == 'POST' and "Category" in request.POST:
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = CityForm(City=tuple_list)
+        selected_city = city_dict[0]
+        create_categories_form()
+    return render(request, 'rec/index.html', {'form': form, 'form2': form2})
+
+
+def results(request):
+    global df_new, cols, row_list, top_10_recommendations, origin
+    if request.method == 'POST':
         selected_category = request.POST.getlist('Category')
         selected_category = [to_show[int(s)] for s in selected_category]
         selected_category = ", ".join(selected_category)  # Combine all selected categories into one string
@@ -62,16 +73,8 @@ def index(request):
             row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
                              "distance": distance_list[m], "score": score_list[m]})
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
-    # if a GET (or any other method) we'll create a blank form
     else:
-        form = CityForm(City=tuple_list)
-        selected_city = city_dict[0]
-        create_categories_form()
-    return render(request, 'rec/index.html', {'form': form, 'form2': form2})
-
-
-def results(request):
-    return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
+        return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
 
 
 def show_map(request):
