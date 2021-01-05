@@ -9,7 +9,6 @@
         $(document).ready(function() {
         $('#id_City').select2({
         placeholder: "Available cities",
-        theme : "classic",
         allowClear: true
     });
     });
@@ -20,13 +19,11 @@
             $('#id_Category').select2({
             placeholder: 'First select a city',
             disabled : true,
-            theme : "classic"
             });}
         else{
             $('#id_Category').select2({
             placeholder: 'Available categories',
             disabled : false,
-            theme : "classic"
             });}
     });
     </script>
@@ -61,7 +58,9 @@
   overflow: hidden;
   background-color: #333;
 }
-
+input[type=submit] {
+    font-size: 20px;
+}
 .topnav a {
   float: left;
   color: #f2f2f2;
