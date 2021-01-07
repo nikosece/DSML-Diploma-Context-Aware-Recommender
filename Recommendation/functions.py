@@ -2,6 +2,9 @@ from geopy.distance import geodesic
 import json
 from collections import Counter
 import matplotlib.pyplot as plt
+from kneed import KneeLocator
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 import operator
 import numpy as np
 import pandas as pd
@@ -21,9 +24,78 @@ def plot_pie(sorted_data, ax):
     plt.setp(autotexts, size=8, weight="bold")
 
 
+def plot_box(df_new, p_name, d_name, data):
+    fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(20, 10), dpi=150)
+    fig.suptitle('Box plots for {}'.format(p_name), fontsize=16)
+    ax_list = [ax[0][0], ax[0][1], ax[0][2], ax[1][0], ax[1][1], ax[1][2]]
+    value_count = df_new[d_name].value_counts()
+    total = value_count.sum()
+    for i in range(0, 5):
+        df_new[df_new[d_name] == i][data].boxplot(ax=ax_list[i], fontsize='small')
+        percentage = 100 * value_count[i] / total
+        ax_list[i].set_title("Cluster {} ({:.2f} %)".format(i, percentage))
+    ax[1][2].remove()
+    plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/Cluster_'+p_name+'.png', dpi='figure')
+
+
+def scale_data(data):
+    scaler = StandardScaler()
+    scaled_features = scaler.fit_transform(data)
+    return scaled_features
+
+
+def kmeans(data):
+    sse = []
+    for k in range(1, 11):
+        kmean = KMeans(init="random", n_clusters=k, n_init=10, max_iter=300, random_state=0)
+        kmean.fit(data)
+        sse.append(kmean.inertia_)
+
+    kl = KneeLocator(range(1, 11), sse, curve="convex", direction="decreasing")
+
+    kmean = KMeans(init="random", n_clusters=kl.elbow, n_init=10, max_iter=300, random_state=0)
+    y = kmean.fit_predict(data)
+    return y
+
+
 class Functions:
     def __init__(self):
         print("Functions initialized")
+
+    @staticmethod
+    def context_clustering(df):
+        keep = ['ch_Monday', 'ch_Tuesday',
+                'ch_Wednesday', 'ch_Thursday', 'ch_Friday', 'ch_Saturday', 'ch_Sunday',
+                'ch_Early Morning', 'ch_Morning', 'ch_Eve', 'ch_Noon', 'ch_Night',
+                'ch_Late Night', 'ch_Spring', 'ch_Summer', 'ch_Fall', 'ch_Winter',
+                'ch_total_ch']
+        df_new = df.filter(keep)
+        for i in keep[0:17]:
+            df_new[i] = df_new[i] / df_new['ch_total_ch']
+        names = {}
+        for i in keep[0:17]:
+            names[i] = i.replace("ch_", "")
+        df_new = df_new.rename(columns=names)
+        names = list(names.values())
+        days = names[0:7]
+        session = names[7:13]
+        season = names[13:17]
+        df_new['Day_Cluster'] = kmeans(scale_data(df_new[days]))
+        df_new['Session_Cluster'] = kmeans(scale_data(df_new[session]))
+        df_new['Season_Cluster'] = kmeans(scale_data(df_new[season]))
+        fig, ax = plt.subplots(nrows=2, ncols=2, figsize=(20, 10), dpi=150)
+        fig.suptitle('Box plots for Days', fontsize=16)
+        ax_list = [ax[0][0], ax[0][1], ax[1][0], ax[1][1]]
+        value_count = df_new['Day_Cluster'].value_counts()
+        total = value_count.sum()
+        for i in range(0, 4):
+            df_new[df_new.Day_Cluster == i][days].boxplot(ax=ax_list[i], fontsize='small')
+            percentage = 100 * value_count[i] / total
+            ax_list[i].set_title("Cluster {} ({:.2f} %)".format(i, percentage))
+        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/Cluster_Days.png', dpi='figure')
+        plot_box(df_new, 'Session', 'Session_Cluster', session)
+        plot_box(df_new, 'Season', 'Season_Cluster', season)
+        return df_new
 
     @staticmethod
     def filtering_city(df, city):
