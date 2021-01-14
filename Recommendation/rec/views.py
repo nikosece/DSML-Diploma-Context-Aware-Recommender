@@ -4,8 +4,62 @@ from .forms import CityForm, CategoryForm
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
+from lightfm.data import Dataset
+from lightfm import LightFM
+import numpy as np
+# import Rec_fx as rf
+import pickle
+import sys
+from scipy import sparse
 import os.path
 from os import path
+
+
+def save_pickle(var, name):
+    with open(name + '.pickle', 'wb') as fle:
+        pickle.dump(var, fle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def model_predict(df, tags=None, user_id=None):
+    if user_id is None:
+        inverse_user_feature_map = {value: key for key, value in dataset.mapping()[1].items()}
+        user_feature_map = dataset.mapping()[1]
+        user_id = 0
+        user_feature_list = tags
+        num_features = len(user_feature_list)
+        normalised_val = 1.0 / num_features
+        target_indices = list()
+        for feature in user_feature_list:
+            try:
+                target_indices.append(user_feature_map[feature])
+            except KeyError:
+                print("new user feature encountered '{}'".format(feature))
+                pass
+        features = np.zeros(len(user_feature_map.keys()))
+        for tar in target_indices:
+            features[tar] = normalised_val
+        features = sparse.csr_matrix(features)
+
+    else:
+        features = user_features
+    t_idx = {value: key for key, value in item_map.items()}
+    array_save = np.array([item_map[ind] for ind in df.index])
+    scores = model.predict(user_id, array_save, user_features=features,
+                           item_features=item_features, num_threads=12)
+    sorted_scores = np.argsort(-scores)
+    i_idx = [t_idx[array_save[x]] for x in sorted_scores]
+    m = scores.max()
+    mn = scores.min()
+    for s in range(scores.shape[0]):
+        scores[s] = 100 * (scores[s] - mn) / (m - mn)
+    # scores = [scores[x] for x in sorted_scores]
+    df["score"] = scores.tolist()
+    top_items = df.loc[i_idx[0:30]]  # for now keep the top 30
+    return top_items
+
+
+def read_pickle(name):
+    return pickle.load(open(name + ".pickle", "rb"))
 
 
 def create_categories_form():
@@ -53,16 +107,17 @@ def results(request):
         if form2.is_valid():
             selected_category = request.POST.getlist('Category')
             selected_category = [to_show[int(s)] for s in selected_category]
-            selected_category = ", ".join(selected_category)  # Combine all selected categories into one string
+            selected_category_join = ", ".join(selected_category)  # Combine all selected categories into one string
             origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
 
-            df_new["Distance"] = df_new.apply(
+            df_new["distance"] = df_new.apply(
                 lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
                 axis=1)
-            top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category], df_new)
+            top_10_recommendations = model_predict(df_new, selected_category)
+            # top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category_join], df_new)
             cols = ["Name", "Category", "Stars", "Distance", "Score"]
             name_list = top_10_recommendations.name.to_list()
-            cat_list = top_10_recommendations.category.to_list()
+            cat_list = top_10_recommendations.categories.to_list()
             star_list = top_10_recommendations.stars.to_list()
             distance_list = top_10_recommendations.distance.to_list()
             distance_list = ["{:.2f}".format(a) for a in distance_list]
@@ -85,6 +140,14 @@ def show_map(request):
         Create_map.plot(top_10_recommendations, selected_city, origin, True)
     return render(request, map_path)
 
+
+model = read_pickle("/home/anonymous/Documents/ligthFm_modelV4")
+interactions = read_pickle('/home/anonymous/Documents/interactionsV4')
+weights = read_pickle('/home/anonymous/Documents/weights')
+item_features = read_pickle('/home/anonymous/Documents/item_featuresV4')
+user_features = read_pickle('/home/anonymous/Documents/user_featuresV4')
+dataset = read_pickle('/home/anonymous/Documents/datasetV4')
+item_map = dataset.mapping()[2]
 
 df_b = Functions.read_business()
 grouped = {k: set(v) for k, v in df_b.groupby('state')['city']}  # group by cities by state
