@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # from django.http import HttpResponseRedirect
-from .forms import CityForm, CategoryForm
+from .forms import CityForm, CategoryForm, ChoiceForm
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
@@ -20,7 +20,7 @@ def save_pickle(var, name):
         pickle.dump(var, fle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-def model_predict(df, tags=None, user_id=None):
+def model_predict(df, k=50, tags=None, user_id=None):
     if user_id is None:
         inverse_user_feature_map = {value: key for key, value in dataset.mapping()[1].items()}
         user_feature_map = dataset.mapping()[1]
@@ -54,7 +54,7 @@ def model_predict(df, tags=None, user_id=None):
         scores[s] = (scores[s] - mn) / (m - mn)
     # scores = [scores[x] for x in sorted_scores]
     df["score"] = scores.tolist()
-    top_items = df.loc[i_idx[0:50]]  # for now keep the top 50
+    top_items = df.loc[i_idx[0:k]]  # for now keep the top 50
     return top_items
 
 
@@ -97,7 +97,8 @@ def index(request):
         form = CityForm(City=tuple_list)
         selected_city = city_dict[0]
         create_categories_form()
-    return render(request, 'rec/index.html', {'form': form, 'form2': form2})
+    choices = ChoiceForm()
+    return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form3': choices})
 
 
 def results(request):
@@ -108,13 +109,24 @@ def results(request):
             selected_category = request.POST.getlist('Category')
             selected_category = [to_show[int(s)] for s in selected_category]
             selected_category_join = ", ".join(selected_category)  # Combine all selected categories into one string
+            selected_filter = int(request.POST.getlist('Filter')[0])
             origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
-
-            df_new = model_predict(df_new, selected_category)
-            df_new["distance"] = df_new.apply(
-                lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
-                axis=1)
-            top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new)
+            if selected_filter == 2:
+                df_new = model_predict(df_new, 50, selected_category)
+                df_new["distance"] = df_new.apply(
+                    lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
+                    axis=1)
+                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new)
+            elif selected_filter == 0:
+                df_new["distance"] = df_new.apply(
+                    lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
+                    axis=1)
+                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, [selected_category_join])
+            else:
+                df_new["distance"] = df_new.apply(
+                    lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
+                    axis=1)
+                top_10_recommendations = model_predict(df_new, 10, selected_category)
             cols = ["Name", "Category", "Stars", "Distance", "Score"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
