@@ -25,7 +25,7 @@ class RecommenderEngine:
 
     # Version-2
     @staticmethod
-    def get_recommendations_include_rating(keywords, df):
+    def get_recommendations_include_rating(df, keywords=None):
         """Based on user's keywords find the most relevant
         business. Then based on that look for similar businesses.
         After that, recalculate the score based on review and
@@ -37,37 +37,47 @@ class RecommenderEngine:
         # 1) Find the most similar business with keyword
         # 2) Find the most similar businesses withe the above business
         # I may use only step1, it seems more accurate
-        tfidf = TfidfVectorizer(stop_words='english')
-        tfidf_matrix = tfidf.fit_transform(df['categories'])
-        tfidf_keywords = tfidf.transform(keywords)
-        cosine_sim1 = linear_kernel(tfidf_matrix, tfidf_keywords)
-        sim_scores1 = list(enumerate(cosine_sim1))
-        sim_scores1 = sorted(sim_scores1, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores1
-        # sim_scores1 = sim_scores1[0][0]
-        # a = [df.iloc[sim_scores1].categories.__str__()]
-        # tfidf_res = tfidf.transform(a)
-        # cosine_sim = linear_kernel(tfidf_matrix, tfidf_res)
-        # sim_scores = list(enumerate(cosine_sim))
-        # sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[0:50]
-        new_df = df.iloc[[ids[0] for ids in sim_scores]]
-        moderate = new_df.review_count.describe()[4]
-        max_di = new_df.Distance.max()
-        min_di = new_df.Distance.min()
+        if keywords is not None:
+            tfidf = TfidfVectorizer(stop_words='english')
+            tfidf_matrix = tfidf.fit_transform(df['categories'])
+            tfidf_keywords = tfidf.transform(keywords)
+            cosine_sim1 = linear_kernel(tfidf_matrix, tfidf_keywords)
+            sim_scores1 = list(enumerate(cosine_sim1))
+            sim_scores1 = sorted(sim_scores1, key=lambda x: x[1], reverse=True)
+            sim_scores = sim_scores1
+            # sim_scores1 = sim_scores1[0][0]
+            # a = [df.iloc[sim_scores1].categories.__str__()]
+            # tfidf_res = tfidf.transform(a)
+            # cosine_sim = linear_kernel(tfidf_matrix, tfidf_res)
+            # sim_scores = list(enumerate(cosine_sim))
+            # sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+            sim_scores = sim_scores[0:50]
+            new_df = df.iloc[[ids[0] for ids in sim_scores]]
+            moderate = new_df.review_count.describe()[4]
+            max_di = new_df.distance.max()
+            min_di = new_df.distance.min()
+        else:
+            sim_scores = list(enumerate(df.score))
+            moderate = df.review_count.describe()[4]
+            max_di = df.distance.max()
+            min_di = df.distance.min()
         score_dict = {}
 
         for ids in sim_scores:
             index = df.iloc[[ids[0]]].index[0]
             rating = df.iloc[[ids[0]]].stars.values[0]
-            distance = df.iloc[[ids[0]]].Distance.values[0]
+            distance = df.iloc[[ids[0]]].distance.values[0]
             rating_count = df.iloc[[ids[0]]].review_count.values[0]
+            if keywords is not None:
+                fm_score = ids[1][0]
+            else:
+                fm_score = df.iloc[[ids[0]]].score.values[0]
             rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
             if max_di == min_di:
                 normalized_di = 1
             else:
                 normalized_di = (max_di - distance) / (max_di - min_di)
-            final_score = RecommenderEngine.calculate_final_score(ids[1][0], rating_contribution, normalized_di)
+            final_score = RecommenderEngine.calculate_final_score(fm_score, rating_contribution, normalized_di)
             score_dict[index] = final_score
 
         # sort cities by score and index.
@@ -84,7 +94,7 @@ class RecommenderEngine:
             resulted = resulted.append({'name': df.loc[i[0]]['name'], 'city': df.loc[i[0]]['city'],
                                         'categories': df.loc[i[0]]['categories'], 'stars': df.loc[i[0]]['stars'],
                                         'total_reviews': df.loc[i[0]]['review_count'],
-                                        'distance': df.loc[i[0]]['Distance'],
+                                        'distance': df.loc[i[0]]['distance'],
                                         'score': i[1], 'attribute_c': df.loc[i[0]]['attribute_c'],
                                         'attribute_h': df.loc[i[0]]['attribute_h'],
                                         'category_c': df.loc[i[0]]['category_c'],

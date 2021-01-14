@@ -51,10 +51,10 @@ def model_predict(df, tags=None, user_id=None):
     m = scores.max()
     mn = scores.min()
     for s in range(scores.shape[0]):
-        scores[s] = 100 * (scores[s] - mn) / (m - mn)
+        scores[s] = (scores[s] - mn) / (m - mn)
     # scores = [scores[x] for x in sorted_scores]
     df["score"] = scores.tolist()
-    top_items = df.loc[i_idx[0:30]]  # for now keep the top 30
+    top_items = df.loc[i_idx[0:50]]  # for now keep the top 50
     return top_items
 
 
@@ -110,11 +110,11 @@ def results(request):
             selected_category_join = ", ".join(selected_category)  # Combine all selected categories into one string
             origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
 
+            df_new = model_predict(df_new, selected_category)
             df_new["distance"] = df_new.apply(
                 lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
                 axis=1)
-            top_10_recommendations = model_predict(df_new, selected_category)
-            # top_10_recommendations = RecommenderEngine.get_recommendations_include_rating([selected_category_join], df_new)
+            top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new)
             cols = ["Name", "Category", "Stars", "Distance", "Score"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
