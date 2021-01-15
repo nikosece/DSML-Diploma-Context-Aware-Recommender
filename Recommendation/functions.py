@@ -8,6 +8,7 @@ from sklearn.preprocessing import StandardScaler
 import operator
 import numpy as np
 import pandas as pd
+import pathlib
 
 
 def plot_pie(sorted_data, ax):
@@ -35,7 +36,7 @@ def plot_box(df_new, p_name, d_name, data):
         percentage = 100 * value_count[i] / total
         ax_list[i].set_title("Cluster {} ({:.2f} %)".format(i, percentage))
     ax[1][2].remove()
-    plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/Cluster_'+p_name+'.png', dpi='figure')
+    plt.savefig(str(pathlib.Path().absolute()) + '../Plots/Cluster_' + p_name + '.png', dpi='figure')
 
 
 def scale_data(data):
@@ -92,7 +93,7 @@ class Functions:
             df_new[df_new.Day_Cluster == i][days].boxplot(ax=ax_list[i], fontsize='small')
             percentage = 100 * value_count[i] / total
             ax_list[i].set_title("Cluster {} ({:.2f} %)".format(i, percentage))
-        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/Cluster_Days.png', dpi='figure')
+        plt.savefig(str(pathlib.Path().absolute()) + '../Plots/Cluster_Days.png', dpi='figure')
         plot_box(df_new, 'Session', 'Session_Cluster', session)
         plot_box(df_new, 'Season', 'Season_Cluster', season)
         return df_new
@@ -294,7 +295,7 @@ class Functions:
                     plot_pie(sorted_data, ax)
                     ax.set_title(key,
                                  fontdict={'fontsize': 20, 'fontweight': 'medium'})
-                    plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/attribute_plots/' + key + '.png',
+                    plt.savefig(str(pathlib.Path().absolute()) + '../Plots/attribute_plots/' + key + '.png',
                                 dpi='figure')
                     plt.cla()
             else:
@@ -304,42 +305,42 @@ class Functions:
                         plot_pie(sorted_data, ax)
                         ax.set_title(key + " " + sub_key,
                                      fontdict={'fontsize': 20, 'fontweight': 'medium'})
-                        plt.savefig('/home/anonymous/Documents/Diploma-Recommender/Plots/attribute_plots/Sub/'
+                        plt.savefig(str(pathlib.Path().absolute()) + '../Plots/attribute_plots/Sub/'
                                     + key + "_" + sub_key + '.png', dpi='figure')
                         plt.cla()
 
     @staticmethod
     def read_business():
-        return pd.read_csv(
-            '/home/anonymous/Documents/Diploma-Recommender/Recommendation/Dataset/bussines_R_attributes.csv',
-            dtype={'name': str,
-                   'city': str, 'state': str,
-                   'latitude': float, 'longitude': float,
-                   'business_id': str, 'stars': np.float32,
-                   'categories': str,
-                   'review_count': np.int32,
-                   'RestaurantsPriceRange2': np.float16,
-                   'valet': np.float16,
-                   'street': np.float16,
-                   'validated': np.float16, 'lot': np.float16,
-                   'garage': np.float16,
-                   'RestaurantsTakeOut': np.float16,
-                   'GoodForKids': np.float16,
-                   'Caters': np.float16,
-                   'RestaurantsReservations': np.float16,
-                   'BikeParking': np.float16,
-                   'RestaurantsDelivery': np.float16,
-                   'classy': np.float16, 'romantic': np.float16,
-                   'divey': np.float16, 'hipster': np.float16,
-                   'upscale': np.float16, 'trendy': np.float16,
-                   'touristy': np.float16,
-                   'intimate': np.float16, 'casual': np.float16,
-                   'HasTV': np.float16, 'NoiseLevel': np.float16,
-                   'BusinessAcceptsCreditCards': np.float16,
-                   'RestaurantsGoodForGroups': np.float16,
-                   'latenight': np.float16, 'dessert': np.float16,
-                   'lunch': np.float16, 'dinner': np.float16,
-                   'brunch': np.float16, 'breakfast': np.float16,
-                   'OutdoorSeating': np.float16, 'WiFi': str,
-                   'RestaurantsAttire': str
-                   }, index_col='business_id')
+        return pd.read_csv(str(pathlib.Path().absolute()) +
+                           '/Dataset/bussines_R_attributes.csv',
+                           dtype={'name': str,
+                                  'city': str, 'state': str,
+                                  'latitude': float, 'longitude': float,
+                                  'business_id': str, 'stars': np.float32,
+                                  'categories': str,
+                                  'review_count': np.int32,
+                                  'RestaurantsPriceRange2': np.float16,
+                                  'valet': np.float16,
+                                  'street': np.float16,
+                                  'validated': np.float16, 'lot': np.float16,
+                                  'garage': np.float16,
+                                  'RestaurantsTakeOut': np.float16,
+                                  'GoodForKids': np.float16,
+                                  'Caters': np.float16,
+                                  'RestaurantsReservations': np.float16,
+                                  'BikeParking': np.float16,
+                                  'RestaurantsDelivery': np.float16,
+                                  'classy': np.float16, 'romantic': np.float16,
+                                  'divey': np.float16, 'hipster': np.float16,
+                                  'upscale': np.float16, 'trendy': np.float16,
+                                  'touristy': np.float16,
+                                  'intimate': np.float16, 'casual': np.float16,
+                                  'HasTV': np.float16, 'NoiseLevel': np.float16,
+                                  'BusinessAcceptsCreditCards': np.float16,
+                                  'RestaurantsGoodForGroups': np.float16,
+                                  'latenight': np.float16, 'dessert': np.float16,
+                                  'lunch': np.float16, 'dinner': np.float16,
+                                  'brunch': np.float16, 'breakfast': np.float16,
+                                  'OutdoorSeating': np.float16, 'WiFi': str,
+                                  'RestaurantsAttire': str
+                                  }, index_col='business_id')

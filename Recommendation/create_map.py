@@ -1,5 +1,6 @@
 import folium
 from folium.plugins import Search
+import pathlib
 
 
 class Create_map:
@@ -65,4 +66,4 @@ class Create_map:
             collapsed=False,
         ).add_to(my_map)
         folium.LayerControl().add_to(my_map)
-        my_map.save("/home/anonymous/Documents/Diploma-Recommender/Recommendation/rec/templates/rec/"+city + ".html")
+        my_map.save(str(pathlib.Path().absolute())+"/rec/templates/rec/"+city + ".html")

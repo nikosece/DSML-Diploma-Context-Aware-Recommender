@@ -12,7 +12,7 @@ import pickle
 import sys
 from scipy import sparse
 import os.path
-from os import path
+import pathlib
 
 
 def save_pickle(var, name):
@@ -121,7 +121,8 @@ def results(request):
                 df_new["distance"] = df_new.apply(
                     lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
                     axis=1)
-                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, [selected_category_join])
+                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new,
+                                                                                              [selected_category_join])
             else:
                 df_new["distance"] = df_new.apply(
                     lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
