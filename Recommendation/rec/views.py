@@ -146,10 +146,10 @@ def results(request):
 
 def show_map(request):
     map_path = 'rec/' + selected_city + '.html'
-    if not path.exists(
-            "/home/anonymous/Documents/Diploma-Recommender/Recommendation/rec/templates/rec/" + selected_city +
-            '.html'):
-        Create_map.plot(top_10_recommendations, selected_city, origin, True)
+    # if not path.exists(
+    #         "/home/anonymous/Documents/Diploma-Recommender/Recommendation/rec/templates/rec/" + selected_city +
+    #         '.html'):
+    Create_map.plot(top_10_recommendations, selected_city, origin, True)
     return render(request, map_path)
 
 
