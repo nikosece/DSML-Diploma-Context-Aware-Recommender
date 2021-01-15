@@ -8,3 +8,4 @@ conda activate <env>```
 <br />To execute the code run: ```
 python manage.py runserver```
 
+<br /> The actual code running is inside /Recommendation/rec/views.py
