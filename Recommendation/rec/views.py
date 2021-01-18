@@ -154,12 +154,13 @@ def show_map(request):
     return render(request, map_path)
 
 
-model = read_pickle("/home/anonymous/Documents/ligthFm_modelV4")
-interactions = read_pickle('/home/anonymous/Documents/interactionsV4')
-weights = read_pickle('/home/anonymous/Documents/weights')
-item_features = read_pickle('/home/anonymous/Documents/item_featuresV4')
-user_features = read_pickle('/home/anonymous/Documents/user_featuresV4')
-dataset = read_pickle('/home/anonymous/Documents/datasetV4')
+model = read_pickle(str(pathlib.Path().absolute()) +
+                    '/Dataset/ligthFm_modelV4')
+# interactions = read_pickle('/home/anonymous/Documents/interactionsV4')
+# weights = read_pickle('/home/anonymous/Documents/weights')
+item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_featuresV4')
+user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
+dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
 item_map = dataset.mapping()[2]
 
 df_b = Functions.read_business()
