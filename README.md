@@ -5,7 +5,7 @@ conda create --name <env> --file requirements.txt```
  and activate it: ```
 conda activate <env>```
 
-<br />To execute the code run: ```
+<br />To execute the code run (indide Recommendation folder): ```
 python manage.py runserver```
 
 <br /> The actual code running is inside /Recommendation/rec/views.py
