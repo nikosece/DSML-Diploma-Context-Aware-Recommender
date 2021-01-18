@@ -10,22 +10,26 @@ class RecommenderEngine:
         print("engine initialized")
 
     @staticmethod
-    def calculate_final_score(cs, r, distance):
+    def calculate_final_score(cs, r, distance, vechile):
         """ Combine relevance and weighted review stars
         weight for cs is 0.45 for r is 0.45 and for
         distance is 0.1
+        :param vechile: type of transport
         :param distance: Distance from user's location
         :param cs: relevance score between 0 and 1
         :param r: review stars between 0 and 5
         :return: Returns value between 0 and 100"""
         cs_normalize = cs * 100
         r_normalize = 100 * (r - 0.5) / 4.5     # (r-min_r)/(max_r - min_r)
-        amount = cs_normalize * 0.35 + r_normalize * 0.55 + distance * 100 * 0.1
+        if vechile == 0:
+            amount = r_normalize * 0.75 + distance * 100 * 0.25
+        else:
+            amount = r_normalize * 0.4 + distance * 100 * 0.6
         return amount
 
     # Version-2
     @staticmethod
-    def get_recommendations_include_rating(df, keywords=None):
+    def get_recommendations_include_rating(df, vechile, keywords=None):
         """Based on user's keywords find the most relevant
         business. Then based on that look for similar businesses.
         After that, recalculate the score based on review and
@@ -77,7 +81,7 @@ class RecommenderEngine:
                 normalized_di = 1
             else:
                 normalized_di = (max_di - distance) / (max_di - min_di)
-            final_score = RecommenderEngine.calculate_final_score(fm_score, rating_contribution, normalized_di)
+            final_score = RecommenderEngine.calculate_final_score(fm_score, rating_contribution, normalized_di, vechile)
             score_dict[index] = final_score
 
         # sort cities by score and index.

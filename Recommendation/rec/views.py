@@ -117,20 +117,23 @@ def results(request):
             origin2 = [[df_new.iloc[0].longitude, df_new.iloc[0].latitude]]
             if selected_filter == 2:
                 df_new = model_predict(df_new, 50, selected_category)
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]], selected_vechile)
+                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
+                                                             selected_vechile)
                 df_new["distance"] = dist
                 dur = [d / 60 for d in dur]
                 df_new["duration"] = dur
-                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new)
+                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
             elif selected_filter == 0:
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]], selected_vechile)
+                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
+                                                             selected_vechile)
                 df_new["distance"] = dist
                 dur = [d/60 for d in dur]
                 df_new["duration"] = dur
-                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new,
+                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile,
                                                                                               [selected_category_join])
             else:
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]], selected_vechile)
+                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
+                                                             selected_vechile)
                 df_new["distance"] = dist
                 dur = [d / 60 for d in dur]
                 df_new["duration"] = dur
