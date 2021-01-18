@@ -141,10 +141,14 @@ class Functions:
         return geodesic(origin, dist).kilometers
 
     @staticmethod
-    def calculate_distance_api(origin, df):
+    def calculate_distance_api(origin, df, vechile):
         """Calculate distance between user's location and business location.
         from openMap api distance can be car-driven or foot"""
         # (longitude, latitude) don't confuse
+        if vechile == 0:
+            post_str = 'https://api.openrouteservice.org/v2/matrix/driving-car'
+        else:
+            post_str = 'https://api.openrouteservice.org/v2/matrix/foot-walking'
         locations = origin
         locations.extend(df.values.tolist())
         destinations = list(range(1, len(locations)))
@@ -155,7 +159,7 @@ class Functions:
             'Authorization': '5b3ce3597851110001cf6248a22eebae30af4b398201ada78e405dba',
             'Content-Type': 'application/json; charset=utf-8'
         }
-        call = requests.post('https://api.openrouteservice.org/v2/matrix/driving-car', json=body, headers=headers)
+        call = requests.post(post_str, json=body, headers=headers)
         call_json = call.json()
         return call_json["distances"][0], call_json["durations"][0]
 

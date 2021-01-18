@@ -1,6 +1,6 @@
 from django.shortcuts import render
 # from django.http import HttpResponseRedirect
-from .forms import CityForm, CategoryForm, ChoiceForm
+from .forms import CityForm, CategoryForm, ChoiceForm, VechileForm
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
@@ -99,7 +99,8 @@ def index(request):
         selected_city = city_dict[0]
         create_categories_form()
     choices = ChoiceForm()
-    return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form3': choices})
+    vechiles = VechileForm()
+    return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form3': choices, 'form4': vechiles})
 
 
 def results(request):
@@ -111,24 +112,25 @@ def results(request):
             selected_category = [to_show[int(s)] for s in selected_category]
             selected_category_join = ", ".join(selected_category)  # Combine all selected categories into one string
             selected_filter = int(request.POST.getlist('Filter')[0])
+            selected_vechile = int(request.POST.getlist('Vechile')[0])
             origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
             origin2 = [[df_new.iloc[0].longitude, df_new.iloc[0].latitude]]
             if selected_filter == 2:
                 df_new = model_predict(df_new, 50, selected_category)
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]])
+                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]], selected_vechile)
                 df_new["distance"] = dist
                 dur = [d / 60 for d in dur]
                 df_new["duration"] = dur
                 top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new)
             elif selected_filter == 0:
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]])
+                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]], selected_vechile)
                 df_new["distance"] = dist
                 dur = [d/60 for d in dur]
                 df_new["duration"] = dur
                 top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new,
                                                                                               [selected_category_join])
             else:
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]])
+                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]], selected_vechile)
                 df_new["distance"] = dist
                 dur = [d / 60 for d in dur]
                 df_new["duration"] = dur
