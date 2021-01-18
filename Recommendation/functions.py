@@ -8,6 +8,8 @@ from sklearn.preprocessing import StandardScaler
 import operator
 import numpy as np
 import pandas as pd
+import requests
+import json
 import pathlib
 
 
@@ -137,6 +139,22 @@ class Functions:
         This distance IS NOT driving distance, it is geodesic distance"""
         # (latitude, longitude) don't confuse
         return geodesic(origin, dist).kilometers
+
+    @staticmethod
+    def calculate_distance_api(origin, df):
+        """Calculate distance between user's location and business location.
+        from openMap api distance can be car-driven or foot"""
+        # (longitude, latitude) don't confuse
+        locations = df.values.tolist()
+        body = {"locations": locations, "metrics": ["distance", "duration"], "sources": [0], "units": "km"}
+        headers = {
+            'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+            'Authorization': '5b3ce3597851110001cf6248a22eebae30af4b398201ada78e405dba',
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+        call = requests.post('https://api.openrouteservice.org/v2/matrix/driving-car', json=body, headers=headers)
+        call_json = call.json()
+        return call_json["distances"][0], call_json["durations"][0]
 
     @staticmethod
     def remove_categories(df, word):

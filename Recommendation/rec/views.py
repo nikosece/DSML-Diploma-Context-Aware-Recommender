@@ -7,6 +7,7 @@ from create_map import Create_map
 from lightfm.data import Dataset
 from lightfm import LightFM
 import numpy as np
+import math
 # import Rec_fx as rf
 import pickle
 import sys
@@ -110,36 +111,43 @@ def results(request):
             selected_category = [to_show[int(s)] for s in selected_category]
             selected_category_join = ", ".join(selected_category)  # Combine all selected categories into one string
             selected_filter = int(request.POST.getlist('Filter')[0])
-            origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
             if selected_filter == 2:
                 df_new = model_predict(df_new, 50, selected_category)
-                df_new["distance"] = df_new.apply(
-                    lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
-                    axis=1)
+                origin = (df_new.iloc[0].longitude, df_new.iloc[0].latitude)
+                dist, dur = Functions.calculate_distance_api(origin, df_new[["longitude", "latitude"]])
+                df_new["distance"] = dist
+                dur = [d / 60 for d in dur]
+                df_new["duration"] = dur
                 top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new)
             elif selected_filter == 0:
-                df_new["distance"] = df_new.apply(
-                    lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
-                    axis=1)
+                origin = (df_new.iloc[0].longitude, df_new.iloc[0].latitude)
+                dist, dur = Functions.calculate_distance_api(origin, df_new[["longitude", "latitude"]])
+                df_new["distance"] = dist
+                dur = [d/60 for d in dur]
+                df_new["duration"] = dur
                 top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new,
                                                                                               [selected_category_join])
             else:
-                df_new["distance"] = df_new.apply(
-                    lambda row: Functions.calculate_distance(origin, (row['latitude'], row['longitude'])),
-                    axis=1)
+                origin = (df_new.iloc[0].longitude, df_new.iloc[0].latitude)
+                dist, dur = Functions.calculate_distance_api(origin, df_new[["longitude", "latitude"]])
+                df_new["distance"] = dist
+                dur = [d / 60 for d in dur]
+                df_new["duration"] = dur
                 top_10_recommendations = model_predict(df_new, 10, selected_category)
-            cols = ["Name", "Category", "Stars", "Distance", "Score"]
+            cols = ["Name", "Category", "Stars", "Distance(km)", "Duration(minutes)", "Score(%)"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
             star_list = top_10_recommendations.stars.to_list()
             distance_list = top_10_recommendations.distance.to_list()
             distance_list = ["{:.2f}".format(a) for a in distance_list]
+            duration_list = top_10_recommendations.duration.to_list()
+            duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
             score_list = top_10_recommendations.score.to_list()
-            score_list = ["{:.2f} %".format(a) for a in score_list]
+            score_list = ["{:.2f}".format(a) for a in score_list]
             row_list = []
             for m in range(len(name_list)):
                 row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
-                                 "distance": distance_list[m], "score": score_list[m]})
+                                 "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m]})
             return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
