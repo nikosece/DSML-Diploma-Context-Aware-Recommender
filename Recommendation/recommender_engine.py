@@ -20,7 +20,7 @@ class RecommenderEngine:
         :return: Returns value between 0 and 100"""
         cs_normalize = cs * 100
         r_normalize = 100 * (r - 0.5) / 4.5     # (r-min_r)/(max_r - min_r)
-        amount = cs_normalize * 0.30 + r_normalize * 0.50 + distance * 100 * 0.2
+        amount = cs_normalize * 0.35 + r_normalize * 0.55 + distance * 100 * 0.1
         return amount
 
     # Version-2

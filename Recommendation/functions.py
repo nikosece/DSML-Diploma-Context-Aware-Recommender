@@ -145,8 +145,11 @@ class Functions:
         """Calculate distance between user's location and business location.
         from openMap api distance can be car-driven or foot"""
         # (longitude, latitude) don't confuse
-        locations = df.values.tolist()
-        body = {"locations": locations, "metrics": ["distance", "duration"], "sources": [0], "units": "km"}
+        locations = origin
+        locations.extend(df.values.tolist())
+        destinations = list(range(1, len(locations)))
+        body = {"locations": locations, "destinations": destinations,
+                "metrics": ["distance", "duration"], "sources": [0], "units": "km"}
         headers = {
             'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
             'Authorization': '5b3ce3597851110001cf6248a22eebae30af4b398201ada78e405dba',
