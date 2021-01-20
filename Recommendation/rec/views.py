@@ -72,7 +72,10 @@ def create_categories_form():
         df_new = Functions.remove_categories(df_new, d)
     df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
     categories = df_explode.categories.value_counts()
-    to_show = [categories.index[c] for c in range(0, categories.shape[0])]
+    to_show = []
+    for c in range(0, categories.shape[0]):
+        if categories.index[c] in cols_to_show:
+            to_show.append(categories.index[c])
     category_tuple = (('', ''),)
     for j in range(len(to_show)):
         category_tuple = category_tuple + ((j, to_show[j]),)
@@ -178,4 +181,5 @@ for k, v in grouped.items():
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
 top_10_recommendations = origin = category_tuple = None
 selected_city = city_dict[0]  # Choose the first available city to initialize index forms
+cols_to_show = set(list(df_b.columns)[42:103])
 create_categories_form()
