@@ -84,8 +84,16 @@ input[type=submit] {
  <body>
  <div class="topnav">
   <a class="active" href="/">Home</a>
+  <a href="/accounts/login/">Sign in</a>
+  <a href="/signup/">Sign up</a>
 </div>
 <h1>Welcome to Context Aware Recommender</h1>
+{% if user.is_authenticated %}
+  Hi {{ user.first_name }}!
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">Log In</a>
+ {% endif %}
 
 <form action="" method="POST">
     {% csrf_token %}

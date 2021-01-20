@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 # from django.http import HttpResponseRedirect
-from .forms import CityForm, CategoryForm, ChoiceForm, VechileForm
+from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, SignInForm
+from django.contrib.auth import login, authenticate
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
@@ -138,12 +139,19 @@ def show_map(request):
     return render(request, map_path)
 
 
-def register(request):
+def signup(request):
     if request.method == 'POST':
-        print("It's a Post request")
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('email')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('/')
     else:
-        print("It's a GET request")
-    return render(request, 'rec/register.html')
+        form = SignUpForm()
+    return render(request, 'rec/signup.html', {'form': form})
 
 
 model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')

@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from .models import CustomUser
 
 
 class CityForm(forms.Form):
@@ -17,17 +19,21 @@ class CategoryForm(forms.Form):
         # widget=forms.CheckboxSelectMultiple())
 
 
-class ChoiceForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        super(ChoiceForm, self).__init__(*args, **kwargs)
-        choices = [(0, 'Pure'), (1, 'LightFm'), (2, 'Both')]
-        self.fields["Filter"] = forms.CharField(label='Filter type', widget=forms.RadioSelect(choices=choices),
-                                                initial=2)
-
-
 class VechileForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(VechileForm, self).__init__(*args, **kwargs)
         choices = [(0, 'Car'), (1, 'Foot')]
         self.fields["Vechile"] = forms.CharField(label='Vechile type', widget=forms.RadioSelect(choices=choices),
                                                  initial=0)
+
+
+class SignUpForm(UserCreationForm):
+    class Meta(UserCreationForm):
+        model = CustomUser
+        fields = ('email', 'first_name', 'last_name', 'preference')
+
+
+class SignInForm(AuthenticationForm):
+    class Meta:
+        model = CustomUser
+        fields = ('email',)
