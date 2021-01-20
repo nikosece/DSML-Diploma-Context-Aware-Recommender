@@ -4,15 +4,10 @@ from .forms import CityForm, CategoryForm, ChoiceForm, VechileForm
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
-from lightfm.data import Dataset
-from lightfm import LightFM
 import numpy as np
 import math
-# import Rec_fx as rf
 import pickle
-import sys
 from scipy import sparse
-import os.path
 import pathlib
 
 
@@ -23,7 +18,6 @@ def save_pickle(var, name):
 
 def model_predict(df, k=50, tags=None, user_id=None):
     if user_id is None:
-        inverse_user_feature_map = {value: key for key, value in dataset.mapping()[1].items()}
         user_feature_map = dataset.mapping()[1]
         user_id = 0
         user_feature_list = tags
@@ -98,9 +92,8 @@ def index(request):
         form = CityForm(City=tuple_list)
         selected_city = city_dict[0]
         create_categories_form()
-    choices = ChoiceForm()
     vechiles = VechileForm()
-    return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form3': choices, 'form4': vechiles})
+    return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form4': vechiles})
 
 
 def results(request):
@@ -110,34 +103,16 @@ def results(request):
         if form2.is_valid():
             selected_category = request.POST.getlist('Category')
             selected_category = [to_show[int(s)] for s in selected_category]
-            selected_category_join = ", ".join(selected_category)  # Combine all selected categories into one string
-            selected_filter = int(request.POST.getlist('Filter')[0])
             selected_vechile = int(request.POST.getlist('Vechile')[0])
             origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
             origin2 = [[df_new.iloc[0].longitude, df_new.iloc[0].latitude]]
-            if selected_filter == 2:
-                df_new = model_predict(df_new, 50, selected_category)
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
-                                                             selected_vechile)
-                df_new["distance"] = dist
-                dur = [d / 60 for d in dur]
-                df_new["duration"] = dur
-                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
-            elif selected_filter == 0:
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
-                                                             selected_vechile)
-                df_new["distance"] = dist
-                dur = [d/60 for d in dur]
-                df_new["duration"] = dur
-                top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile,
-                                                                                              [selected_category_join])
-            else:
-                dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
-                                                             selected_vechile)
-                df_new["distance"] = dist
-                dur = [d / 60 for d in dur]
-                df_new["duration"] = dur
-                top_10_recommendations = model_predict(df_new, 10, selected_category)
+            df_new = model_predict(df_new, 50, selected_category)
+            dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
+                                                         selected_vechile)
+            df_new["distance"] = dist
+            dur = [d / 60 for d in dur]
+            df_new["duration"] = dur
+            top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
             cols = ["Name", "Category", "Stars", "Distance(km)", "Duration(minutes)", "Score(%)"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
@@ -159,17 +134,19 @@ def results(request):
 
 def show_map(request):
     map_path = 'rec/' + selected_city + '.html'
-    # if not path.exists(
-    #         "/home/anonymous/Documents/Diploma-Recommender/Recommendation/rec/templates/rec/" + selected_city +
-    #         '.html'):
     Create_map.plot(top_10_recommendations, selected_city, origin, True)
     return render(request, map_path)
 
 
-model = read_pickle(str(pathlib.Path().absolute()) +
-                    '/Dataset/ligthFm_modelV4')
-# interactions = read_pickle('/home/anonymous/Documents/interactionsV4')
-# weights = read_pickle('/home/anonymous/Documents/weights')
+def register(request):
+    if request.method == 'POST':
+        print("It's a Post request")
+    else:
+        print("It's a GET request")
+    return render(request, 'rec/register.html')
+
+
+model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')
 item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_featuresV4')
 user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
 dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
@@ -190,6 +167,7 @@ for k, v in grouped.items():
         i = i + 1
     tuple_list = tuple_list + ((k, tuple2,),)  # grouped by state
 
-df_new = df_explode = categories = to_show = form2 = cols = row_list = top_10_recommendations = origin = category_tuple = None
+df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
+top_10_recommendations = origin = category_tuple = None
 selected_city = city_dict[0]  # Choose the first available city to initialize index forms
 create_categories_form()
