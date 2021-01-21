@@ -11,6 +11,14 @@ class CityForm(forms.Form):
                                                 widget=forms.Select(attrs={'onchange': 'submit();'}))
 
 
+class BusinessForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        business = kwargs.pop("Business")
+        super(BusinessForm, self).__init__(*args, **kwargs)
+        self.fields["Business"] = forms.ChoiceField(choices=business, label='Click this to select a Business',
+                                                    widget=forms.Select())
+
+
 class CategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         categories = kwargs.pop("Category")

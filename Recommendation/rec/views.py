@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 # from django.http import HttpResponseRedirect
-from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, SignInForm
+from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm
 from django.contrib.auth import login, authenticate
 from recommender_engine import RecommenderEngine
 from functions import Functions
@@ -158,6 +158,27 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'rec/signup.html', {'form': form})
+
+
+def review(request):
+    if request.method == 'POST':
+        form = CityForm(City=tuple_list, data=request.POST)
+        if form.is_valid():
+            selected_review_city = city_dict[int(request.POST["City"])]
+            df = Functions.filtering_city(df_b, selected_review_city)
+            b_names = df.name.tolist()
+            b_names.sort()
+            business_tuple = (('', ''),)
+            for j in b_names:
+                business_tuple = business_tuple + ((j, j),)
+            form_b = BusinessForm(Business=business_tuple)
+            # create_categories_form()
+    # This request happens each time the user submits categories from the dropdown list
+
+    else:
+        form = CityForm(City=tuple_list)
+        form_b = BusinessForm(Business=(('', ''),))
+    return render(request, 'rec/review.html', {'form': form, 'form2': form_b})
 
 
 # if request.user.is_authenticated:
