@@ -160,6 +160,8 @@ def signup(request):
     return render(request, 'rec/signup.html', {'form': form})
 
 
+# if request.user.is_authenticated:
+#     print(type(current_user.preference[0]))
 model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')
 item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_featuresV4')
 user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
