@@ -4,6 +4,7 @@ from django.contrib.auth.models import PermissionsMixin
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+import pathlib
 import pickle
 from django import forms
 from .managers import CustomUserManager
@@ -28,8 +29,7 @@ class ChoiceArrayField(ArrayField):
         return super(ArrayField, self).formfield(**defaults)
 
 
-category_list = pickle.load(open("/home/anonymous/Documents/Diploma-Recommender/Recommendation/Dataset"
-                                 "/category_list.pickle", "rb"))
+category_list = pickle.load(open(str(pathlib.Path().absolute()) + "/Dataset/category_list.pickle", "rb"))
 category_tuple = ((),)
 for j in category_list:
     category_tuple = category_tuple + ((j, j),)

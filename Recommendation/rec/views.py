@@ -85,6 +85,9 @@ def create_categories_form():
 def index(request):
     global selected_city, df_new, df_explode, categories, to_show, form2
     # This request happens each time the user selects a city from the dropdown list
+    current_user = request.user
+    if current_user.is_authenticated:
+        print(type(current_user.preference[0]))
     if request.method == 'POST':
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
