@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 # from django.http import HttpResponseRedirect
 from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm
+from .models import BusinessCity, BusinessState, Business
 from django.contrib.auth import login, authenticate
 from recommender_engine import RecommenderEngine
 from functions import Functions
@@ -209,3 +210,6 @@ top_10_recommendations = origin = category_tuple = None
 selected_city = city_dict[0]  # Choose the first available city to initialize index forms
 cols_to_show = set(list(df_b.columns)[42:103])
 create_categories_form()
+# states = df_b.state.unique()
+# for s in states:
+#     print(s)

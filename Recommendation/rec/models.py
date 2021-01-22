@@ -55,3 +55,47 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class BusinessCity(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class BusinessState(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class Business(models.Model):
+    name = models.CharField(max_length=70)
+    business_id = models.CharField(max_length=40, primary_key=True)
+    latitude = models.FloatField()
+    longtitude = models.FloatField()
+    city = models.ManyToManyField(BusinessCity, related_name='businesses')
+    state = models.ManyToManyField(BusinessState, related_name='businesses')
+    stars = models.DecimalField(max_digits=3, decimal_places=2)
+    review_count = models.IntegerField()
+    categories = ArrayField(
+        base_field=models.CharField(max_length=256),
+        default=list)
+
+    def __str__(self):
+        return self.name
+
+
+class Review(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='reviews',
+                                 related_query_name='review')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews', related_query_name='review')
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return self.title
