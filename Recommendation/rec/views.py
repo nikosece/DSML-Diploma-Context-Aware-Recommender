@@ -86,9 +86,6 @@ def create_categories_form():
 def index(request):
     global selected_city, df_new, df_explode, categories, to_show, form2
     # This request happens each time the user selects a city from the dropdown list
-    current_user = request.user
-    if current_user.is_authenticated:
-        print(type(current_user.preference[0]))
     if request.method == 'POST':
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
@@ -166,12 +163,15 @@ def review(request):
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
             selected_review_city = city_dict[int(request.POST["City"])]
-            df = Functions.filtering_city(df_b, selected_review_city)
-            b_names = df.name.tolist()
+            # df = Functions.filtering_city(df_b, selected_review_city)
+            df = Business.objects.filter(city__name=selected_review_city)
+            b_names = [d.name for d in df]  # i can do this with database
+            b_ids = [d.business_id for d in df]
+            b_ids = [x for _, x in sorted(zip(b_names, b_ids))]
             b_names.sort()
             business_tuple = (('', ''),)
-            for j in b_names:
-                business_tuple = business_tuple + ((j, j),)
+            for j in range(len(b_names)):
+                business_tuple = business_tuple + ((b_ids[j], b_names[j]),)
             form_b = BusinessForm(Business=business_tuple)
             # create_categories_form()
     # This request happens each time the user submits categories from the dropdown list
@@ -180,6 +180,16 @@ def review(request):
         form = CityForm(City=tuple_list)
         form_b = BusinessForm(Business=(('', ''),))
     return render(request, 'rec/review.html', {'form': form, 'form2': form_b})
+
+
+def apply_review(request):
+    if request.method == 'POST':
+        b_id = request.POST["Business"]
+        selected = Business.objects.filter(business_id=b_id)[0]
+        print(selected.name)
+    else:
+        b_id = request.POST["Business"]
+    return render(request, 'rec/apply_review.html', {'b': selected})
 
 
 # if request.user.is_authenticated:

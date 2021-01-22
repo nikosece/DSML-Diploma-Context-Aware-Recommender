@@ -95,7 +95,7 @@ input[type=submit] {
     {% csrf_token %}
     {{ form.as_p }}
 </form>
-<form action="/review/" method="POST">
+<form action="/apply_review/" method="POST">
     {% csrf_token %}
     {{ form2.as_p }}
     <input type="submit" value="Review">
