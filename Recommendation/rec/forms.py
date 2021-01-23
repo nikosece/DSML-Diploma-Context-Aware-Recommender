@@ -50,4 +50,7 @@ class SignInForm(AuthenticationForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'stars']
+        widgets = {
+            'stars': forms.NumberInput(attrs={'step': 0.5, 'min': 0.5, 'max': 5}),
+        }

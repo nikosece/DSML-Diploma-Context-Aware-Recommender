@@ -101,7 +101,7 @@ class Review(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='reviews',
                                  related_query_name='review')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews', related_query_name='review')
-    stars = models.DecimalField(max_digits=2, decimal_places=1)
+    stars = models.DecimalField(max_digits=2, decimal_places=1,)
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 

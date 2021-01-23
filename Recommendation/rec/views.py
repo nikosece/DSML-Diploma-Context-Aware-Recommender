@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 # from django.http import HttpResponseRedirect
-from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm
+from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm, ReviewForm
 from .models import BusinessCity, BusinessState, Business
 from django.contrib.auth import login, authenticate
 from recommender_engine import RecommenderEngine
@@ -186,10 +186,10 @@ def apply_review(request):
     if request.method == 'POST':
         b_id = request.POST["Business"]
         selected = Business.objects.get(business_id=b_id)
-        print(selected.name)
+        form = ReviewForm()
     else:
         b_id = request.POST["Business"]
-    return render(request, 'rec/apply_review.html', {'b': selected})
+    return render(request, 'rec/apply_review.html', {'b': selected, 'form': form})
 
 
 # if request.user.is_authenticated:

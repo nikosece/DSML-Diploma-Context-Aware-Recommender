@@ -5,6 +5,10 @@
     <title>Recommender</title>
 </head>
 <body>
-<h1> {{ b.name}} {{ b.stars}} {{ b.review_count}}</h1>
+<h1> {{ b.name}} {{ b.city.name}}}</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Apply Review</button>
 </body>
 </html>
