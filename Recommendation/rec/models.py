@@ -58,14 +58,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class BusinessCity(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
 
 
 class BusinessState(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.name
+
+
+class BusinessCategory(models.Model):
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -76,13 +83,13 @@ class Business(models.Model):
     business_id = models.CharField(max_length=40, primary_key=True)
     latitude = models.FloatField()
     longtitude = models.FloatField()
-    city = models.ManyToManyField(BusinessCity, related_name='businesses')
-    state = models.ManyToManyField(BusinessState, related_name='businesses')
-    stars = models.DecimalField(max_digits=3, decimal_places=2)
-    review_count = models.IntegerField()
-    categories = ArrayField(
-        base_field=models.CharField(max_length=256),
-        default=list)
+    city = models.ForeignKey(BusinessCity, on_delete=models.CASCADE, related_name='businesses',
+                             related_query_name='business')
+    state = models.ForeignKey(BusinessState, on_delete=models.CASCADE, related_name='businesses',
+                              related_query_name='business')
+    stars = models.DecimalField(max_digits=2, decimal_places=1)
+    review_count = models.PositiveSmallIntegerField()
+    categories = models.ManyToManyField(BusinessCategory)
 
     def __str__(self):
         return self.name
@@ -94,6 +101,7 @@ class Review(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='reviews',
                                  related_query_name='review')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews', related_query_name='review')
+    stars = models.DecimalField(max_digits=2, decimal_places=1)
     created = models.DateField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
 

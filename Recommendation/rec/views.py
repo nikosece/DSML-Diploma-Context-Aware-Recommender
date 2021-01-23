@@ -185,7 +185,7 @@ def review(request):
 def apply_review(request):
     if request.method == 'POST':
         b_id = request.POST["Business"]
-        selected = Business.objects.filter(business_id=b_id)[0]
+        selected = Business.objects.get(business_id=b_id)
         print(selected.name)
     else:
         b_id = request.POST["Business"]

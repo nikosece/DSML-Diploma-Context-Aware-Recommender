@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser
+from .models import CustomUser, Review
 
 
 class CityForm(forms.Form):
@@ -45,3 +45,9 @@ class SignInForm(AuthenticationForm):
     class Meta:
         model = CustomUser
         fields = ('email',)
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['title', 'content']
