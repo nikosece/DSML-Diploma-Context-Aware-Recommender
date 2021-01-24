@@ -219,6 +219,8 @@ item_map = dataset.mapping()[2]
 df_b = Functions.read_business()
 grouped = {k: set(v) for k, v in df_b.groupby('state')['city']}  # group by cities by state
 grouped = {k: list(v) for k, v in grouped.items()}
+for key in list(grouped.keys()):
+    grouped[key].sort()
 tuple_list = (('', ''),)
 i = 0  # i keeps city number
 city_dict = dict()
