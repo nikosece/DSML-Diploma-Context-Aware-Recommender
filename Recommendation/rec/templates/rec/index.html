@@ -37,7 +37,49 @@
             })
         })
     </script>
+
     <style>
+        #snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+  animation: fadein 0.5s, fadeout 0.5s 3.5s;
+}
+
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
         body {
           background-color: white;
           text-align: center;
@@ -47,6 +89,11 @@
         h1 {
             font-style: italic;
             font-size: 40px;
+        }
+        h3 {
+            position: absolute;
+            top: 42px;
+            right: 90px;
         }
         p {
             font-size: 20px;
@@ -87,6 +134,20 @@ input[type=submit] {
     </style>
 </head>
  <body>
+  <script>
+function myFunction() {
+  var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 4000);
+}
+</script>
+ {% if messages %}
+    {% for message in messages %}
+     <div id="snackbar"> {{message}}</div>
+    {% endfor %}
+    <script> myFunction() </script>
+{% endif %}
+
  {% if user.is_authenticated %}
  <div class="topnav">
   <a class="active" href="/">Home</a>
@@ -101,8 +162,9 @@ input[type=submit] {
  {% endif %}
 
 <h1>Welcome to Context Aware Recommender</h1>
+
 {% if user.is_authenticated %}
- <h1> Hi {{ user.first_name }}!</h1>
+ <h3> Hi {{ user.first_name }}</h3>
  <a class="log-out" href="{% url 'logout' %}">Log Out</a>
 {% else %}
   <p>You are not logged in. Log in for a better recommendations!</p>

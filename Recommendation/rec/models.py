@@ -102,8 +102,8 @@ class Review(models.Model):
                                  related_query_name='review')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews', related_query_name='review')
     stars = models.DecimalField(max_digits=2, decimal_places=1,)
-    created = models.DateField(auto_now_add=True)
-    updated = models.DateField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

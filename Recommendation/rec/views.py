@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 # from django.http import HttpResponseRedirect
 from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm, ReviewForm
-from .models import BusinessCity, BusinessState, Business
+from .models import BusinessCity, BusinessState, Business, Review
 from django.contrib.auth import login, authenticate
+from django.contrib import messages
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
@@ -152,6 +153,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
+            messages.success(request, 'Registration Success')
             return redirect('/')
     else:
         form = SignUpForm()
@@ -183,12 +185,26 @@ def review(request):
 
 
 def apply_review(request):
+    global selected
     if request.method == 'POST':
-        b_id = request.POST["Business"]
+        form = ReviewForm(data=request.POST)
+        if form.is_valid():
+            check_review = Review.objects.filter(user=request.user, business=selected)
+            if len(check_review) == 0:
+                instance = form.save(commit=False)
+                instance.user = request.user
+                instance.business = selected
+                instance.save()
+            else:
+                check_review = check_review[0]
+                form = ReviewForm(request.POST, instance=check_review)
+                form.save()
+            messages.success(request, 'Your review was stored successfully')
+            return redirect("index")
+    else:
+        b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
         form = ReviewForm()
-    else:
-        b_id = request.POST["Business"]
     return render(request, 'rec/apply_review.html', {'b': selected, 'form': form})
 
 
@@ -216,7 +232,7 @@ for k, v in grouped.items():
     tuple_list = tuple_list + ((k, tuple2,),)  # grouped by state
 
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
-top_10_recommendations = origin = category_tuple = None
+top_10_recommendations = origin = category_tuple = selected = None
 selected_city = city_dict[0]  # Choose the first available city to initialize index forms
 cols_to_show = set(list(df_b.columns)[42:103])
 create_categories_form()
