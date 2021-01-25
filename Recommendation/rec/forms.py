@@ -52,5 +52,5 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ['title', 'content', 'stars']
         widgets = {
-            'stars': forms.NumberInput(attrs={'step': 0.5, 'min': 0.5, 'max': 5}),
+            'stars': forms.NumberInput(attrs={'step': 1, 'min': 1, 'max': 5}),
         }
