@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-# from django.http import HttpResponseRedirect
+from django.db.models import Count
 from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm, ReviewForm
 from .models import BusinessCity, BusinessState, Business, Review
 from django.contrib.auth import login, authenticate
@@ -42,19 +42,18 @@ def model_predict(df, k=50, tags=None, user_id=None):
     else:
         features = user_features
     t_idx = {value: key for key, value in item_map.items()}
-    array_save = np.array([item_map[ind] for ind in df.index])
+    array_save = np.array([item_map[ind.business_id] for ind in df])
     scores = model.predict(user_id, array_save, user_features=features,
                            item_features=item_features, num_threads=12)
-    sorted_scores = np.argsort(-scores)
-    i_idx = [t_idx[array_save[x]] for x in sorted_scores]
     m = scores.max()
     mn = scores.min()
     for s in range(scores.shape[0]):
         scores[s] = (scores[s] - mn) / (m - mn)
     # scores = [scores[x] for x in sorted_scores]
-    df["score"] = scores.tolist()
-    top_items = df.loc[i_idx[0:k]]  # for now keep the top 50
-    return top_items
+    for i in range(len(df)):
+        df[i].score = scores[i]
+    top_items = sorted(df, key=lambda x: x.score, reverse=True)
+    return top_items[0:k]
 
 
 def read_pickle(name):
@@ -63,25 +62,17 @@ def read_pickle(name):
 
 def create_categories_form():
     global selected_city, df_new, df_explode, categories, to_show, form2, category_tuple
-    df_new = Functions.filtering_city(df_b, selected_city)
-    df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
-    categories = df_explode.categories.value_counts()
-    categories = categories.to_frame()
-    categories = categories[categories.categories <= categories.categories.describe()[5]]
-    to_delete = list(categories.index)
-    df_new = Functions.remove_categories(df_new, "Restaurants")
-    df_new = Functions.remove_categories(df_new, "Food")
-    for d in reversed(to_delete):
-        df_new = Functions.remove_categories(df_new, d)
-    df_explode = df_new.assign(categories=df_new.categories.str.split(', ')).explode('categories')
-    categories = df_explode.categories.value_counts()
+    df_new = Business.objects.filter(city__name=selected_city)
+    categories = [i['categories__name'] for i in df_new.values('categories__name')
+                                                     .annotate(total=Count('categories__name'))
+                                                     .order_by('-total')[0:61]]
     to_show = []
-    for c in range(0, categories.shape[0]):
-        if categories.index[c] in cols_to_show:
-            to_show.append(categories.index[c])
+    for c in categories:
+        if c in cols_to_show:
+            to_show.append(c)
     category_tuple = (('', ''),)
-    for j in range(len(to_show)):
-        category_tuple = category_tuple + ((j, to_show[j]),)
+    for j in to_show:
+        category_tuple = category_tuple + ((j, j),)
     form2 = CategoryForm(Category=category_tuple)
 
 
@@ -108,16 +99,17 @@ def results(request):
         form2 = CategoryForm(Category=category_tuple, data=request.POST)
         if form2.is_valid():
             selected_category = request.POST.getlist('Category')
-            selected_category = [to_show[int(s)] for s in selected_category]
+            selected_category = [s for s in selected_category]
             selected_vechile = int(request.POST.getlist('Vechile')[0])
-            origin = (df_new.iloc[0].latitude, df_new.iloc[0].longitude)
-            origin2 = [[df_new.iloc[0].longitude, df_new.iloc[0].latitude]]
-            df_new = model_predict(df_new, 50, selected_category)
-            dist, dur = Functions.calculate_distance_api(origin2, df_new[["longitude", "latitude"]],
+            origin = (df_new[0].latitude, df_new[0].longtitude)
+            origin2 = [[df_new[0].longtitude, df_new[0].latitude]]
+            df_new = model_predict(list(df_new), 50, selected_category)
+            dist, dur = Functions.calculate_distance_api(origin2, df_new,
                                                          selected_vechile)
-            df_new["distance"] = dist
             dur = [d / 60 for d in dur]
-            df_new["duration"] = dur
+            for i in range(len(df_new)):
+                df_new[i].distance = dist[i]
+                df_new[i].duration = dur[i]
             top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
             cols = ["Name", "Category", "Stars", "Distance(km)", "Duration(minutes)", "Score(%)"]
             name_list = top_10_recommendations.name.to_list()
@@ -221,7 +213,9 @@ tuple_list = Sqlfunctions.state_city_group()
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
 top_10_recommendations = origin = category_tuple = selected = None
 selected_city = tuple_list[0][0]  # Choose the first available city to initialize index forms
-cols_to_show = set(list(df_b.columns)[42:103])
+cols_to_show = set([i['categories__name'] for i in Business.objects.values('categories__name')
+                   .annotate(total=Count('categories__name'))
+                   .order_by('-total')[0:61]])
 create_categories_form()
 # states = df_b.state.unique()
 # for s in states:

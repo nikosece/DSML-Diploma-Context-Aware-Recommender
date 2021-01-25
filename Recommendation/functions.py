@@ -150,7 +150,7 @@ class Functions:
         else:
             post_str = 'https://api.openrouteservice.org/v2/matrix/foot-walking'
         locations = origin
-        locations.extend(df.values.tolist())
+        locations.extend([[x.longtitude, x.latitude] for x in df])
         destinations = list(range(1, len(locations)))
         body = {"locations": locations, "destinations": destinations,
                 "metrics": ["distance", "duration"], "sources": [0], "units": "km"}
