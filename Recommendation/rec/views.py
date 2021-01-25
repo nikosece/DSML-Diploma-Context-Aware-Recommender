@@ -94,7 +94,7 @@ def index(request):
 
 
 def results(request):
-    global df_new, cols, row_list, top_10_recommendations, origin, form2
+    global df_new, cols, row_list, top_10_recommendations, origin, form2, selected_vechile
     if request.method == 'POST':
         form2 = CategoryForm(Category=category_tuple, data=request.POST)
         if form2.is_valid():
@@ -104,14 +104,14 @@ def results(request):
             origin = (df_new[0].latitude, df_new[0].longtitude)
             origin2 = [[df_new[0].longtitude, df_new[0].latitude]]
             df_new = model_predict(list(df_new), 50, selected_category)
-            dist, dur = Functions.calculate_distance_api(origin2, df_new,
+            dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
                                                          selected_vechile)
             dur = [d / 60 for d in dur]
             for i in range(len(df_new)):
                 df_new[i].distance = dist[i]
                 df_new[i].duration = dur[i]
             top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
-            cols = ["Name", "Category", "Stars", "Distance(km)", "Duration(minutes)", "Score(%)"]
+            cols = ["Name", "Category", "Stars", "Distance(km)", "Duration(minutes)", "Score(%)", "Directions"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
             star_list = top_10_recommendations.stars.to_list()
@@ -121,9 +121,10 @@ def results(request):
             duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
             score_list = top_10_recommendations.score.to_list()
             score_list = ["{:.2f}".format(a) for a in score_list]
+            ids_list = list(range(0,10))
             row_list = []
             for m in range(len(name_list)):
-                row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],
+                row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],"id": ids_list[m],
                                  "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m]})
             return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
     else:
@@ -133,6 +134,16 @@ def results(request):
 def show_map(request):
     map_path = 'rec/' + selected_city + '.html'
     Create_map.plot(top_10_recommendations, selected_city, origin, True)
+    return render(request, map_path)
+
+
+def show_directions(request, b_id):
+    df = top_10_recommendations.iloc[b_id]
+    name = df['name']
+    dest = [df.longitude, df.latitude]
+    map_path = 'rec/' + name + '.html'
+    origin2 = [origin[1], origin[0]]
+    Create_map.directions(origin2, dest, selected_vechile, name)
     return render(request, map_path)
 
 
@@ -211,7 +222,7 @@ item_map = dataset.mapping()[2]
 df_b = Functions.read_business()
 tuple_list = Sqlfunctions.state_city_group()
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
-top_10_recommendations = origin = category_tuple = selected = None
+top_10_recommendations = origin = category_tuple = selected = selected_vechile = None
 selected_city = tuple_list[0][0]  # Choose the first available city to initialize index forms
 cols_to_show = set([i['categories__name'] for i in Business.objects.values('categories__name')
                    .annotate(total=Count('categories__name'))

@@ -71,7 +71,7 @@ class RecommenderEngine:
         for i in top_items:
             cat = " ,".join([j.name for j in i.categories.all()])
             resulted = resulted.append({'name': i.name, 'city': i.city.name,
-                                        'categories': cat, 'stars': i.stars,
+                                        'categories': cat, 'stars': float(i.stars),
                                         'distance': i.distance,
                                         'score': i.score, 'duration': i.duration,
                                         'latitude': i.latitude,

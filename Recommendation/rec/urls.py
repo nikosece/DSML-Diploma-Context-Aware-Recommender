@@ -8,4 +8,5 @@ urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('review/', views.review, name='review'),
     path('apply_review/', views.apply_review, name='apply_review'),
+    path('show_directions/<int:b_id>/', views.show_directions, name='show_directions'),
 ]
