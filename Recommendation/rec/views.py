@@ -7,6 +7,7 @@ from django.contrib import messages
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
+from sql_func import Sqlfunctions
 import numpy as np
 import math
 import pickle
@@ -90,13 +91,12 @@ def index(request):
     if request.method == 'POST':
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
-            selected_city = city_dict[int(request.POST["City"])]
+            selected_city = request.POST["City"]
             create_categories_form()
     # This request happens each time the user submits categories from the dropdown list
 
     else:
         form = CityForm(City=tuple_list)
-        selected_city = city_dict[0]
         create_categories_form()
     vechiles = VechileForm()
     return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form4': vechiles})
@@ -164,7 +164,7 @@ def review(request):
     if request.method == 'POST':
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
-            selected_review_city = city_dict[int(request.POST["City"])]
+            selected_review_city = request.POST["City"]
             # df = Functions.filtering_city(df_b, selected_review_city)
             df = Business.objects.filter(city__name=selected_review_city)
             b_names = [d.name for d in df]  # i can do this with database
@@ -217,25 +217,10 @@ dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
 item_map = dataset.mapping()[2]
 
 df_b = Functions.read_business()
-grouped = {k: set(v) for k, v in df_b.groupby('state')['city']}  # group by cities by state
-grouped = {k: list(v) for k, v in grouped.items()}
-for key in list(grouped.keys()):
-    grouped[key].sort()
-tuple_list = (('', ''),)
-i = 0  # i keeps city number
-city_dict = dict()
-# Create the tuple needed for city choices in django form
-for k, v in grouped.items():
-    tuple2 = tuple()
-    for city in v:
-        tuple2 = tuple2 + ((i, city),)  # (number of city, city name)
-        city_dict[i] = city
-        i = i + 1
-    tuple_list = tuple_list + ((k, tuple2,),)  # grouped by state
-
+tuple_list = Sqlfunctions.state_city_group()
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
 top_10_recommendations = origin = category_tuple = selected = None
-selected_city = city_dict[0]  # Choose the first available city to initialize index forms
+selected_city = tuple_list[0][0]  # Choose the first available city to initialize index forms
 cols_to_show = set(list(df_b.columns)[42:103])
 create_categories_form()
 # states = df_b.state.unique()
