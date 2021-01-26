@@ -65,7 +65,7 @@ class RecommenderEngine:
 
         # create an empty results data frame.
         resulted = pd.DataFrame(columns=('name', 'city', 'categories', 'stars', 'score', 'distance',
-                                         'latitude', 'longitude', 'duration'))
+                                         'latitude', 'longitude', 'duration', 'id'))
 
         # get highest scored 10 businesses.
         for i in top_items:
@@ -75,7 +75,7 @@ class RecommenderEngine:
                                         'distance': i.distance,
                                         'score': i.score, 'duration': i.duration,
                                         'latitude': i.latitude,
-                                        'longitude': i.longtitude
+                                        'longitude': i.longtitude, 'id': i.business_id
                                         },
                                        ignore_index=True)
 

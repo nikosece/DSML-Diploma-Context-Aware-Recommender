@@ -62,7 +62,7 @@ table {
     <tbody>
         {% for r in rows %}
             <tr>
-                <td>{{r.name}}</td>
+                <td><a href="/show_business/{{r.id}}/">{{r.name}}</a></td>
                 <td>{{r.category}}</td>
                 <td>{{r.stars}}</td>
                 <td>{{r.distance}}</td>

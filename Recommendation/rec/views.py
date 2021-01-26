@@ -121,11 +121,12 @@ def results(request):
             duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
             score_list = top_10_recommendations.score.to_list()
             score_list = ["{:.2f}".format(a) for a in score_list]
-            ids_list = list(range(0,10))
+            ids_list = list(range(0, 10))
             row_list = []
             for m in range(len(name_list)):
-                row_list.append({"name": name_list[m], "category": cat_list[m], "stars": star_list[m],"id": ids_list[m],
-                                 "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m]})
+                row_list.append(
+                    {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
+                     "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m]})
             return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
@@ -145,6 +146,18 @@ def show_directions(request, b_id):
     m = Create_map.directions(origin2, dest, selected_vechile, name)
     m = m._repr_html_()
     return render(request, 'rec/map.html', {'map': m})
+
+
+def show_business(request, b_id):
+    df = top_10_recommendations.iloc[b_id]
+    bus_id = df.id
+    b = Business.objects.get(business_id=bus_id)
+    bar = [100 * x / b.review_count for x in b.stars_count]
+    name = b.name
+    dest = [df.longitude, df.latitude]
+    m = Create_map.business([origin[1], origin[0]], dest, name)
+    m = m._repr_html_()
+    return render(request, 'rec/show_business.html', {'map': m, 'b': b, 'bar': bar})
 
 
 def signup(request):
@@ -192,8 +205,8 @@ def apply_review(request):
     if request.method == 'POST':
         form = ReviewForm(data=request.POST)
         if form.is_valid():
-            r_star = int(form.cleaned_data['stars'])    # user review stars
-            old_star_count = selected.stars_count   # number of each star before this review
+            r_star = int(form.cleaned_data['stars'])  # user review stars
+            old_star_count = selected.stars_count  # number of each star before this review
             check_review = Review.objects.filter(user=request.user, business=selected)
             if len(check_review) == 0:  # user review this business for first time
                 instance = form.save(commit=False)
@@ -203,7 +216,7 @@ def apply_review(request):
                 avg_star = round((float(selected.stars) * selected.review_count + r_star)
                                  / (selected.review_count + 1), 1)
                 selected.review_count = selected.review_count + 1
-            else:                       # use had already review this business before
+            else:  # use had already review this business before
                 check_review = check_review[0]
                 old_star_value = int(check_review.stars)
                 form = ReviewForm(request.POST, instance=check_review)
@@ -220,7 +233,7 @@ def apply_review(request):
     else:
         b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
-        bar = [100*x/selected.review_count for x in selected.stars_count]
+        bar = [100 * x / selected.review_count for x in selected.stars_count]
         form = ReviewForm()
     return render(request, 'rec/apply_review.html', {'b': selected, 'form': form, 'bar': bar})
 

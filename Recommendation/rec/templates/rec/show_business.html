@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
+    <meta charset="UTF-8">
+    <title>Recommender</title>
+</head>
+<style>
+.bar-5 {width: {{ bar.4}}%; height: 18px; background-color: #4CAF50;}
+.bar-4 {width: {{ bar.3}}%; height: 18px; background-color: #2196F3;}
+.bar-3 {width: {{ bar.2}}%; height: 18px; background-color: #00bcd4;}
+.bar-2 {width: {{ bar.1}}%; height: 18px; background-color: #ff9800;}
+.bar-1 {width: {{ bar.0}}%; height: 18px; background-color: #f44336;}
+</style>
+<body>
+<div class="topnav">
+    <a href="/">Home</a>
+    <a href="/results/">Results</a>
+</div>
+<div class="main">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<span class="heading">{{ b.name}}</span>
+{% if b.stars > 4.5 %}
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+{% elif b.stars > 3.5 %}
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star"></span>
+{% elif b.stars > 2.5 %}
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+{% elif b.stars > 1.5 %}
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+{% else %}
+<span class="fa fa-star checked"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+<span class="fa fa-star"></span>
+{% endif %}
+
+<p>{{ b.stars}} average based on {{ b.review_count}} reviews.</p>
+<hr style="border:3px solid #333333">
+
+<div class="row">
+  <div class="side">
+    <div>5 star</div>
+  </div>
+  <div class="middle">
+    <div class="bar-container">
+      <div class="bar-5"></div>
+    </div>
+  </div>
+  <div class="side right">
+    <div>{{ b.stars_count.4}}</div>
+  </div>
+  <div class="side">
+    <div>4 star</div>
+  </div>
+  <div class="middle">
+    <div class="bar-container">
+      <div class="bar-4"></div>
+    </div>
+  </div>
+  <div class="side right">
+    <div>{{ b.stars_count.3}}</div>
+  </div>
+  <div class="side">
+    <div>3 star</div>
+  </div>
+  <div class="middle">
+    <div class="bar-container">
+      <div class="bar-3"></div>
+    </div>
+  </div>
+  <div class="side right">
+    <div>{{ b.stars_count.2}}</div>
+  </div>
+  <div class="side">
+    <div>2 star</div>
+  </div>
+  <div class="middle">
+    <div class="bar-container">
+      <div class="bar-2"></div>
+    </div>
+  </div>
+  <div class="side right">
+    <div>{{ b.stars_count.1}}</div>
+  </div>
+  <div class="side">
+    <div>1 star</div>
+  </div>
+  <div class="middle">
+    <div class="bar-container">
+      <div class="bar-1"></div>
+    </div>
+  </div>
+  <div class="side right">
+    <div>{{ b.stars_count.0}}</div>
+  </div>
+</div>
+</div>
+<div class="map">
+  {{ map|safe }}
+</div>
+</body>
+</html>
