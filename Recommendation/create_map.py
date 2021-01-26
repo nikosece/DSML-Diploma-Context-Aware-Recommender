@@ -45,7 +45,8 @@ class Create_map:
         my_map.add_child(mark)
         my_map.add_child(mark2)
         folium.LayerControl().add_to(my_map)
-        my_map.save(str(pathlib.Path().absolute()) + "/rec/templates/rec/" + name + ".html")
+        # my_map.save(str(pathlib.Path().absolute()) + "/rec/templates/rec/" + name + ".html")
+        return my_map
 
     @staticmethod
     def plot(df, city, user, include=False):
@@ -106,4 +107,5 @@ class Create_map:
             collapsed=False,
         ).add_to(my_map)
         folium.LayerControl().add_to(my_map)
-        my_map.save(str(pathlib.Path().absolute()) + "/rec/templates/rec/" + city + ".html")
+        # my_map.save(str(pathlib.Path().absolute()) + "/rec/templates/rec/" + city + ".html")
+        return my_map

@@ -132,19 +132,19 @@ def results(request):
 
 
 def show_map(request):
-    map_path = 'rec/' + selected_city + '.html'
-    Create_map.plot(top_10_recommendations, selected_city, origin, True)
-    return render(request, map_path)
+    m = Create_map.plot(top_10_recommendations, selected_city, origin, True)
+    m = m._repr_html_()
+    return render(request, 'rec/map.html', {'map': m})
 
 
 def show_directions(request, b_id):
     df = top_10_recommendations.iloc[b_id]
     name = df['name']
     dest = [df.longitude, df.latitude]
-    map_path = 'rec/' + name + '.html'
     origin2 = [origin[1], origin[0]]
-    Create_map.directions(origin2, dest, selected_vechile, name)
-    return render(request, map_path)
+    m = Create_map.directions(origin2, dest, selected_vechile, name)
+    m = m._repr_html_()
+    return render(request, 'rec/map.html', {'map': m})
 
 
 def signup(request):

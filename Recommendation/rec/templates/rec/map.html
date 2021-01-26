@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
+    <meta charset="UTF-8">
+    <title>Recommender</title>
+</head>
+<body>
+<div class="topnav">
+    <a href="/">Home</a>
+    <a href="/results/">Results</a>
+</div>
+{{ map|safe }}
+</body>
+</html>
