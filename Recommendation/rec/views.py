@@ -220,7 +220,6 @@ def apply_review(request):
     else:
         b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
-        selected.review_count = sum(selected.stars_count)
         bar = [100*x/selected.review_count for x in selected.stars_count]
         form = ReviewForm()
     return render(request, 'rec/apply_review.html', {'b': selected, 'form': form, 'bar': bar})
