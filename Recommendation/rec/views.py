@@ -192,23 +192,38 @@ def apply_review(request):
     if request.method == 'POST':
         form = ReviewForm(data=request.POST)
         if form.is_valid():
+            r_star = int(form.cleaned_data['stars'])    # user review stars
+            old_star_count = selected.stars_count   # number of each star before this review
             check_review = Review.objects.filter(user=request.user, business=selected)
-            if len(check_review) == 0:
+            if len(check_review) == 0:  # user review this business for first time
                 instance = form.save(commit=False)
                 instance.user = request.user
                 instance.business = selected
                 instance.save()
-            else:
+                avg_star = round((float(selected.stars) * selected.review_count + r_star)
+                                 / (selected.review_count + 1), 1)
+                selected.review_count = selected.review_count + 1
+            else:                       # use had already review this business before
                 check_review = check_review[0]
+                old_star_value = int(check_review.stars)
                 form = ReviewForm(request.POST, instance=check_review)
+                old_star_count[old_star_value - 1] = old_star_count[old_star_value - 1] - 1
+                avg_star = round((float(selected.stars) * selected.review_count + r_star - old_star_value)
+                                 / selected.review_count, 1)
                 form.save()
             messages.success(request, 'Your review was stored successfully')
+            old_star_count[r_star - 1] = old_star_count[r_star - 1] + 1
+            selected.stars_count = old_star_count
+            selected.stars = avg_star
+            selected.save()
             return redirect("index")
     else:
         b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
+        selected.review_count = sum(selected.stars_count)
+        bar = [100*x/selected.review_count for x in selected.stars_count]
         form = ReviewForm()
-    return render(request, 'rec/apply_review.html', {'b': selected, 'form': form})
+    return render(request, 'rec/apply_review.html', {'b': selected, 'form': form, 'bar': bar})
 
 
 # if request.user.is_authenticated:

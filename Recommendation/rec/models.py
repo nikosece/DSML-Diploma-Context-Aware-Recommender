@@ -90,6 +90,7 @@ class Business(models.Model):
     stars = models.DecimalField(max_digits=2, decimal_places=1)
     review_count = models.PositiveSmallIntegerField()
     categories = models.ManyToManyField(BusinessCategory)
+    stars_count = ArrayField(models.PositiveIntegerField(), size=5, blank=True, null=True,)
 
     def __str__(self):
         return self.name
