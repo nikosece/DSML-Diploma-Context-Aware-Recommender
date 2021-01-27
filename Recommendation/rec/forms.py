@@ -41,6 +41,18 @@ class SignUpForm(UserCreationForm):
         fields = ('email', 'first_name', 'last_name', 'preference')
 
 
+class ProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProfileForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs['readonly'] = True
+        self.fields['first_name'].widget.attrs['readonly'] = True
+        self.fields['last_name'].widget.attrs['readonly'] = True
+
+    class Meta(forms.ModelForm):
+        model = CustomUser
+        fields = ('email', 'first_name', 'last_name', 'preference')
+
+
 class SignInForm(AuthenticationForm):
     class Meta:
         model = CustomUser

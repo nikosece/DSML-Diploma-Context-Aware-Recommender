@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.db.models import Count
-from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm, ReviewForm
+from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm, ReviewForm, ProfileForm
 from .models import BusinessCity, BusinessState, Business, Review
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
@@ -242,6 +242,21 @@ def apply_review(request):
         bar = [100 * x / selected.review_count for x in selected.stars_count]
         form = ReviewForm()
     return render(request, 'rec/apply_review.html', {'b': selected, 'form': form, 'bar': bar})
+
+
+def show_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(data=request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile was updated successfully')
+            return redirect("index")
+    else:
+        signed = request.user
+        form = ProfileForm(initial={'email': signed.email, 'first_name': signed.first_name,
+                                    'last_name': signed.last_name,
+                                    'preference': signed.preference})
+        return render(request, 'rec/profile.html', {'form': form})
 
 
 # if request.user.is_authenticated:
