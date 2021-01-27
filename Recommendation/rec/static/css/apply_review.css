@@ -103,9 +103,62 @@ input[type=submit] {
   color: white;
 }
 
-/* Individual bars */
+.log-out {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+}
+#id_preference {
+            width: 12%;
+        }
+#id_City, #id_Category, #id_Business {
+            width: 50%;
+        }
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
 
+table {
+    margin: 0 auto;
+    width: 100%;
+}
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
 
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+  animation: fadein 0.5s, fadeout 0.5s 3.5s;
+}
+h1 {
+  font-style: italic;
+  font-size: 40px;
+}
+h3 {
+  position: absolute;
+  top: 42px;
+  right: 90px;
+  }
+p {
+      font-size: 20px;
+  }
+#id_City, #id_Category {
+      width: 50%;
+  }
 /* Responsive layout - make the columns stack on top of each other instead of next to each other */
 @media (max-width: 400px) {
   .side, .middle {
@@ -115,4 +168,23 @@ input[type=submit] {
   .right {
     display: none;
   }
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }
