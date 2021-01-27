@@ -259,6 +259,12 @@ def show_profile(request):
         return render(request, 'rec/profile.html', {'form': form})
 
 
+def show_reviews(request):
+    reviews = Review.objects.filter(user=request.user).order_by('-updated')
+    reviews = list(reviews)[0:5]
+    return render(request, 'rec/my_reviews.html', {'reviews': reviews})
+
+
 # if request.user.is_authenticated:
 #     print(type(current_user.preference[0]))
 model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')

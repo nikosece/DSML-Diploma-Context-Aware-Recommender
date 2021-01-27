@@ -18,6 +18,18 @@
 <div class="topnav">
     <a href="/">Home</a>
     <a href="/results/">Results</a>
+  {% if user.is_authenticated %}
+      <div class="dropdown">
+    <button class="dropbtn">{{ user.first_name }}
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/show_profile/">Profile</a>
+      <a href="/show_reviews/">My Reviews</a>
+      <a href="{% url 'logout' %}">Log Out</a>
+    </div>
+  </div>
+     {% endif %}
 </div>
 <div class="main">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">

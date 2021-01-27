@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Recommender</title>
+    <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+ <div class="topnav">
+  <a href="/">Home</a>
+  <a href="/review/">Review</a>
+  <div class="dropdown">
+    <button class="dropbtn">{{ user.first_name }}
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/show_profile/">Profile</a>
+      <a href="/show_reviews/">My Reviews</a>
+      <a href="{% url 'logout' %}">Log Out</a>
+    </div>
+  </div>
+</div>
+ <h1>My Reviews</h1>
+{% for b in reviews %}
+ <h4>{{b.business.name}}  {{  b.updated|date:'d/m/Y'}}</h4>
+    {% if b.stars > 4.5 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        {% elif b.stars > 3.5 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        {% elif b.stars > 2.5 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% elif b.stars > 1.5 %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% else %}
+        <span class="fa fa-star checked"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        <span class="fa fa-star"></span>
+        {% endif %}
+        <h4>{{b.title}}</h4>
+        <p> {{b.content}}</p>
+        <hr style="border:3px solid #333333">
+            {% endfor %}
+</body>
+</html>

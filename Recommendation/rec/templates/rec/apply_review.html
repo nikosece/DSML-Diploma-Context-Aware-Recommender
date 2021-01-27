@@ -18,6 +18,16 @@
 <div class="topnav">
   <a href="/">Home</a>
   <a href="/review/">Review</a>
+  <div class="dropdown">
+    <button class="dropbtn">{{ user.first_name }}
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/show_profile/">Profile</a>
+      <a href="#">My Reviews</a>
+      <a href="{% url 'logout' %}">Log Out</a>
+    </div>
+  </div>
 </div>
 <div class="main">
 
