@@ -156,7 +156,13 @@ def show_business(request, b_id):
     name = b.name
     dest = [df.longitude, df.latitude]
     m = Create_map.business([origin[1], origin[0]], dest, name)
-    m = m._repr_html_()
+    # splitted = m[0].split("\n")
+    # for line in range(len(splitted)):
+    #     if "<style>html," in splitted[line]:
+    #         to_del = line
+    # del splitted[to_del]
+    # m[0] = "\n".join(splitted)
+
     return render(request, 'rec/show_business.html', {'map': m, 'b': b, 'bar': bar})
 
 

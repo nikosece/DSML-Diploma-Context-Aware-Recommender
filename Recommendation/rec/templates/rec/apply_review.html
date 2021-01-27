@@ -19,6 +19,8 @@
   <a href="/">Home</a>
   <a href="/review/">Review</a>
 </div>
+<div class="main">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <span class="heading">{{ b.name}}</span>
@@ -55,7 +57,7 @@
 {% endif %}
 
 <p>{{ b.stars}} average based on {{ b.review_count}} reviews.</p>
-<hr style="border:3px solid #f1f1f1">
+<hr style="border:3px solid #333333">
 
 <div class="row">
   <div class="side">
@@ -113,6 +115,7 @@
   <div class="side right">
     <div>{{ b.stars_count.0}}</div>
   </div>
+</div>
 </div>
 <h2> Your opinion matters </h2>
 <form action="/apply_review/" method="post">

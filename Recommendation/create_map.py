@@ -30,7 +30,7 @@ class Create_map:
         duration = summary['duration'] / 60
         call_json['features'][0]['properties']['Distance'] = "{:.2f} km".format(distance)
         call_json['features'][0]['properties']['Duration'] = "{} min".format(math.ceil(duration))
-        my_map = folium.Map(location=[origin[1], origin[0]], zoom_start=15, prefer_canvas=True)
+        my_map = folium.Map(location=[dest[1], dest[0]], zoom_start=15, prefer_canvas=True)
         geo = folium.GeoJson(call_json, name="Directions",
                              tooltip=folium.GeoJsonTooltip(fields=['Distance', 'Duration']))
         mark = folium.FeatureGroup("User Location")
@@ -112,8 +112,7 @@ class Create_map:
 
     @staticmethod
     def business(origin, dest, name):
-        my_map = folium.Map(location=[origin[1], origin[0]], zoom_start=15, prefer_canvas=True,
-                            width='25%', height='25%')
+        my_map = folium.Map(location=[dest[1], dest[0]], zoom_start=15, prefer_canvas=True)
         mark = folium.FeatureGroup("User Location")
         mark.add_child(
             folium.Marker((origin[1], origin[0]), icon=folium.Icon(color='red', icon='map-marker', prefix='fa'),
@@ -125,4 +124,5 @@ class Create_map:
         my_map.add_child(mark)
         my_map.add_child(mark2)
         folium.LayerControl().add_to(my_map)
-        return my_map
+        m = my_map._repr_html_()
+        return m

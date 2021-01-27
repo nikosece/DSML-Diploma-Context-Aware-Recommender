@@ -25,12 +25,20 @@ input[type=submit] {
 }
 .main {
   margin-top: 30px; /* Add a top margin to avoid content overlay */
+  /*margin-left: 20%;*/
 }
-/*.map {*/
-/*  width: 50%;*/
-/*  height: 50%;*/
-/*  margin-bottom: 30px; !* Add a top margin to avoid content overlay *!*/
-/*}*/
+.folium-map {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  width: 850px;
+}
+.big{
+  position: fixed;
+  height: 70%;
+  width: 100%;
+}
 
 .topnav a:hover {
   background-color: #ddd;
@@ -42,12 +50,12 @@ input[type=submit] {
   color: white;
 }
 
-body {
-  font-family: Arial;
-  /*margin: 0 auto; !* Center website *!*/
-  /*max-width: 800px; !* Max width *!*/
-  /*padding: 20px;*/
-}
+/*body {*/
+/*  font-family: Arial;*/
+/*  !*margin: 0 auto; !* Center website *!*!*/
+/*  !*max-width: 800px; !* Max width *!*!*/
+/*  !*padding: 20px;*!*/
+/*}*/
 
 .heading {
   font-size: 25px;
