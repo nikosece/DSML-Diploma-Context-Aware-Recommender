@@ -50,3 +50,4 @@ with open('requests') as f:
         y_b = get_data(*arg, search_type)
         y_c = deletion(y_c, y_b)
         save_pickle(y_c, area)
+        print("Total businesses: ",len(y_c))

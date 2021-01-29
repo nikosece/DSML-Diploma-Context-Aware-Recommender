@@ -16,7 +16,7 @@ def plot(df):
     names_list = df[2]
     stars_list = df[3]
     count_list = df[4]
-    my_map = folium.Map(location=[lat_list[0], long_list[0]], zoom_start=17, prefer_canvas=True)
+    my_map = folium.Map(location=[lat_list[0], long_list[0]], zoom_start=12, prefer_canvas=True)
     my_list = list()
     for lati, lng, name, star, count in zip(lat_list, long_list, names_list, stars_list, count_list):
         my_dict = dict()
