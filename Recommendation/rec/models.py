@@ -29,7 +29,7 @@ class ChoiceArrayField(ArrayField):
         return super(ArrayField, self).formfield(**defaults)
 
 
-category_list = pickle.load(open(str(pathlib.Path().absolute()) + "/Dataset/category_list.pickle", "rb"))
+category_list = pickle.load(open(str(pathlib.Path().absolute()) + "/Dataset/Google_category_list.pickle", "rb"))
 category_tuple = ((),)
 for j in category_list:
     category_tuple = category_tuple + ((j, j),)
@@ -64,13 +64,6 @@ class BusinessCity(models.Model):
         return self.name
 
 
-class BusinessState(models.Model):
-    name = models.CharField(max_length=20)
-
-    def __str__(self):
-        return self.name
-
-
 class BusinessCategory(models.Model):
     name = models.CharField(max_length=100)
 
@@ -79,18 +72,16 @@ class BusinessCategory(models.Model):
 
 
 class Business(models.Model):
-    name = models.CharField(max_length=70)
-    business_id = models.CharField(max_length=40, primary_key=True)
+    name = models.CharField(max_length=140)
+    business_id = models.CharField(max_length=70, primary_key=True)
     latitude = models.FloatField()
     longtitude = models.FloatField()
     city = models.ForeignKey(BusinessCity, on_delete=models.CASCADE, related_name='businesses',
                              related_query_name='business')
-    state = models.ForeignKey(BusinessState, on_delete=models.CASCADE, related_name='businesses',
-                              related_query_name='business')
+
     stars = models.DecimalField(max_digits=2, decimal_places=1)
     review_count = models.PositiveSmallIntegerField()
     categories = models.ManyToManyField(BusinessCategory)
-    stars_count = ArrayField(models.PositiveIntegerField(), size=5, blank=True, null=True,)
 
     def __str__(self):
         return self.name
@@ -102,7 +93,7 @@ class Review(models.Model):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='reviews',
                                  related_query_name='review')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='reviews', related_query_name='review')
-    stars = models.DecimalField(max_digits=2, decimal_places=1,)
+    stars = models.DecimalField(max_digits=2, decimal_places=1, )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

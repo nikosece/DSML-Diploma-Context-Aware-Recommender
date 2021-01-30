@@ -80,7 +80,7 @@ class Create_map:
         for i in range(len(distance_list)):
             distance_list[i] = "{:.2f}".format(distance_list[i])
         position = range(1, len(stars_list) + 1)
-        my_map = folium.Map(location=[lat_list[0], long_list[0]], zoom_start=10, prefer_canvas=True)
+        my_map = folium.Map(location=[lat_list[0], long_list[0]], zoom_start=15, prefer_canvas=True)
         my_list = list()
         for lat, lng, name, city, star, i, distance in zip(lat_list, long_list, names_list,
                                                            city_list, stars_list, position, distance_list):

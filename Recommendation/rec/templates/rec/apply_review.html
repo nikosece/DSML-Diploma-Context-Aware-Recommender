@@ -7,13 +7,6 @@
     <meta charset="UTF-8">
     <title>Recommender</title>
 </head>
-<style>
-.bar-5 {width: {{ bar.4}}%; height: 18px; background-color: #4CAF50;}
-.bar-4 {width: {{ bar.3}}%; height: 18px; background-color: #2196F3;}
-.bar-3 {width: {{ bar.2}}%; height: 18px; background-color: #00bcd4;}
-.bar-2 {width: {{ bar.1}}%; height: 18px; background-color: #ff9800;}
-.bar-1 {width: {{ bar.0}}%; height: 18px; background-color: #f44336;}
-</style>
 <body>
 <div class="topnav">
   <a href="/">Home</a>
@@ -69,63 +62,6 @@
 <p>{{ b.stars}} average based on {{ b.review_count}} reviews.</p>
 <hr style="border:3px solid #333333">
 
-<div class="row">
-  <div class="side">
-    <div>5 star</div>
-  </div>
-  <div class="middle">
-    <div class="bar-container">
-      <div class="bar-5"></div>
-    </div>
-  </div>
-  <div class="side right">
-    <div>{{ b.stars_count.4}}</div>
-  </div>
-  <div class="side">
-    <div>4 star</div>
-  </div>
-  <div class="middle">
-    <div class="bar-container">
-      <div class="bar-4"></div>
-    </div>
-  </div>
-  <div class="side right">
-    <div>{{ b.stars_count.3}}</div>
-  </div>
-  <div class="side">
-    <div>3 star</div>
-  </div>
-  <div class="middle">
-    <div class="bar-container">
-      <div class="bar-3"></div>
-    </div>
-  </div>
-  <div class="side right">
-    <div>{{ b.stars_count.2}}</div>
-  </div>
-  <div class="side">
-    <div>2 star</div>
-  </div>
-  <div class="middle">
-    <div class="bar-container">
-      <div class="bar-2"></div>
-    </div>
-  </div>
-  <div class="side right">
-    <div>{{ b.stars_count.1}}</div>
-  </div>
-  <div class="side">
-    <div>1 star</div>
-  </div>
-  <div class="middle">
-    <div class="bar-container">
-      <div class="bar-1"></div>
-    </div>
-  </div>
-  <div class="side right">
-    <div>{{ b.stars_count.0}}</div>
-  </div>
-</div>
 </div>
 <h2> Your opinion matters </h2>
 <form action="/apply_review/" method="post">

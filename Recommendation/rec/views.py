@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
 from django.db.models import Count
 from .forms import CityForm, CategoryForm, VechileForm, SignUpForm, BusinessForm, ReviewForm, ProfileForm
-from .models import BusinessCity, BusinessState, Business, Review
+from .models import BusinessCity, Business, Review
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from recommender_engine import RecommenderEngine
 from functions import Functions
 from create_map import Create_map
-from sql_func import Sqlfunctions
 import numpy as np
 import math
 import pickle
@@ -64,8 +63,8 @@ def create_categories_form():
     global selected_city, df_new, df_explode, categories, to_show, form2, category_tuple
     df_new = Business.objects.filter(city__name=selected_city)
     categories = [i['categories__name'] for i in df_new.values('categories__name')
-                                                     .annotate(total=Count('categories__name'))
-                                                     .order_by('-total')[0:61]]
+        .annotate(total=Count('categories__name'))
+        .order_by('-total')]
     to_show = []
     for c in categories:
         if c in cols_to_show:
@@ -103,7 +102,8 @@ def results(request):
             selected_vechile = int(request.POST.getlist('Vechile')[0])
             origin = (df_new[0].latitude, df_new[0].longtitude)
             origin2 = [[df_new[0].longtitude, df_new[0].latitude]]
-            df_new = model_predict(list(df_new), 50, selected_category)
+            df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
+            # df_new = model_predict(list(df_new), 50, selected_category)
             dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
                                                          selected_vechile)
             dur = [d / 60 for d in dur]
@@ -152,7 +152,6 @@ def show_business(request, b_id):
     df = top_10_recommendations.iloc[b_id]
     bus_id = df.id
     b = Business.objects.get(business_id=bus_id)
-    bar = [100 * x / b.review_count for x in b.stars_count]
     name = b.name
     dest = [df.longitude, df.latitude]
     m = Create_map.business([origin[1], origin[0]], dest, name)
@@ -163,7 +162,7 @@ def show_business(request, b_id):
     # del splitted[to_del]
     # m[0] = "\n".join(splitted)
 
-    return render(request, 'rec/show_business.html', {'map': m, 'b': b, 'bar': bar})
+    return render(request, 'rec/show_business.html', {'map': m, 'b': b})
 
 
 def signup(request):
@@ -239,9 +238,8 @@ def apply_review(request):
     else:
         b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
-        bar = [100 * x / selected.review_count for x in selected.stars_count]
         form = ReviewForm()
-    return render(request, 'rec/apply_review.html', {'b': selected, 'form': form, 'bar': bar})
+    return render(request, 'rec/apply_review.html', {'b': selected, 'form': form})
 
 
 def show_profile(request):
@@ -272,16 +270,16 @@ item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_feat
 user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
 dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
 item_map = dataset.mapping()[2]
+cities = BusinessCity.objects.order_by('name').values()
+tuple_list = (('', ''),)
+for c_ity in cities:
+    tuple_list = tuple_list + ((c_ity['name'], c_ity['name']),)
 
-df_b = Functions.read_business()
-tuple_list = Sqlfunctions.state_city_group()
+# tuple_list = None # to filled up
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
 top_10_recommendations = origin = category_tuple = selected = selected_vechile = None
 selected_city = tuple_list[0][0]  # Choose the first available city to initialize index forms
 cols_to_show = set([i['categories__name'] for i in Business.objects.values('categories__name')
                    .annotate(total=Count('categories__name'))
-                   .order_by('-total')[0:61]])
-create_categories_form()
-# states = df_b.state.unique()
-# for s in states:
-#     print(s)
+                   .order_by('-total')])
+# create_categories_form()

@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
 from rating_extractor import RatingExtractor
-import operator
 
 
 class RecommenderEngine:
@@ -20,7 +19,7 @@ class RecommenderEngine:
         :param cs: relevance score between 0 and 1
         :param r: review stars between 0 and 5
         :return: Returns value between 0 and 100"""
-        cs_normalize = cs * 100
+        # cs_normalize = cs * 100
         r_normalize = 100 * (r - 0.5) / 4.5     # (r-min_r)/(max_r - min_r)
         if vechile == 0:
             amount = r_normalize * 0.75 + distance * 100 * 0.25
@@ -30,7 +29,25 @@ class RecommenderEngine:
 
     # Version-2
     @staticmethod
-    def get_recommendations_include_rating(df, vechile, keywords=None):
+    def similarity_filter(df, k, keywords):
+        tfidf = TfidfVectorizer(stop_words='english')
+        categories = []
+        for row in df:
+            categories.append([c['name'] for c in row.categories.values()])
+        categories = [", ".join(c) for c in categories]
+        tfidf_matrix = tfidf.fit_transform(categories)
+        tfidf_keywords = tfidf.transform(keywords)
+        cosine_sim1 = linear_kernel(tfidf_matrix, tfidf_keywords)
+        sim_scores = list(enumerate(cosine_sim1))
+        sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+        sim_scores = sim_scores[0:k]
+        new_df = [df[ids[0]] for ids in sim_scores]
+        for i in range(len(new_df)):
+            new_df[i].score = sim_scores[i]
+        return new_df
+
+    @staticmethod
+    def get_recommendations_include_rating(df, vechile):
         """Based on user's keywords find the most relevant
         business. Then based on that look for similar businesses.
         After that, recalculate the score based on review and
