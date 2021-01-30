@@ -100,8 +100,12 @@ def results(request):
             selected_category = request.POST.getlist('Category')
             selected_category = [s for s in selected_category]
             selected_vechile = int(request.POST.getlist('Vechile')[0])
-            origin = (df_new[0].latitude, df_new[0].longtitude)
-            origin2 = [[df_new[0].longtitude, df_new[0].latitude]]
+            loc = request.POST.getlist('Location')[0]
+            loc = loc.split("_")
+            us_lat = float(loc[1])
+            us_lot = float(loc[0])
+            origin = (us_lot, us_lat)
+            origin2 = [[us_lat, us_lot]]
             df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
             # df_new = model_predict(list(df_new), 50, selected_category)
             dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time

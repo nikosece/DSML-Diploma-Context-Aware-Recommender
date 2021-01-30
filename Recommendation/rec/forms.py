@@ -33,6 +33,7 @@ class VechileForm(forms.Form):
         choices = [(0, 'Car'), (1, 'Foot')]
         self.fields["Vechile"] = forms.CharField(label='Vechile type', widget=forms.RadioSelect(choices=choices),
                                                  initial=0)
+        self.fields["Location"] = forms.CharField()
 
 
 class SignUpForm(UserCreationForm):
