@@ -19,12 +19,12 @@ class RecommenderEngine:
         :param cs: relevance score between 0 and 1
         :param r: review stars between 0 and 5
         :return: Returns value between 0 and 100"""
-        # cs_normalize = cs * 100
-        r_normalize = 100 * (r - 0.5) / 4.5     # (r-min_r)/(max_r - min_r)
+        cs_normalize = cs * 100
+        r_normalize = 100 * (r - 0.5) / 4.5  # (r-min_r)/(max_r - min_r)
         if vechile == 0:
-            amount = r_normalize * 0.75 + distance * 100 * 0.25
+            amount = cs_normalize * 0.25 + r_normalize * 0.55 + distance * 100 * 0.2
         else:
-            amount = r_normalize * 0.4 + distance * 100 * 0.6
+            amount = cs_normalize * 0.25 + r_normalize * 0.3 + distance * 100 * 0.45
         return amount
 
     # Version-2
@@ -41,9 +41,9 @@ class RecommenderEngine:
         sim_scores = list(enumerate(cosine_sim1))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
         sim_scores = sim_scores[0:k]
-        new_df = [df[ids[0]] for ids in sim_scores]
+        new_df = [df[ids[0]] for ids in sim_scores if ids[1] > 0]
         for i in range(len(new_df)):
-            new_df[i].score = sim_scores[i]
+            new_df[i].score = sim_scores[i][1][0]
         return new_df
 
     @staticmethod

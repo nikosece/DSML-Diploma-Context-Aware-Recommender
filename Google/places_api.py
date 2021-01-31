@@ -23,7 +23,7 @@ def deletion(a, b):
 def get_data(latitude, longitude, radius, search, pagetoken=None):
     api_key = 'AIzaSyDZVMPpjO-_nBgUkWc-9VWUnFxyo0LBbqI'
     url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-    url = url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&type=' + search + '&key=' + api_key
+    url = url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&type=' + search + '&language=el' + '&key=' + api_key
     if pagetoken:
         url = url + '&pagetoken=' + pagetoken
     time.sleep(2.5)
@@ -49,5 +49,8 @@ with open('requests') as f:
         search_type = 'bar'
         y_b = get_data(*arg, search_type)
         y_c = deletion(y_c, y_b)
+        search_type = 'night_club'
+        y_n = get_data(*arg, search_type)
+        y_c = deletion(y_c, y_n)
         save_pickle(y_c, area)
         print("Total businesses for {}: {}".format(area, len(y_c)))
