@@ -22,7 +22,7 @@ class RecommenderEngine:
         cs_normalize = cs * 100
         r_normalize = 100 * (r - 0.5) / 4.5  # (r-min_r)/(max_r - min_r)
         if vechile == 0:
-            amount = cs_normalize * 0.25 + r_normalize * 0.55 + distance * 100 * 0.2
+            amount = cs_normalize * 0.35 + r_normalize * 0.45 + distance * 100 * 0.2
         else:
             amount = cs_normalize * 0.25 + r_normalize * 0.45 + distance * 100 * 0.3
         return amount
