@@ -10,6 +10,13 @@ from django import forms
 from .managers import CustomUserManager
 
 
+class BusinessCategory(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class ChoiceArrayField(ArrayField):
     """
     A field that allows us to store an array of choices.
@@ -29,7 +36,7 @@ class ChoiceArrayField(ArrayField):
         return super(ArrayField, self).formfield(**defaults)
 
 
-category_list = pickle.load(open(str(pathlib.Path().absolute()) + "/Dataset/Google_category_list.pickle", "rb"))
+category_list = [i.name for i in list(BusinessCategory.objects.all())]
 category_tuple = ((),)
 for j in category_list:
     category_tuple = category_tuple + ((j, j),)
@@ -58,13 +65,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class BusinessCity(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
-class BusinessCategory(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):

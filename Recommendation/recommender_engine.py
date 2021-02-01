@@ -24,7 +24,7 @@ class RecommenderEngine:
         if vechile == 0:
             amount = cs_normalize * 0.25 + r_normalize * 0.55 + distance * 100 * 0.2
         else:
-            amount = cs_normalize * 0.25 + r_normalize * 0.3 + distance * 100 * 0.45
+            amount = cs_normalize * 0.25 + r_normalize * 0.45 + distance * 100 * 0.3
         return amount
 
     # Version-2
