@@ -44,7 +44,7 @@
     <script>
         $(document).ready(function() {
         $('#id_City').select2({
-        placeholder: "Available cities",
+        placeholder: "Διαθέσιμες περιοχές",
         allowClear: true
     });
     });
@@ -53,12 +53,12 @@
         $(document).ready(function() {
         if($("#id_City").val()==""){
             $('#id_Category').select2({
-            placeholder: 'First select a city',
+            placeholder: 'Πρώτα επιλέξτε μια περιοχή',
             disabled : true,
             });}
         else{
             $('#id_Category').select2({
-            placeholder: 'Available categories',
+            placeholder: 'Διαθέσιμες κατηγορίες',
             disabled : false,
             });}
     });
@@ -68,7 +68,7 @@
             $("#id_City").change(function(){
                 if($(this).val() == "") {
                     $('#id_Category').prop({"disabled": true});
-                    $('#id_Category').prop({"placeholder": 'First select a city'});
+                    $('#id_Category').prop({"placeholder": 'Πρώτα επιλέξτε μια περιοχή'});
                 }
             })
         })
@@ -140,7 +140,7 @@ function myFunction() {
     {{ form2.as_p }}
     {{ form4.as_p }}
 
-    <input type="submit" value="Results">
+    <input type="submit" value="Προτάσεις">
 </form>
 </body>
 </html>

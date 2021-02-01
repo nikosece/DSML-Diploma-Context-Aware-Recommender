@@ -78,7 +78,7 @@ class RecommenderEngine:
 
         # sort cities by score and index.
         top_items = sorted(df, key=lambda x: x.score, reverse=True)
-        top_items = top_items[0:10]
+        top_items = top_items[0:50]
 
         # create an empty results data frame.
         resulted = pd.DataFrame(columns=('name', 'city', 'categories', 'stars', 'score', 'distance',

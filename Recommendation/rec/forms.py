@@ -7,7 +7,7 @@ class CityForm(forms.Form):
     def __init__(self, *args, **kwargs):
         cities = kwargs.pop("City")
         super(CityForm, self).__init__(*args, **kwargs)
-        self.fields["City"] = forms.ChoiceField(choices=cities, label='Click this to select a city',
+        self.fields["City"] = forms.ChoiceField(choices=cities, label='Κάντε κλικ εδώ για να επιλέξετε περιοχή',
                                                 widget=forms.Select(attrs={'onchange': 'submit();'}))
 
 
@@ -15,7 +15,8 @@ class BusinessForm(forms.Form):
     def __init__(self, *args, **kwargs):
         business = kwargs.pop("Business")
         super(BusinessForm, self).__init__(*args, **kwargs)
-        self.fields["Business"] = forms.ChoiceField(choices=business, label='Click this to select a Business',
+        self.fields["Business"] = forms.ChoiceField(choices=business,
+                                                    label='Κάντε κλίκ εδώ για να επιλέξετε επιχείριση',
                                                     widget=forms.Select())
 
 
@@ -23,17 +24,18 @@ class CategoryForm(forms.Form):
     def __init__(self, *args, **kwargs):
         categories = kwargs.pop("Category")
         super(CategoryForm, self).__init__(*args, **kwargs)
-        self.fields["Category"] = forms.MultipleChoiceField(choices=categories, label='Click this to select categories')
+        self.fields["Category"] = forms.MultipleChoiceField(choices=categories,
+                                                            label='Κάντε κλικ εδώ για να επιλέξετε κατηγορία')
         # widget=forms.CheckboxSelectMultiple())
 
 
 class VechileForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(VechileForm, self).__init__(*args, **kwargs)
-        choices = [(0, 'Car'), (1, 'Foot')]
-        self.fields["Vechile"] = forms.CharField(label='Vechile type', widget=forms.RadioSelect(choices=choices),
+        choices = [(0, 'Αυτοκίνητο'), (1, 'Πόδια')]
+        self.fields["Vechile"] = forms.CharField(label='Μέσο μεταφοράς', widget=forms.RadioSelect(choices=choices),
                                                  initial=0)
-        self.fields["Location"] = forms.CharField()
+        self.fields["Location"] = forms.CharField(label='Τοποθεσία')
 
 
 class SignUpForm(UserCreationForm):

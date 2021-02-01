@@ -115,7 +115,7 @@ def results(request):
                 df_new[i].distance = dist[i]
                 df_new[i].duration = dur[i]
             top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
-            cols = ["Name", "Category", "Stars", "Distance(km)", "Duration(minutes)", "Score(%)", "Directions"]
+            cols = ["Όνομα", "Κατηγορίες", "Βαθμολογία", "Απόσταση(χλμ)", "Χρόνος(λεπτά)", "Score(%)", "Οδηγίες"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
             star_list = top_10_recommendations.stars.to_list()
@@ -125,7 +125,7 @@ def results(request):
             duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
             score_list = top_10_recommendations.score.to_list()
             score_list = ["{:.2f}".format(a) for a in score_list]
-            ids_list = list(range(0, 10))
+            ids_list = list(range(0, len(distance_list)))
             row_list = []
             for m in range(len(name_list)):
                 row_list.append(
