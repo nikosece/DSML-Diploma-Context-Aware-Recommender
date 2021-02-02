@@ -10,21 +10,20 @@ class RecommenderEngine:
         print("engine initialized")
 
     @staticmethod
-    def calculate_final_score(cs, r, distance, vechile):
+    def calculate_final_score(cs, r, count, distance, vechile):
         """ Combine relevance and weighted review stars
         weight for cs is 0.45 for r is 0.45 and for
         distance is 0.1
+        :param count: normalized review count
         :param vechile: type of transport
         :param distance: Distance from user's location
         :param cs: relevance score between 0 and 1
-        :param r: review stars between 0 and 5
+        :param r: normalized rating value
         :return: Returns value between 0 and 100"""
-        cs_normalize = cs * 100
-        r_normalize = 100 * (r - 0.5) / 4.5  # (r-min_r)/(max_r - min_r)
         if vechile == 0:
-            amount = cs_normalize * 0.4 + r_normalize * 0.6 #+ distance * 100 * 0.2
+            amount = cs * 0.15 + r * 0.25 + count * 0.6  # + distance * 100 * 0.2
         else:
-            amount = cs_normalize * 0.25 + r_normalize * 0.45 + distance * 100 * 0.3
+            amount = cs * 0.15 + r * 0.1 + count * 0.35 + distance * 0.4
         return amount
 
     # Version-2
@@ -59,7 +58,13 @@ class RecommenderEngine:
         # 1) Find the most similar business with keyword
         # 2) Find the most similar businesses withe the above business
         # I may use only step1, it seems more accurate
-        moderate = np.percentile(np.array([i.review_count for i in df]), 25)
+        all_rates = [float(i.stars) for i in df]
+        all_counts = [i.review_count for i in df]
+        max_rate = max(all_rates)
+        min_rate = min(all_rates)
+        max_count = max(all_counts)
+        min_count = min(all_counts)
+        # moderate = np.percentile(np.array([i.review_count for i in df]), 25)
         max_di = max([i.distance for i in df])
         min_di = min([i.distance for i in df])
 
@@ -67,13 +72,16 @@ class RecommenderEngine:
             rating = float(i.stars)
             distance = i.distance
             rating_count = i.review_count
-            fm_score = i.score
-            rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
+            fm_score = 100 * i.score
+            normalized_rate = 100 * (rating - min_rate) / (max_rate - min_rate)
+            normalized_count = 100 * (rating_count - min_count) / (max_count - min_count)
+            # rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
             if max_di == min_di:
-                normalized_di = 1
+                normalized_di = 100
             else:
-                normalized_di = (max_di - distance) / (max_di - min_di)
-            final_score = RecommenderEngine.calculate_final_score(fm_score, rating_contribution, normalized_di, vechile)
+                normalized_di = 100 * (max_di - distance) / (max_di - min_di)
+            final_score = RecommenderEngine.calculate_final_score(fm_score, normalized_rate, normalized_count,
+                                                                  normalized_di, vechile)
             i.score = final_score
 
         # sort cities by score and index.
@@ -97,5 +105,4 @@ class RecommenderEngine:
                                         'address': i.address
                                         },
                                        ignore_index=True)
-
         return resulted
