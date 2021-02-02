@@ -12,7 +12,7 @@
     <script>
         $(document).ready(function() {
         $('#id_City').select2({
-        placeholder: "Available cities",
+        placeholder: "Διαθέσιμες περιοχές",
         allowClear: true
     });
     });
@@ -21,12 +21,12 @@
         $(document).ready(function() {
         if($("#id_City").val()==""){
             $('#id_Business').select2({
-            placeholder: 'First select a city',
+            placeholder: 'Πρώτα επιλέξτε μια περιοχή',
             disabled : true,
             });}
         else{
             $('#id_Business').select2({
-            placeholder: 'Available Business',
+            placeholder: 'Διαθέσιμες επιχειρίσεις',
             disabled : false,
             });}
     });
@@ -36,7 +36,7 @@
             $("#id_City").change(function(){
                 if($(this).val() == "") {
                     $('#id_Business').prop({"disabled": true});
-                    $('#id_Business').prop({"placeholder": 'First select a city'});
+                    $('#id_Business').prop({"placeholder": 'Πρώτα επιλέξτε μια περιοχή'});
                 }
             })
         })
@@ -51,9 +51,9 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="/show_reviews/">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
 </div>

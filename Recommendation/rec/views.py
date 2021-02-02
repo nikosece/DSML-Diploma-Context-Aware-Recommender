@@ -115,7 +115,6 @@ def results(request):
                 df_new[i].distance = dist[i]
                 df_new[i].duration = dur[i]
             top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
-            cols = ["Όνομα", "Κατηγορίες", "Βαθμολογία", "Απόσταση(χλμ)", "Χρόνος(λεπτά)", "Score(%)", "Οδηγίες"]
             name_list = top_10_recommendations.name.to_list()
             cat_list = top_10_recommendations.categories.to_list()
             star_list = top_10_recommendations.stars.to_list()
@@ -126,12 +125,15 @@ def results(request):
             score_list = top_10_recommendations.score.to_list()
             score_list = ["{:.2f}".format(a) for a in score_list]
             ids_list = list(range(0, len(distance_list)))
+            b_id_list = top_10_recommendations.id.to_list()
+            r_count_list = top_10_recommendations.r_count.to_list()
             row_list = []
             for m in range(len(name_list)):
                 row_list.append(
                     {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
-                     "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m]})
-            return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
+                     "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
+                     "r_count": r_count_list[m], 'b_id': b_id_list[m]})
+            return render(request, 'rec/results.html', {'rows': row_list})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
 
@@ -209,7 +211,7 @@ def review(request):
     return render(request, 'rec/review.html', {'form': form, 'form2': form_b})
 
 
-def apply_review(request):
+def apply_review(request, b_id=None):
     global selected
     if request.method == 'POST':
         form = ReviewForm(data=request.POST)
@@ -240,7 +242,8 @@ def apply_review(request):
             selected.save()
             return redirect("index")
     else:
-        b_id = request.GET["Business"]
+        if b_id is None:
+            b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
         form = ReviewForm()
     return render(request, 'rec/apply_review.html', {'b': selected, 'form': form})

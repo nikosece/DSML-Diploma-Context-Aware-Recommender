@@ -5,13 +5,6 @@
    <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
     <meta charset="UTF-8">
     <title>Recommender</title>
-  <style>
-.bar-5 {width: {{ bar.4}}%; height: 18px; background-color: #4CAF50;}
-.bar-4 {width: {{ bar.3}}%; height: 18px; background-color: #2196F3;}
-.bar-3 {width: {{ bar.2}}%; height: 18px; background-color: #00bcd4;}
-.bar-2 {width: {{ bar.1}}%; height: 18px; background-color: #ff9800;}
-.bar-1 {width: {{ bar.0}}%; height: 18px; background-color: #f44336;}
-</style>
 </head>
 
 <body>
@@ -24,9 +17,9 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="/show_reviews/">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
      {% endif %}
@@ -34,8 +27,11 @@
 <div class="main">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<span class="heading">{{ b.name}}</span>
-{% if b.stars > 4.5 %}
+<div class="btitle">
+<p> <b>{{b.name}}</b></p>
+</div>
+    <span class="review">{{ b.stars}}</span>
+    {% if b.stars > 4.5 %}
 <span class="fa fa-star checked"></span>
 <span class="fa fa-star checked"></span>
 <span class="fa fa-star checked"></span>
@@ -67,8 +63,8 @@
 <span class="fa fa-star"></span>
 {% endif %}
 
-<p>{{ b.stars}} {{ b.review_count}} αξιολογήσεις.</p>
-<hr style="border:3px solid #333333">
+<span class="heading">{{ b.review_count}} αξιολογήσεις</span>
+    <hr style="border:3px solid #333333">
 
 </div>
 <div class="folium-map" >

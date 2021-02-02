@@ -42,6 +42,19 @@ class SignUpForm(UserCreationForm):
     class Meta(UserCreationForm):
         model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'preference')
+        labels = {
+            "email": "Email",
+            "first_name": "Όνομα",
+            "last_name": "Επώνυμο",
+            "preference": "Κατηγορίες"
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        # self.fields['password1'].help_text = 'Something that doesnt look awful'
+        self.fields['password2'].help_text = 'Πληκτρολογήστε τον ίδιο κωδικό'
+        self.fields['password1'].label = 'Κωδικός'
+        self.fields['password2'].label = 'Επιβεβαίωση κωδικού'
 
 
 class ProfileForm(forms.ModelForm):
@@ -60,12 +73,21 @@ class SignInForm(AuthenticationForm):
     class Meta:
         model = CustomUser
         fields = ('email',)
+        labels = {
+            "email": "Email",
+            "password": "Κωδικός",
+        }
 
 
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['title', 'content', 'stars']
+        labels = {
+            "title": "Τίτλος",
+            "content": "Κριτική",
+            "stars": "Βαθμολογία"
+        }
         widgets = {
             'stars': forms.NumberInput(attrs={'step': 1, 'min': 1, 'max': 5}),
         }

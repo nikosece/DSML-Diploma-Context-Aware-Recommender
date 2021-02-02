@@ -16,13 +16,13 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="/show_reviews/">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
 </div>
- <h1>My Reviews</h1>
+ <h1>Οι αξιολογήσεις μου</h1>
 {% for b in reviews %}
  <h4>{{b.business.name}}  {{  b.updated|date:'d/m/Y'}}</h4>
     {% if b.stars > 4.5 %}

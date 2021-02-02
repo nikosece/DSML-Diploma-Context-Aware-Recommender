@@ -11,7 +11,7 @@
     <script>
         $(document).ready(function() {
         $('#id_preference').select2({
-        placeholder: "Select one or more categories",
+        placeholder: "Επιλέξτε μια ή περισσότερες κατηγορίες",
         allowClear: false
     });
     });
@@ -20,14 +20,14 @@
 <body>
  <div class="topnav">
   <a href="/">Home</a>
-  <a href="/accounts/login/">Sign in</a>
-  <a class="active" href="/signup/">Sign up</a>
+  <a href="/accounts/login/">Σύνδεση</a>
+  <a class="active" href="/signup/">Εγγραφή</a>
 </div>
-<h2>Sign Up</h2>
+<h2>Εγγραφή</h2>
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Sign Up</button>
+  <button type="submit">Εγγραφή</button>
 </form>
 </body>
 </html>

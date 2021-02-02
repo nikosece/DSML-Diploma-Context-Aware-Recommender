@@ -27,9 +27,9 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="/show_reviews/">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
 </div>
@@ -37,7 +37,7 @@
 <form method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Update </button>
+  <button type="submit">Ενημέρωση</button>
 </form>
 </body>
 </html>

@@ -12,6 +12,8 @@ body {
   color: black;
   font-family: Arial, Helvetica, sans-serif;
 }
+    a { text-decoration: none;
+     color: inherit;}
 </style>
 
 </head>
@@ -26,36 +28,24 @@ body {
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="/show_reviews/">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύδεση</a>
     </div>
   </div>
      {% endif %}
 </div>
 <h1>Προτάσεις</h1>
-<table class="table">
-    <thead>
-        <tr>
-            {% for k in header %}
-            <th>{{k}}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-    <tbody>
-        {% for r in rows %}
-            <tr>
-                <td><a href="/show_business/{{r.id}}/">{{r.name}}</a></td>
-                <td>{{r.category}}</td>
-                <td>{{r.stars}}</td>
-                <td>{{r.distance}}</td>
-                <td>{{r.duration}}</td>
-                <td>{{r.score}}</td>
-                <td><a href="/show_directions/{{r.id}}/">οδηγίες</a></td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<hr style="border:3px solid #333333">
+{% for r in rows %}
+    <div class="res_show">
+        <a href="/show_business/{{r.id}}/"><p style="text-align:left"><b>{{r.name}}</b></p></a>
+        <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}}) <b>{{r.category}}</b></p></a>
+        <a href="/show_directions/{{r.id}}/"><p style="text-align:left">{{r.duration}}', {{r.distance}} χλμ</p></a>
+        <hr style="border:3px solid #333333">
+    </div>
+{% endfor %}
 </body>
 </html>
+
 

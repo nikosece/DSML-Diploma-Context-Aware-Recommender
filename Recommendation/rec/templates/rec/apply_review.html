@@ -7,6 +7,11 @@
     <meta charset="UTF-8">
     <title>Recommender</title>
 </head>
+<style>
+  .btitle p{
+    font-size: 30px;
+  }
+</style>
 <body>
 <div class="topnav">
   <a href="/">Home</a>
@@ -16,58 +21,60 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="#">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
 </div>
 <div class="main">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="btitle">
+<p> <b>{{b.name}}</b></p>
+</div>
+  <span class="review">{{ b.stars}}</span>
 
-<span class="heading">{{ b.name}}</span>
-{% if b.stars > 4.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
+  {% if b.stars > 4.5 %}
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
 {% elif b.stars > 3.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
 {% elif b.stars > 2.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
 {% elif b.stars > 1.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
 {% else %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
 {% endif %}
-
-<p>{{ b.stars}} {{ b.review_count}} αξιολογήσεις.</p>
+<span class="heading">{{ b.review_count}} αξιολογήσεις</span>
 <hr style="border:3px solid #333333">
 
 </div>
-<h2> Your opinion matters </h2>
+<h2> Η γνώμη σας μετράει </h2>
 <form action="/apply_review/" method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Apply Review</button>
+  <button type="submit">Υποβολή</button>
 </form>
 </body>
 </html>

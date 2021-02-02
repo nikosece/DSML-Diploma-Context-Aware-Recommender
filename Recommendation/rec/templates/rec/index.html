@@ -108,17 +108,17 @@ function myFunction() {
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/show_profile/">Profile</a>
-      <a href="/show_reviews/">My Reviews</a>
-      <a href="{% url 'logout' %}">Log Out</a>
+      <a href="/show_profile/">Προφίλ</a>
+      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
 </div>
  {% else %}
  <div class="topnav">
   <a class="active" href="/">Home</a>
-  <a href="/accounts/login/">Sign in</a>
-  <a href="/signup/">Sign up</a>
+  <a href="/accounts/login/">Σύνδεση</a>
+  <a href="/signup/">Εγγραφή</a>
 </div>
  {% endif %}
 
@@ -126,7 +126,7 @@ function myFunction() {
 
 {% if user.is_authenticated %}
 {% else %}
-  <p>You are not signed in. <a href="/accounts/login/">Sign in</a> or <a href="/signup/">sign up</a> for better recommendations!</p>
+  <p>Δεν έχετε συνδεθεί. <a href="/accounts/login/">Συνδεθείτε</a> ή <a href="/signup/">κάντε εγγραφή</a> για καλύτερες προτάσεις!</p>
  {% endif %}
 
 <form action="" method="POST">

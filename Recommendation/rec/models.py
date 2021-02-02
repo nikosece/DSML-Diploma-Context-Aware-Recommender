@@ -71,8 +71,37 @@ class BusinessCity(models.Model):
         return self.name
 
 
+class BusinessIcon(models.Model):
+    name = models.CharField(max_length=220)
+
+    def __str__(self):
+        return self.name
+
+
+class BusinessPrice(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class BusinessPhoto(models.Model):
+    height = models.PositiveSmallIntegerField()
+    width = models.PositiveSmallIntegerField()
+    html_attributions = models.CharField(max_length=220)
+    photo_reference = models.CharField(max_length=220)
+
+    def __str__(self):
+        return 'Nothing to show'
+
+
 class Business(models.Model):
     name = models.CharField(max_length=140)
+    address = models.CharField(max_length=220)
+    icon = models.ForeignKey(BusinessIcon, on_delete=models.CASCADE, related_name='businesses',
+                             related_query_name='business')
+    price_level = models.ForeignKey(BusinessPrice, on_delete=models.CASCADE, related_name='businesses',
+                                    related_query_name='business')
     business_id = models.CharField(max_length=70, primary_key=True)
     latitude = models.FloatField()
     longtitude = models.FloatField()
@@ -82,6 +111,7 @@ class Business(models.Model):
     stars = models.DecimalField(max_digits=2, decimal_places=1)
     review_count = models.PositiveSmallIntegerField()
     categories = models.ManyToManyField(BusinessCategory)
+    photo = models.OneToOneField(BusinessPhoto, on_delete=models.CASCADE, )
 
     def __str__(self):
         return self.name
