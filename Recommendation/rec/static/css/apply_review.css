@@ -64,6 +64,32 @@ input[type=submit] {
   text-decoration: none;
   font-size: 17px;
 }
+
+.sort_type {
+  float: right;
+  overflow: hidden;
+}
+
+.sort_type .dropbtn {
+  font-size: 17px;
+  border: none;
+  outline: none;
+  color: #4CAF50;
+  padding: 14px 60px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+.sort_type:hover .dropbtn {
+  background-color: #ddd;
+  color: black;
+}
+.sort_type:hover .dropdown-content {
+  display: block;
+}
+
+
+
 .dropdown {
   float: right;
   overflow: hidden;

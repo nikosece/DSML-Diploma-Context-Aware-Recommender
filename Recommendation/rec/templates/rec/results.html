@@ -36,6 +36,17 @@ body {
      {% endif %}
 </div>
 <h1>Προτάσεις</h1>
+<div class="sort_type">
+    <button class="dropbtn">Ταξινόμιηση κατά: {{sort}}
+      <i class="fa fa-caret-down"></i>
+    </button>
+    <div class="dropdown-content">
+      <a href="/results/score/">Προκαθορισμένο</a>
+      <a href="/results/stars/">Βαθμολογία</a>
+      <a href="/results/r_count/">Πλήθος κριτικών</a>
+      <a href="/results/distance/">Απόσταση</a>
+    </div>
+  </div>
 <hr style="border:3px solid #333333">
 {% for r in rows %}
     <div class="res_show">

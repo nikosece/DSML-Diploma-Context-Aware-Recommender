@@ -95,8 +95,34 @@ def index(request):
     return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form4': vechiles})
 
 
-def results(request):
+def results(request, sort_type=None):
     global df_new, cols, row_list, top_10_recommendations, origin, form2, selected_vechile
+    if sort_type:
+        name_map = {"distance":"Απόσταση", "stars":"Βαθμολογία", "score":"Προκαθορισμένο", "r_count":"Πλήθος κριτικών"}
+        if sort_type == 'distance':
+            top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type])
+        else:
+            top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type],ascending=False)
+        name_list = top_10_recommendations.name.to_list()
+        cat_list = top_10_recommendations.categories.to_list()
+        star_list = top_10_recommendations.stars.to_list()
+        distance_list = top_10_recommendations.distance.to_list()
+        distance_list = ["{:.2f}".format(a) for a in distance_list]
+        duration_list = top_10_recommendations.duration.to_list()
+        duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
+        score_list = top_10_recommendations.score.to_list()
+        score_list = ["{:.2f}".format(a) for a in score_list]
+        ids_list = list(range(0, len(distance_list)))
+        b_id_list = top_10_recommendations.id.to_list()
+        r_count_list = top_10_recommendations.r_count.to_list()
+        address_list = top_10_recommendations.address.to_list()
+        row_list = []
+        for m in range(len(name_list)):
+            row_list.append(
+                {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
+                 "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
+                 "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
+        return render(request, 'rec/results.html', {'rows': row_list,'sort':name_map[sort_type]})
     if request.method == 'POST':
         form2 = CategoryForm(Category=category_tuple, data=request.POST)
         if form2.is_valid():
@@ -137,7 +163,7 @@ def results(request):
                     {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
                      "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
                      "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
-            return render(request, 'rec/results.html', {'rows': row_list})
+            return render(request, 'rec/results.html', {'rows': row_list,'sort':"Προκαθορισμένο"})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
 
