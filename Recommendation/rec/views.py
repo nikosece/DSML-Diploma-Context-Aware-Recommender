@@ -61,7 +61,10 @@ def read_pickle(name):
 
 def create_categories_form():
     global selected_city, df_new, df_explode, categories, to_show, form2, category_tuple
-    df_new = Business.objects.filter(city__name=selected_city)
+    if selected_city != 'Όλες':
+        df_new = Business.objects.filter(city__name=selected_city)
+    else:
+        df_new = Business.objects.all()
     categories = [i['categories__name'] for i in df_new.values('categories__name')
         .annotate(total=Count('categories__name'))
         .order_by('-total')]
@@ -127,12 +130,13 @@ def results(request):
             ids_list = list(range(0, len(distance_list)))
             b_id_list = top_10_recommendations.id.to_list()
             r_count_list = top_10_recommendations.r_count.to_list()
+            address_list = top_10_recommendations.address.to_list()
             row_list = []
             for m in range(len(name_list)):
                 row_list.append(
                     {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
                      "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
-                     "r_count": r_count_list[m], 'b_id': b_id_list[m]})
+                     "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
             return render(request, 'rec/results.html', {'rows': row_list})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
@@ -155,12 +159,10 @@ def show_directions(request, b_id):
 
 
 def show_business(request, b_id):
-    df = top_10_recommendations.iloc[b_id]
-    bus_id = df.id
-    b = Business.objects.get(business_id=bus_id)
+    b = Business.objects.get(business_id=b_id)
     name = b.name
-    dest = [df.longitude, df.latitude]
-    m = Create_map.business([origin[1], origin[0]], dest, name)
+    dest = [b.longtitude, b.latitude]
+    m = Create_map.business(dest, name)
     # splitted = m[0].split("\n")
     # for line in range(len(splitted)):
     #     if "<style>html," in splitted[line]:
@@ -193,11 +195,14 @@ def review(request):
         if form.is_valid():
             selected_review_city = request.POST["City"]
             # df = Functions.filtering_city(df_b, selected_review_city)
-            df = Business.objects.filter(city__name=selected_review_city)
+            if selected_review_city !='Όλες':
+                df = Business.objects.filter(city__name=selected_review_city).order_by('-review_count')
+            else:
+                df = Business.objects.order_by('-review_count')
             b_names = [d.name for d in df]  # i can do this with database
             b_ids = [d.business_id for d in df]
-            b_ids = [x for _, x in sorted(zip(b_names, b_ids))]
-            b_names.sort()
+            # b_ids = [x for _, x in sorted(zip(b_names, b_ids))]    This is for name sort, above i do review sort
+            # b_names.sort()
             business_tuple = (('', ''),)
             for j in range(len(b_names)):
                 business_tuple = business_tuple + ((b_ids[j], b_names[j]),)
@@ -278,14 +283,14 @@ user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_feat
 dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
 item_map = dataset.mapping()[2]
 cities = BusinessCity.objects.order_by('name').values()
-tuple_list = (('', ''),)
+tuple_list = (('', ''), ('Όλες', 'Όλες'),)
 for c_ity in cities:
     tuple_list = tuple_list + ((c_ity['name'], c_ity['name']),)
 
 # tuple_list = None # to filled up
 df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
 top_10_recommendations = origin = category_tuple = selected = selected_vechile = None
-selected_city = tuple_list[0][0]  # Choose the first available city to initialize index forms
+selected_city = 'Όλες'  # Choose the first available city to initialize index forms
 cols_to_show = set([i['categories__name'] for i in Business.objects.values('categories__name')
                    .annotate(total=Count('categories__name'))
                    .order_by('-total')])

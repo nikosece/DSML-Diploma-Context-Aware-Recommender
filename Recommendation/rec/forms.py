@@ -36,6 +36,7 @@ class VechileForm(forms.Form):
         self.fields["Vechile"] = forms.CharField(label='Μέσο μεταφοράς', widget=forms.RadioSelect(choices=choices),
                                                  initial=0)
         self.fields["Location"] = forms.CharField(label='Τοποθεσία')
+        self.fields['Location'].widget.attrs['readonly'] = True
 
 
 class SignUpForm(UserCreationForm):

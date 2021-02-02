@@ -82,9 +82,9 @@ class RecommenderEngine:
 
         # create an empty results data frame.
         resulted = pd.DataFrame(columns=('name', 'city', 'categories', 'stars', 'score', 'distance',
-                                         'latitude', 'longitude', 'duration', 'id', 'r_count'))
+                                         'latitude', 'longitude', 'duration', 'id', 'r_count', 'address'))
 
-        # get highest scored 10 businesses.
+        # get highest scored 50 businesses.
         for i in top_items:
             cat = " ,".join([j.name for j in i.categories.all()])
             resulted = resulted.append({'name': i.name, 'city': i.city.name,
@@ -93,7 +93,8 @@ class RecommenderEngine:
                                         'score': i.score, 'duration': i.duration,
                                         'latitude': i.latitude,
                                         'longitude': i.longtitude, 'id': i.business_id,
-                                        'r_count': i.review_count
+                                        'r_count': i.review_count,
+                                        'address': i.address
                                         },
                                        ignore_index=True)
 

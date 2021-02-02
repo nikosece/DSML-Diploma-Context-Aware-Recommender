@@ -69,7 +69,10 @@ class Create_map:
         if include:
             fields.append("Preference")
             fields.append("Distance")
-        filtered = df[df.city == city]
+        if city != 'Όλες':
+            filtered = df[df.city == city]
+        else:
+            filtered = df
         filtered = filtered.filter(["name", "latitude", "longitude", "city", "stars", "distance"])
         lat_list = filtered.latitude.to_list()
         long_list = filtered.longitude.to_list()
@@ -111,17 +114,12 @@ class Create_map:
         return my_map
 
     @staticmethod
-    def business(origin, dest, name):
+    def business(dest, name):
         my_map = folium.Map(location=[dest[1], dest[0]], zoom_start=15, prefer_canvas=True)
-        mark = folium.FeatureGroup("User Location")
-        mark.add_child(
-            folium.Marker((origin[1], origin[0]), icon=folium.Icon(color='red', icon='map-marker', prefix='fa'),
-                          tooltip="Origin"))
         mark2 = folium.FeatureGroup("Destination")
         mark2.add_child(
             folium.Marker((dest[1], dest[0]), icon=folium.Icon(color='blue', icon='map-marker', prefix='fa'),
                           tooltip=name))
-        my_map.add_child(mark)
         my_map.add_child(mark2)
         folium.LayerControl().add_to(my_map)
         m = my_map._repr_html_()

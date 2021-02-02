@@ -26,11 +26,13 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div class="btitle">
-<p> <b>{{b.name}}</b></p>
+<a style="color: inherit" href="/show_business/{{b.business_id}}/"><p> <b>{{b.name}}</b></p></a>
 </div>
 <div class="baddress">
 <p>{{b.address}}</p>
 </div>
+
+<div class="rating">
   <span class="review">{{ b.stars}}</span>
 
   {% if b.stars > 4.5 %}
@@ -65,8 +67,10 @@
 <span class="fa fa-star fa-lg"></span>
 {% endif %}
 <span class="heading">{{ b.review_count}} αξιολογήσεις</span>
-<hr style="border:3px solid #333333">
-
+</div>
+</div>
+<div class="bord">
+    <hr>
 </div>
 <p> Μοιραστείτε την εμπειρία σας </p>
 <form action="/apply_review/" method="post">

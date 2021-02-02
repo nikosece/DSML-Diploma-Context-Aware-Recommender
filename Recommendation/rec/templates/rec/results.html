@@ -39,9 +39,18 @@ body {
 <hr style="border:3px solid #333333">
 {% for r in rows %}
     <div class="res_show">
-        <a href="/show_business/{{r.id}}/"><p style="text-align:left"><b>{{r.name}}</b></p></a>
+        <div class="btitle">
+        <a href="/show_business/{{r.b_id}}/"><p style="text-align:left"><b>{{r.name}}</b></p></a>
+        </div>
+        <div class="baddress">
+        <p>{{r.address}}</p>
+        </div>
+        <div class="reviewstar">
         <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}}) <b>{{r.category}}</b></p></a>
+        </div>
+        <div class="diraddress">
         <a href="/show_directions/{{r.id}}/"><p style="text-align:left">{{r.duration}}', {{r.distance}} χλμ</p></a>
+        </div>
         <hr style="border:3px solid #333333">
     </div>
 {% endfor %}

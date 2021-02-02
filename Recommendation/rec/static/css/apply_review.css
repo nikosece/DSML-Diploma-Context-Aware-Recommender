@@ -8,14 +8,26 @@ input[type=submit] {
 .main {
   margin-top: 30px; /* Add a top margin to avoid content overlay */
   /*margin-left: 20%;*/
+  width: max-content;
 }
 .btitle p{
   font-size: 30px;
   margin-bottom: 0;
   }
+.btitle, .baddress, .reviewstar, .diraddress, .rating{
+  width: max-content;
+}
+.rateheader{
+  width: max-content;
+}
+.reviewlink{
+  color: inherit;
+  width: max-content;
+}
 .baddress p{
   font-size: 15px;
   margin-top: 0;
+  text-align: left;
   /*margin: 0;*/
   }
 .folium-map {
@@ -33,6 +45,10 @@ input[type=submit] {
 .res_show a{
   text-decoration: none;
 }
+.main a{
+  text-decoration: none;
+}
+
 .topnav {
   /*position: fixed;*/
   /*top: 0;*/
@@ -188,6 +204,10 @@ table {
   visibility: visible;
   -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
   animation: fadein 0.5s, fadeout 0.5s 3.5s;
+}
+hr{
+  border:3px solid #333333;
+  width: 100%;
 }
 h1 {
   font-style: italic;
