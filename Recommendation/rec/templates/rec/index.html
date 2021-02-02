@@ -28,13 +28,21 @@
           }
         }
         function showPosition(position) {
-            var x = document.getElementById("id_Location");
+        var x = document.getElementById("id_Location");
         x.value= position.coords.latitude + "_" + position.coords.longitude;
         }
         $(document).ready(function() {
         if(navigator.geolocation) {
             if ($("#id_City").val() != "") {
+                let myPromise = new Promise(function(showPosition,showError){
                 navigator.geolocation.getCurrentPosition(showPosition,showError);
+                });
+                myPromise.then(
+                    function(value) {showPosition(value);
+                    document.getElementById('sumbit_button').disabled = false;
+                    },
+                    function(error) {showError(error);}
+                );
             }
         }
         });
@@ -51,6 +59,7 @@
     </script>
     <script>
         $(document).ready(function() {
+        document.getElementById('sumbit_button').disabled = true;
         if($("#id_City").val()==""){
             $('#id_Category').select2({
             placeholder: 'Πρώτα επιλέξτε μια περιοχή',
@@ -140,7 +149,7 @@ function myFunction() {
     {{ form2.as_p }}
     {{ form4.as_p }}
 
-    <input type="submit" value="Προτάσεις">
+    <input id="sumbit_button" type="submit" value="Προτάσεις">
 </form>
 </body>
 </html>
