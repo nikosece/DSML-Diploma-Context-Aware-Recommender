@@ -30,37 +30,40 @@
 <div class="btitle">
 <p> <b>{{b.name}}</b></p>
 </div>
+<div class="baddress">
+<p>{{b.address}}</p>
+</div>
     <span class="review">{{ b.stars}}</span>
     {% if b.stars > 4.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
 {% elif b.stars > 3.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
 {% elif b.stars > 2.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
 {% elif b.stars > 1.5 %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
 {% else %}
-<span class="fa fa-star checked"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
-<span class="fa fa-star"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
 {% endif %}
 
 <span class="heading">{{ b.review_count}} αξιολογήσεις</span>

@@ -9,6 +9,15 @@ input[type=submit] {
   margin-top: 30px; /* Add a top margin to avoid content overlay */
   /*margin-left: 20%;*/
 }
+.btitle p{
+  font-size: 30px;
+  margin-bottom: 0;
+  }
+.baddress p{
+  font-size: 15px;
+  margin-top: 0;
+  /*margin: 0;*/
+  }
 .folium-map {
   display: block;
   margin-left: auto;
