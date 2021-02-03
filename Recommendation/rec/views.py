@@ -14,6 +14,29 @@ from scipy import sparse
 import pathlib
 
 
+def row_result_create(df):
+    name_list = df.name.to_list()
+    cat_list = df.categories.to_list()
+    star_list = df.stars.to_list()
+    distance_list = df.distance.to_list()
+    distance_list = ["{:.2f}".format(a) for a in distance_list]
+    duration_list = df.duration.to_list()
+    duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
+    score_list = df.score.to_list()
+    score_list = ["{:.2f}".format(a) for a in score_list]
+    ids_list = list(range(0, len(distance_list)))
+    b_id_list = df.id.to_list()
+    r_count_list = df.r_count.to_list()
+    address_list = df.address.to_list()
+    row_list = []
+    for m in range(len(name_list)):
+        row_list.append(
+            {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
+             "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
+             "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
+    return row_list
+
+
 def save_pickle(var, name):
     with open(name + '.pickle', 'wb') as fle:
         pickle.dump(var, fle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -98,31 +121,14 @@ def index(request):
 def results(request, sort_type=None):
     global df_new, cols, row_list, top_10_recommendations, origin, form2, selected_vechile
     if sort_type:
-        name_map = {"distance":"Απόσταση", "stars":"Βαθμολογία", "score":"Προκαθορισμένο", "r_count":"Πλήθος κριτικών"}
+        name_map = {"distance": "Απόσταση", "stars": "Βαθμολογία", "score": "Προκαθορισμένο",
+                    "r_count": "Πλήθος κριτικών"}
         if sort_type == 'distance':
             top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type])
         else:
-            top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type],ascending=False)
-        name_list = top_10_recommendations.name.to_list()
-        cat_list = top_10_recommendations.categories.to_list()
-        star_list = top_10_recommendations.stars.to_list()
-        distance_list = top_10_recommendations.distance.to_list()
-        distance_list = ["{:.2f}".format(a) for a in distance_list]
-        duration_list = top_10_recommendations.duration.to_list()
-        duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
-        score_list = top_10_recommendations.score.to_list()
-        score_list = ["{:.2f}".format(a) for a in score_list]
-        ids_list = list(range(0, len(distance_list)))
-        b_id_list = top_10_recommendations.id.to_list()
-        r_count_list = top_10_recommendations.r_count.to_list()
-        address_list = top_10_recommendations.address.to_list()
-        row_list = []
-        for m in range(len(name_list)):
-            row_list.append(
-                {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
-                 "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
-                 "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
-        return render(request, 'rec/results.html', {'rows': row_list,'sort':name_map[sort_type]})
+            top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type], ascending=False)
+        row_list = row_result_create(top_10_recommendations)
+        return render(request, 'rec/results.html', {'rows': row_list, 'sort': name_map[sort_type]})
     if request.method == 'POST':
         form2 = CategoryForm(Category=category_tuple, data=request.POST)
         if form2.is_valid():
@@ -144,26 +150,8 @@ def results(request, sort_type=None):
                 df_new[i].distance = dist[i]
                 df_new[i].duration = dur[i]
             top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
-            name_list = top_10_recommendations.name.to_list()
-            cat_list = top_10_recommendations.categories.to_list()
-            star_list = top_10_recommendations.stars.to_list()
-            distance_list = top_10_recommendations.distance.to_list()
-            distance_list = ["{:.2f}".format(a) for a in distance_list]
-            duration_list = top_10_recommendations.duration.to_list()
-            duration_list = ["{}".format(math.ceil(a)) for a in duration_list]
-            score_list = top_10_recommendations.score.to_list()
-            score_list = ["{:.2f}".format(a) for a in score_list]
-            ids_list = list(range(0, len(distance_list)))
-            b_id_list = top_10_recommendations.id.to_list()
-            r_count_list = top_10_recommendations.r_count.to_list()
-            address_list = top_10_recommendations.address.to_list()
-            row_list = []
-            for m in range(len(name_list)):
-                row_list.append(
-                    {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
-                     "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
-                     "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
-            return render(request, 'rec/results.html', {'rows': row_list,'sort':"Προκαθορισμένο"})
+            row_list = row_result_create(top_10_recommendations)
+            return render(request, 'rec/results.html', {'rows': row_list, 'sort': "Προκαθορισμένο"})
     else:
         return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
 
@@ -221,7 +209,7 @@ def review(request):
         if form.is_valid():
             selected_review_city = request.POST["City"]
             # df = Functions.filtering_city(df_b, selected_review_city)
-            if selected_review_city !='Όλες':
+            if selected_review_city != 'Όλες':
                 df = Business.objects.filter(city__name=selected_review_city).order_by('-review_count')
             else:
                 df = Business.objects.order_by('-review_count')

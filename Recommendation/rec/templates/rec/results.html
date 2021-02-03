@@ -35,7 +35,6 @@ body {
   </div>
      {% endif %}
 </div>
-<h1>Προτάσεις</h1>
 <div class="sort_type">
     <button class="dropbtn">Ταξινόμιηση κατά: {{sort}}
       <i class="fa fa-caret-down"></i>
@@ -47,7 +46,9 @@ body {
       <a href="/results/distance/">Απόσταση</a>
     </div>
   </div>
-<hr style="border:3px solid #333333">
+<div class="border">
+    <hr style="border:3px solid #333333">
+</div>
 {% for r in rows %}
     <div class="res_show">
         <div class="btitle">
@@ -60,7 +61,7 @@ body {
         <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}}) <b>{{r.category}}</b></p></a>
         </div>
         <div class="diraddress">
-        <a href="/show_directions/{{r.id}}/"><p style="text-align:left">{{r.duration}}', {{r.distance}} χλμ</p></a>
+        <a href="/show_directions/{{r.id}}/"><p style="text-align:left">{{r.duration}}'     {{r.distance}} χλμ</p></a>
         </div>
         <hr style="border:3px solid #333333">
     </div>
