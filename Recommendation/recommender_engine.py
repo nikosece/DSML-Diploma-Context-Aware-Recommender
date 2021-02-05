@@ -29,6 +29,9 @@ class RecommenderEngine:
     # Version-2
     @staticmethod
     def similarity_filter(df, k, keywords):
+        """Keep only businesses that contain requested category and calculate similarity
+        then sort by review count, because a business that contains both cafe and bar will
+        have less score than a business that contains only cafe although it could be more popular"""
         tfidf = TfidfVectorizer(stop_words='english')
         categories = []
         for row in df:
@@ -39,11 +42,12 @@ class RecommenderEngine:
         cosine_sim1 = linear_kernel(tfidf_matrix, tfidf_keywords)
         sim_scores = list(enumerate(cosine_sim1))
         sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-        sim_scores = sim_scores[0:k]
+        # sim_scores = sim_scores[0:k]
         new_df = [df[ids[0]] for ids in sim_scores if ids[1] > 0]
         for i in range(len(new_df)):
             new_df[i].score = sim_scores[i][1][0]
-        return new_df
+        new_df = sorted(new_df, key=lambda x: x.review_count, reverse=True)
+        return new_df[0:k]
 
     @staticmethod
     def get_recommendations_include_rating(df, vechile):

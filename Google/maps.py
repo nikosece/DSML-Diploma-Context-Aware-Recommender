@@ -37,7 +37,7 @@ def plot():
     with open('track_requests') as f:
         for line in f:
             *arg, area = line.rstrip('\n').split(" ")
-            mark.add_child(folium.Circle((arg[0], arg[1]), radius=arg[2]))
+            mark.add_child(folium.Circle((arg[0], arg[1]), radius=arg[2], tooltip=area))
     my_map = folium.Map(location=[arg[0], arg[1]], zoom_start=12, prefer_canvas=True)
     my_map.add_child(mark)
     return my_map

@@ -85,9 +85,10 @@ def read_pickle(name):
 def create_categories_form():
     global selected_city, df_new, df_explode, categories, to_show, form2, category_tuple
     if selected_city != 'Όλες':
-        df_new = Business.objects.filter(city__name=selected_city).order_by('-review_count')
+        df_new = Business.objects.filter(city__name=selected_city).order_by('-review_count').filter(
+            review_count__gte=100)
     else:
-        df_new = Business.objects.all().order_by('-review_count')
+        df_new = Business.objects.filter(review_count__gte=100).order_by('-review_count')
     categories = [i['categories__name'] for i in df_new.values('categories__name')
         .annotate(total=Count('categories__name'))
         .order_by('-total')]

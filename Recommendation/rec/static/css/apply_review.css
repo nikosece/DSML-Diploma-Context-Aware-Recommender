@@ -69,12 +69,15 @@ input[type=submit] {
   font-size: 17px;
 }
 .border {
-  padding-top: 40px;
+  padding-top: 50px;
 }
 .sort_type {
-  /*display: inline-block;*/
+  display: inline-block;
   float: right;
   overflow: hidden;
+}
+.line_1 p{
+  float: left;
 }
 
 .sort_type .dropbtn {

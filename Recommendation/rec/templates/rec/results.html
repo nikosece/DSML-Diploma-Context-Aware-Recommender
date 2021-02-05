@@ -35,7 +35,9 @@ body {
   </div>
      {% endif %}
 </div>
-<div class="sort_type">
+<div class="line_1">
+    <p>{{rows|length}} αποτελέσματα</p>
+    <div class="sort_type">
     <button class="dropbtn">Ταξινόμιηση κατά: {{sort}}
       <i class="fa fa-caret-down"></i>
     </button>
@@ -46,6 +48,7 @@ body {
       <a href="/results/distance/">Απόσταση</a>
     </div>
   </div>
+</div>
 <div class="border">
     <hr style="border:3px solid #333333">
 </div>
