@@ -34,7 +34,7 @@
  <h1>Οι αξιολογήσεις μου</h1>
  <hr style="border:3px solid #333333">
 {% for b in reviews %}
- <div class="res_show">
+ <div class="review_show">
  <a href="/show_business/{{b.business_id}}/"><p><b>{{b.business.name}}  {{  b.updated|date:'d/m/Y'}}</b></p></a>
  </div>
     {% if b.stars > 4.5 %}
