@@ -236,7 +236,6 @@ def apply_review(request, b_id=None):
         form = ReviewForm(data=request.POST)
         if form.is_valid():
             r_star = int(form.cleaned_data['stars'])  # user review stars
-            old_star_count = selected.stars_count  # number of each star before this review
             check_review = Review.objects.filter(user=request.user, business=selected)
             if len(check_review) == 0:  # user review this business for first time
                 instance = form.save(commit=False)
@@ -250,13 +249,10 @@ def apply_review(request, b_id=None):
                 check_review = check_review[0]
                 old_star_value = int(check_review.stars)
                 form = ReviewForm(request.POST, instance=check_review)
-                old_star_count[old_star_value - 1] = old_star_count[old_star_value - 1] - 1
                 avg_star = round((float(selected.stars) * selected.review_count + r_star - old_star_value)
                                  / selected.review_count, 1)
                 form.save()
             messages.success(request, 'Your review was stored successfully')
-            old_star_count[r_star - 1] = old_star_count[r_star - 1] + 1
-            selected.stars_count = old_star_count
             selected.stars = avg_star
             selected.save()
             return redirect("index")

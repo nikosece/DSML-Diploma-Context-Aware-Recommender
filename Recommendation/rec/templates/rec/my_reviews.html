@@ -6,6 +6,15 @@
     <title>Recommender</title>
     <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        a {
+            text-decoration: none;
+             color: inherit;}
+        .res_show p{
+            text-align:left;
+            font-size: 27px;
+        }
+    </style>
 </head>
 <body>
  <div class="topnav">
@@ -23,8 +32,11 @@
   </div>
 </div>
  <h1>Οι αξιολογήσεις μου</h1>
+ <hr style="border:3px solid #333333">
 {% for b in reviews %}
- <h4>{{b.business.name}}  {{  b.updated|date:'d/m/Y'}}</h4>
+ <div class="res_show">
+ <a href="/show_business/{{b.business_id}}/"><p><b>{{b.business.name}}  {{  b.updated|date:'d/m/Y'}}</b></p></a>
+ </div>
     {% if b.stars > 4.5 %}
         <span class="fa fa-star checked"></span>
         <span class="fa fa-star checked"></span>

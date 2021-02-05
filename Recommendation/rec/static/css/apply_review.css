@@ -18,6 +18,9 @@ input[type=submit] {
 .btitle, .baddress, .reviewstar, .diraddress, .rating{
   width: max-content;
 }
+.res_show{
+  width: max-content;
+}
 .rateheader{
   width: max-content;
 }
