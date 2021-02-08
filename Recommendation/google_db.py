@@ -193,3 +193,8 @@ for key, b in businesses.items():
 
 
 ### εχω βγαλει ψητοπωλεια και γνωστες αλυσιδες take away cafe
+
+# BusinessCategory.objects.get(name='store').delete()
+zero = Business.objects.filter(stars=0)
+for z in zero:
+	z.delete()

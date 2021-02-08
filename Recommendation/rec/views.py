@@ -288,11 +288,11 @@ def show_reviews(request):
 
 # if request.user.is_authenticated:
 #     print(type(current_user.preference[0]))
-model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')
-item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_featuresV4')
-user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
-dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
-item_map = dataset.mapping()[2]
+# model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')
+# item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_featuresV4')
+# user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
+# dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
+# item_map = dataset.mapping()[2]
 cities = BusinessCity.objects.order_by('name').values()
 tuple_list = (('', ''), ('Όλες', 'Όλες'),)
 for c_ity in cities:

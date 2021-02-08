@@ -12,20 +12,24 @@
     <script>
         function showError(error) {
             var x = document.getElementById("id_Location");
+            var element = document.createElement("div");
+            element.setAttribute("id", "snackbar");
+            x.value = "37.97967585455389_23.733897939057712"
           switch(error.code) {
             case error.PERMISSION_DENIED:
-              x.value = "User denied the request for Geolocation."
+              element.innerHTML = "User denied the request for Geolocation.";
               break;
             case error.POSITION_UNAVAILABLE:
-              x.value = "Location information is unavailable."
+              element.innerHTML= "Location information is unavailable.";
               break;
             case error.TIMEOUT:
-              x.value = "The request to get user location timed out."
+              element.innerHTML = "The request to get user location timed out.";
               break;
             case error.UNKNOWN_ERROR:
-              x.value = "An unknown error occurred."
+              element.innerHTML = "An unknown error occurred.";
               break;
           }
+          document.body.appendChild(element);
         }
         function showPosition(position) {
         var x = document.getElementById("id_Location");
@@ -41,7 +45,9 @@
                     function(value) {showPosition(value);
                     document.getElementById('sumbit_button').disabled = false;
                     },
-                    function(error) {showError(error);}
+                    function(error) {showError(error);
+                    myFunction()
+                    document.getElementById('sumbit_button').disabled = false;}
                 );
             }
         }
@@ -59,8 +65,8 @@
     </script>
     <script>
         $(document).ready(function() {
-        document.getElementById('sumbit_button').disabled = true;
         if($("#id_City").val()==""){
+            document.getElementById('sumbit_button').disabled = true;
             $('#id_Category').select2({
             placeholder: 'Πρώτα επιλέξτε μια περιοχή',
             disabled : true,
