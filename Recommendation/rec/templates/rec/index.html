@@ -65,6 +65,7 @@
     </script>
     <script>
         $(document).ready(function() {
+        document.getElementById('sumbit_button').disabled = true;
         if($("#id_City").val()==""){
             document.getElementById('sumbit_button').disabled = true;
             $('#id_Category').select2({
@@ -72,6 +73,9 @@
             disabled : true,
             });}
         else{
+            if($("#id_Location").val()!=""){
+                document.getElementById('sumbit_button').disabled = false;
+            }
             $('#id_Category').select2({
             placeholder: 'Διαθέσιμες κατηγορίες',
             disabled : false,
