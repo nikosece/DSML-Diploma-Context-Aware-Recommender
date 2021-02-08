@@ -1,0 +1,293 @@
+* {
+  box-sizing: border-box;
+}
+
+input[type=submit] {
+    font-size: 20px;
+}
+.main {
+  margin-top: 30px; /* Add a top margin to avoid content overlay */
+  /*margin-left: 20%;*/
+  width: max-content;
+}
+.btitle p{
+  font-size: 30px;
+  margin-bottom: 0;
+  margin-top: 10px;
+  }
+.btitle, .baddress, .reviewstar, .diraddress, .rating{
+  width: max-content;
+}
+.review_show{
+  width: max-content;
+}
+.rateheader{
+  width: max-content;
+}
+.reviewlink{
+  color: inherit;
+  width: max-content;
+}
+.baddress p{
+  font-size: 15px;
+  margin-top: 0;
+  text-align: left;
+  /*margin: 0;*/
+  }
+.folium-map {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
+  width: 850px;
+}
+.big{
+  position: fixed;
+  height: 70%;
+  width: 100%;
+}
+.res_show a{
+  text-decoration: none;
+}
+.main a{
+  text-decoration: none;
+}
+
+.topnav {
+  /*position: fixed;*/
+  /*top: 0;*/
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+.border {
+  padding-top: 50px;
+}
+.sort_type {
+  display: inline-block;
+  float: right;
+  overflow: hidden;
+}
+.line_1 p{
+  float: left;
+}
+
+.sort_type .dropbtn {
+  font-size: 17px;
+  border: none;
+  outline: none;
+  color: #333333 ;
+  padding: 14px 20px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+.sort_type:hover .dropbtn {
+  background-color: #ddd;
+  color: black;
+}
+.sort_type:hover .dropdown-content {
+  display: block;
+}
+
+
+
+.dropdown {
+  float: right;
+  overflow: hidden;
+}
+
+.dropdown .dropbtn {
+  font-size: 17px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 60px;
+  background-color: inherit;
+  font-family: inherit;
+  margin: 0;
+}
+.topnav a:hover, .dropdown:hover .dropbtn {
+  background-color: #ddd;
+  color: black;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 250px;
+  box-shadow: 60px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+body {
+    font-family: Arial, Helvetica, sans-serif;  /*margin: 0 auto; !* Center website *!*/
+  /*max-width: 800px; !* Max width *!*/
+  /*padding: 20px;*/
+}
+.review{
+  font-size: 25px;
+}
+.heading {
+  font-size: 15px;
+}
+
+.fa {
+  font-size: 25px;
+}
+
+.checked {
+  color: orange;
+}
+
+/* Three column layout */
+.side {
+  float: left;
+  width: 15%;
+  margin-top: 10px;
+}
+
+.middle {
+  float: left;
+  width: 70%;
+  margin-top: 10px;
+}
+
+/* Place text to the right */
+.right {
+  text-align: right;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* The bar container */
+.bar-container {
+  width: 100%;
+  background-color: #f1f1f1;
+  text-align: center;
+  color: white;
+}
+
+.log-out {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+}
+#id_preference {
+            width: 12%;
+        }
+#id_City, #id_Category, #id_Business {
+            width: 50%;
+        }
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
+table {
+    margin: 0 auto;
+    width: 100%;
+}
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  font-size: 17px;
+}
+
+#snackbar.show {
+  visibility: visible;
+  -webkit-animation: fadein 0.5s, fadeout 0.5s 3.5s;
+  animation: fadein 0.5s, fadeout 0.5s 3.5s;
+}
+hr{
+  border:3px solid #333333;
+  width: 100%;
+}
+h1 {
+  display: inline-block;
+  font-style: italic;
+  font-size: 40px;
+}
+h3 {
+  position: absolute;
+  top: 42px;
+  right: 90px;
+  }
+p {
+      font-size: 18px;
+  }
+#id_City, #id_Category {
+      width: 50%;
+  }
+
+/* Responsive layout - make the columns stack on top of each other instead of next to each other */
+@media (max-width: 400px) {
+  .side, .middle {
+    width: 100%;
+  }
+  /* Hide the right column on small screens */
+  .right {
+    display: none;
+  }
+}
+@-webkit-keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
+}
