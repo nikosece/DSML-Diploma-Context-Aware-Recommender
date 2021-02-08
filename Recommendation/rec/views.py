@@ -6,9 +6,11 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from recommender_engine import RecommenderEngine
 from functions import Functions
+from pandas import json_normalize
 from create_map import Create_map
 import numpy as np
 import math
+import pandas as pd
 import pickle
 from scipy import sparse
 import pathlib
@@ -82,66 +84,74 @@ def read_pickle(name):
     return pickle.load(open(name + ".pickle", "rb"))
 
 
-def create_categories_form():
-    global selected_city, df_new, df_explode, categories, to_show, form2, category_tuple
-    if selected_city != 'Όλες':
-        df_new = Business.objects.filter(city__name=selected_city).order_by('-review_count').filter(
+def create_categories_form(request):
+    if request.session['selected_city'] != 'Όλες':
+        filtered = Business.objects.filter(city__name=request.session['selected_city']).order_by(
+            '-review_count').filter(
             review_count__gte=100)
+        request.session['df_new'] = [i.business_id for i in filtered]
     else:
-        df_new = Business.objects.filter(review_count__gte=100).order_by('-review_count')
-    categories = [i['categories__name'] for i in df_new.values('categories__name')
+        filtered = Business.objects.filter(review_count__gte=100).order_by('-review_count')
+        request.session['df_new'] = [i.business_id for i in filtered]
+    request.session['categories'] = [i['categories__name'] for i in filtered.values('categories__name')
         .annotate(total=Count('categories__name'))
         .order_by('-total')]
-    to_show = []
-    for c in categories:
-        if c in cols_to_show:
-            to_show.append(c)
-    category_tuple = (('', ''),)
-    for j in to_show:
-        category_tuple = category_tuple + ((j, j),)
-    form2 = CategoryForm(Category=category_tuple)
+    request.session['category_tuple'] = (('', ''),)
+    for j in request.session['categories']:
+        request.session['category_tuple'] = request.session['category_tuple'] + ((j, j),)
+    return CategoryForm(Category=request.session['category_tuple'])
 
 
 def index(request):
-    global selected_city, df_new, df_explode, categories, to_show, form2
     # This request happens each time the user selects a city from the dropdown list
     if request.method == 'POST':
         form = CityForm(City=tuple_list, data=request.POST)
         if form.is_valid():
-            selected_city = request.POST["City"]
-            create_categories_form()
+            request.session['selected_city'] = request.POST["City"]
+            form2 = create_categories_form(request)
     # This request happens each time the user submits categories from the dropdown list
 
     else:
         form = CityForm(City=tuple_list)
-        create_categories_form()
+        request.session['category_tuple'] = (('', ''),)
+        form2 = CategoryForm(Category=request.session['category_tuple'])
     vechiles = VechileForm()
     return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form4': vechiles})
 
 
 def results(request, sort_type=None):
-    global df_new, cols, row_list, top_10_recommendations, origin, form2, selected_vechile
     if sort_type:
         name_map = {"distance": "Απόσταση", "stars": "Βαθμολογία", "score": "Προκαθορισμένο",
                     "r_count": "Πλήθος κριτικών"}
+        top_10_recommendations = pd.DataFrame(columns=request.session['columns'])
+        values = request.session['top_10_recommendations']
+        for i in values:
+            top_10_recommendations = top_10_recommendations.append(pd.DataFrame([i], columns=top_10_recommendations.columns), ignore_index=True)
         if sort_type == 'distance':
             top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type])
         else:
             top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type], ascending=False)
         row_list = row_result_create(top_10_recommendations)
+        request.session['row_list'] = row_list
+        request.session['sort'] = name_map[sort_type]
+
         return render(request, 'rec/results.html', {'rows': row_list, 'sort': name_map[sort_type]})
     if request.method == 'POST':
-        form2 = CategoryForm(Category=category_tuple, data=request.POST)
+        form2 = CategoryForm(Category=request.session['category_tuple'], data=request.POST)
         if form2.is_valid():
             selected_category = request.POST.getlist('Category')
             selected_category = [s for s in selected_category]
             selected_vechile = int(request.POST.getlist('Vechile')[0])
+            request.session['selected_vechile'] = selected_vechile
             loc = request.POST.getlist('Location')[0]
             loc = loc.split("_")
             us_lat = float(loc[1])
             us_lot = float(loc[0])
             origin = (us_lot, us_lat)
             origin2 = [[us_lat, us_lot]]
+            request.session['origin'] = origin
+            request.session['origin2'] = origin
+            df_new = Business.objects.filter(business_id__in=request.session['df_new'])
             df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
             # df_new = model_predict(list(df_new), 50, selected_category)
             dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
@@ -151,24 +161,38 @@ def results(request, sort_type=None):
                 df_new[i].distance = dist[i]
                 df_new[i].duration = dur[i]
             top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
+            request.session['top_10_recommendations'] = top_10_recommendations.values.tolist()
+            request.session['columns'] = list(top_10_recommendations.columns)
             row_list = row_result_create(top_10_recommendations)
+            request.session['row_list'] = row_list
+            request.session['sort'] = "Προκαθορισμένο"
             return render(request, 'rec/results.html', {'rows': row_list, 'sort': "Προκαθορισμένο"})
     else:
-        return render(request, 'rec/results.html', {'header': cols, 'rows': row_list})
+        return render(request, 'rec/results.html', {'rows': request.session['row_list'], 'sort': request.session['sort']})
 
 
 def show_map(request):
-    m = Create_map.plot(top_10_recommendations, selected_city, origin, True)
+    top_10_recommendations = pd.DataFrame(columns=request.session['columns'])
+    values = request.session['top_10_recommendations']
+    for i in values:
+        top_10_recommendations = top_10_recommendations.append(
+            pd.DataFrame([i], columns=top_10_recommendations.columns), ignore_index=True)
+    m = Create_map.plot(top_10_recommendations, request.session['selected_city'], request.session['origin'], True)
     m = m._repr_html_()
     return render(request, 'rec/map.html', {'map': m})
 
 
 def show_directions(request, b_id):
+    top_10_recommendations = pd.DataFrame(columns=request.session['columns'])
+    values = request.session['top_10_recommendations']
+    for i in values:
+        top_10_recommendations = top_10_recommendations.append(
+            pd.DataFrame([i], columns=top_10_recommendations.columns), ignore_index=True)
     df = top_10_recommendations.iloc[b_id]
     name = df['name']
     dest = [df.longitude, df.latitude]
-    origin2 = [origin[1], origin[0]]
-    m = Create_map.directions(origin2, dest, selected_vechile, name)
+    origin2 = [request.session['origin'][1], request.session['origin'][0]]
+    m = Create_map.directions(origin2, dest, request.session['selected_vechile'], name)
     m = m._repr_html_()
     return render(request, 'rec/map.html', {'map': m})
 
@@ -286,23 +310,9 @@ def show_reviews(request):
     return render(request, 'rec/my_reviews.html', {'reviews': reviews})
 
 
-# if request.user.is_authenticated:
-#     print(type(current_user.preference[0]))
-# model = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/ligthFm_modelV4')
-# item_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/item_featuresV4')
-# user_features = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/user_featuresV4')
-# dataset = read_pickle(str(pathlib.Path().absolute()) + '/Dataset/datasetV4')
-# item_map = dataset.mapping()[2]
 cities = BusinessCity.objects.order_by('name').values()
 tuple_list = (('', ''), ('Όλες', 'Όλες'),)
 for c_ity in cities:
     tuple_list = tuple_list + ((c_ity['name'], c_ity['name']),)
 
 # tuple_list = None # to filled up
-df_new = df_explode = categories = to_show = form2 = cols = row_list = None  # initialize global variables
-top_10_recommendations = origin = category_tuple = selected = selected_vechile = None
-selected_city = 'Όλες'  # Choose the first available city to initialize index forms
-cols_to_show = set([i['categories__name'] for i in Business.objects.values('categories__name')
-                   .annotate(total=Count('categories__name'))
-                   .order_by('-total')])
-# create_categories_form()
