@@ -25,15 +25,15 @@
   </div>
      {% endif %}
 </div>
-<div class="main">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+<div class="res_show">
 <div class="btitle">
 <p> <b>{{b.name}}</b></p>
 </div>
 <div class="baddress">
 <p>{{b.address}}</p>
 </div>
+{% if user.is_authenticated %}
  <a class="reviewlink"  href="/apply_review/{{b.business_id}}/">
 <div class="rateheader">
     <span class="review">{{ b.stars}}</span>
@@ -72,12 +72,52 @@
 <span class="heading">{{ b.review_count}} αξιολογήσεις</span>
 </div>
  </a>
+{% else %}
+{% else %}
+<div class="rateheader">
+    <span class="review">{{ b.stars}}</span>
+    {% if b.stars > 4.5 %}
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+{% elif b.stars > 3.5 %}
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+{% elif b.stars > 2.5 %}
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+{% elif b.stars > 1.5 %}
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+{% else %}
+<span class="fa fa-star fa-lg checked"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+<span class="fa fa-star fa-lg"></span>
+{% endif %}
+
+<span class="heading">{{ b.review_count}} αξιολογήσεις</span>
+</div>
+
+{% endif %}
 </div>
 <div class="bord">
     <hr>
 </div>
 <div class="folium-map" >
-    {{ map|safe }}
+    <img class="fill-vertical" src="/media/photos/{{b.photo.photo_reference}}.jpg" />
 </div>
 
 </body>

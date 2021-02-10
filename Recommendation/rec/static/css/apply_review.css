@@ -3,23 +3,23 @@
 }
 
 input[type=submit] {
-    font-size: 20px;
+    font-size: 1.2rem;
 }
 .main {
-  margin-top: 12px; /* Add a top margin to avoid content overlay */
+  margin-top: 0.72rem; /* Add a top margin to avoid content overlay */
   /*margin-left: 20%;*/
   width: max-content;
 }
 
 .btitle p{
-  font-size: 20px;
+  font-size: 1.2rem;
   margin-bottom: 0;
-  margin-top: 10px;
+  margin-top: 0.6rem;
   word-wrap: break-word;         /* All browsers since IE 5.5+ */
   overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
   width: 100%;
   }
-.btitle, .reviewstar, .diraddress, .rating, .b_category{
+.reviewstar, .diraddress, .rating, .b_category{
   width: max-content;
 }
 
@@ -35,30 +35,38 @@ input[type=submit] {
   width: max-content;
 }
 .baddress p{
-  font-size: 15px;
+  font-size: 0.9rem;
   margin-top: 0;
-  margin-bottom: 8px;
+  margin-bottom: 0.48rem;
   text-align: left;
+  word-wrap: break-word;         /* All browsers since IE 5.5+ */
+  overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+  width: 100%;
   /*margin: 0;*/
   }
 .reviewstar p{
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 0.48rem;
+  margin-bottom: 0.48rem;
 }
 .b_category p{
-  font-size: 16px;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  font-size: 0.96rem;
+  margin-top: 0.48rem;
+  margin-bottom: 0.48rem;
   text-align: left;
 }
 .diraddress p{
-  margin-top: 8px;
+  margin-top: 0.48rem;
   margin-bottom: 0;
 }
 .folium-map {
-  position: fixed;
-  margin-top: 30px;
-  width: 100%
+  display: grid;
+  height: 100%;
+}
+
+.fill-vertical {
+  max-width: 100%;
+  max-height: 80vh;
+  margin: auto;
 }
 .big{
   position: fixed;
@@ -83,7 +91,7 @@ input[type=submit] {
   float: left;
   color: #f2f2f2;
   text-align: center;
-  padding: 14px 8px;
+  padding: 0.84rem 0.48rem;
   text-decoration: none;
   font-size: 16px;
 }
@@ -101,7 +109,7 @@ input[type=submit] {
 }
 
 .sort_type .dropbtn {
-  font-size: 17px;
+  font-size: 1.02rem;
   border: none;
   outline: none;
   color: #333333 ;
@@ -109,7 +117,7 @@ input[type=submit] {
   background-color: inherit;
   font-family: inherit;
   margin-bottom: 0;
-  margin-top: 22px;
+  margin-top: 1.32rem;
 }
 .sort_type .dropdown-content{
   right:0;
@@ -130,11 +138,11 @@ input[type=submit] {
 }
 
 .dropdown .dropbtn {
-  font-size: 16px;
+  font-size: 0.96rem;
   border: none;
   outline: none;
   color: white;
-  padding: 14px 40px;
+  padding: 0.84rem 2.4rem;
   background-color: inherit;
   font-family: inherit;
   margin-bottom: 0;
@@ -148,14 +156,14 @@ input[type=submit] {
   position: absolute;
   background-color: #f9f9f9;
   width: max-content;
-  box-shadow: 60px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 3.6rem 0.48rem 0.96rem 0 rgba(0,0,0,0.2);
   z-index: 1;
 }
 
 .dropdown-content a {
   float: none;
   color: black;
-  padding: 12px 16px;
+  padding: 0.72rem 0.96rem;
   text-decoration: none;
   display: block;
   text-align: left;
@@ -177,14 +185,14 @@ body {
   /*padding: 20px;*/
 }
 .review{
-  font-size: 25px;
+  font-size: 1.5rem;
 }
 .heading {
-  font-size: 15px;
+  font-size: 0.9rem;
 }
 
 .fa {
-  font-size: 25px;
+  font-size: 1.5rem;
 }
 
 .checked {
@@ -195,13 +203,13 @@ body {
 .side {
   float: left;
   width: 15%;
-  margin-top: 10px;
+  margin-top: 0.6rem;
 }
 
 .middle {
   float: left;
   width: 70%;
-  margin-top: 10px;
+  margin-top: 0.6rem;
 }
 
 /* Place text to the right */
@@ -226,8 +234,8 @@ body {
 
 .log-out {
     position: absolute;
-    top: 60px;
-    right: 20px;
+    top: 3.6rem;
+    right: 1.2rem;
 }
 #id_preference {
             width: 12%;
@@ -236,7 +244,7 @@ body {
             width: 25%;
         }
 table, th, td {
-  border: 1px solid black;
+  border: 0.06rem solid black;
   border-collapse: collapse;
 }
 
@@ -246,18 +254,18 @@ table {
 }
 #snackbar {
   visibility: hidden;
-  min-width: 250px;
-  margin-left: -125px;
+  min-width: 15rem;
+  margin-left: -7.5rem;
   background-color: #333;
   color: #fff;
   text-align: center;
-  border-radius: 2px;
-  padding: 16px;
+  border-radius: 0.12rem;
+  padding: 0.96rem;
   position: fixed;
   z-index: 1;
   left: 50%;
-  bottom: 30px;
-  font-size: 17px;
+  bottom: 1.8rem;
+  font-size: 1.02rem;
 }
 
 #snackbar.show {
@@ -272,22 +280,20 @@ hr{
 h1 {
   display: inline-block;
   font-style: italic;
-  font-size: 40px;
+  font-size: 2.4rem;
 }
 h3 {
   position: absolute;
-  top: 42px;
-  right: 90px;
+  top: 2.52rem;
+  right: 5.4rem;
   }
 p {
-      font-size: 18px;
-  }
-#id_City, #id_Category {
-      width: 50%;
+      font-size: 1.08rem;
   }
 
+
 /* Responsive layout - make the columns stack on top of each other instead of next to each other */
-@media (max-width: 400px) {
+@media (max-width: 24rem) {
   .side, .middle {
     width: 100%;
   }
@@ -298,20 +304,20 @@ p {
 }
 @-webkit-keyframes fadein {
   from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
+  to {bottom: 1.8rem; opacity: 1;}
 }
 
 @keyframes fadein {
   from {bottom: 0; opacity: 0;}
-  to {bottom: 30px; opacity: 1;}
+  to {bottom: 1.8rem; opacity: 1;}
 }
 
 @-webkit-keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
+  from {bottom: 1.8rem; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
 
 @keyframes fadeout {
-  from {bottom: 30px; opacity: 1;}
+  from {bottom: 1.8rem; opacity: 1;}
   to {bottom: 0; opacity: 0;}
 }
