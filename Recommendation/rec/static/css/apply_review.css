@@ -6,18 +6,24 @@ input[type=submit] {
     font-size: 20px;
 }
 .main {
-  margin-top: 30px; /* Add a top margin to avoid content overlay */
+  margin-top: 12px; /* Add a top margin to avoid content overlay */
   /*margin-left: 20%;*/
   width: max-content;
 }
+
 .btitle p{
   font-size: 20px;
   margin-bottom: 0;
   margin-top: 10px;
+  word-wrap: break-word;         /* All browsers since IE 5.5+ */
+  overflow-wrap: break-word;     /* Renamed property in CSS3 draft spec */
+  width: 100%;
   }
-.btitle, .baddress, .reviewstar, .diraddress, .rating{
+.btitle, .reviewstar, .diraddress, .rating, .b_category{
   width: max-content;
 }
+
+
 .review_show{
   width: max-content;
 }
@@ -31,20 +37,33 @@ input[type=submit] {
 .baddress p{
   font-size: 15px;
   margin-top: 0;
+  margin-bottom: 8px;
   text-align: left;
   /*margin: 0;*/
   }
+.reviewstar p{
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+.b_category p{
+  font-size: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  text-align: left;
+}
+.diraddress p{
+  margin-top: 8px;
+  margin-bottom: 0;
+}
 .folium-map {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  position: fixed;
   margin-top: 30px;
-  width: 850px;
+  width: 100%
 }
 .big{
   position: fixed;
-  height: 70%;
   width: 100%;
+  height: 100%;
 }
 .res_show a{
   text-decoration: none;
@@ -64,12 +83,12 @@ input[type=submit] {
   float: left;
   color: #f2f2f2;
   text-align: center;
-  padding: 14px 16px;
+  padding: 14px 8px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 16px;
 }
 .border {
-  padding-top: 50px;
+  padding-top: 0;
 }
 .sort_type {
   display: inline-block;
@@ -78,6 +97,7 @@ input[type=submit] {
 }
 .line_1 p{
   float: left;
+  margin: 0;
 }
 
 .sort_type .dropbtn {
@@ -85,10 +105,14 @@ input[type=submit] {
   border: none;
   outline: none;
   color: #333333 ;
-  padding: 14px 20px;
+  /*padding: 0 0;*/
   background-color: inherit;
   font-family: inherit;
-  margin: 0;
+  margin-bottom: 0;
+  margin-top: 22px;
+}
+.sort_type .dropdown-content{
+  right:0;
 }
 .sort_type:hover .dropbtn {
   background-color: #ddd;
@@ -106,14 +130,14 @@ input[type=submit] {
 }
 
 .dropdown .dropbtn {
-  font-size: 17px;
+  font-size: 16px;
   border: none;
   outline: none;
   color: white;
-  padding: 14px 60px;
+  padding: 14px 40px;
   background-color: inherit;
   font-family: inherit;
-  margin: 0;
+  margin-bottom: 0;
 }
 .topnav a:hover, .dropdown:hover .dropbtn {
   background-color: #ddd;
@@ -123,7 +147,7 @@ input[type=submit] {
   display: none;
   position: absolute;
   background-color: #f9f9f9;
-  min-width: 250px;
+  width: max-content;
   box-shadow: 60px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
 }
@@ -209,7 +233,7 @@ body {
             width: 12%;
         }
 #id_City, #id_Category, #id_Business {
-            width: 50%;
+            width: 25%;
         }
 table, th, td {
   border: 1px solid black;

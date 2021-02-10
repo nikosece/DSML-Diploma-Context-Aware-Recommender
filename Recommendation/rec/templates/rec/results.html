@@ -2,20 +2,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Recommender</title>
-<link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Recommender</title>
+    <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-body {
-  background-color: white;
-  text-align: center;
-  color: black;
-  font-family: Arial, Helvetica, sans-serif;
-}
-    a { text-decoration: none;
-     color: inherit;}
-</style>
-
+    <style>
+        body {
+          background-color: white;
+          text-align: center;
+          color: black;
+          font-family: Arial, Helvetica, sans-serif;
+        }
+        a { text-decoration: none;
+         color: inherit;}
+    </style>
 </head>
 <body>
 <div class="topnav">
@@ -29,16 +29,16 @@ body {
     </button>
     <div class="dropdown-content">
       <a href="/show_profile/">Προφίλ</a>
-      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="/show_reviews/">Αξιολογήσεις</a>
       <a href="{% url 'logout' %}">Αποσύδεση</a>
     </div>
   </div>
      {% endif %}
 </div>
 <div class="line_1">
-    <p>{{rows|length}} αποτελέσματα</p>
+    <p style="font-size: 15px">{{rows|length}} αποτελέσματα</p>
     <div class="sort_type">
-    <button class="dropbtn">Ταξινόμιηση κατά: {{sort}}
+    <button style="font-size: 15px" class="dropbtn">Ταξινόμιση κατά: {{sort}}
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
@@ -61,7 +61,10 @@ body {
         <p>{{r.address}}</p>
         </div>
         <div class="reviewstar">
-        <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}}) <b>{{r.category}}</b></p></a>
+        <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}})</p></a>
+        </div>
+        <div class="b_category">
+            <p style="text-align: left"> <b>{{r.category}}</b></p>
         </div>
         <div class="diraddress">
         <a href="/show_directions/{{r.id}}/"><p style="text-align:left">{{r.duration}}'     {{r.distance}} χλμ</p></a>

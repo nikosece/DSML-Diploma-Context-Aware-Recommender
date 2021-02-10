@@ -7,7 +7,7 @@ class CityForm(forms.Form):
     def __init__(self, *args, **kwargs):
         cities = kwargs.pop("City")
         super(CityForm, self).__init__(*args, **kwargs)
-        self.fields["City"] = forms.ChoiceField(choices=cities, label='Κάντε κλικ εδώ για να επιλέξετε περιοχή',
+        self.fields["City"] = forms.ChoiceField(choices=cities, label='Επιλέξτε περιοχή',
                                                 widget=forms.Select(attrs={'onchange': 'submit();'}))
 
 
@@ -16,7 +16,7 @@ class BusinessForm(forms.Form):
         business = kwargs.pop("Business")
         super(BusinessForm, self).__init__(*args, **kwargs)
         self.fields["Business"] = forms.ChoiceField(choices=business,
-                                                    label='Κάντε κλίκ εδώ για να επιλέξετε επιχείριση',
+                                                    label='Επιλέξτε επιχείριση',
                                                     widget=forms.Select())
 
 
@@ -25,7 +25,7 @@ class CategoryForm(forms.Form):
         categories = kwargs.pop("Category")
         super(CategoryForm, self).__init__(*args, **kwargs)
         self.fields["Category"] = forms.MultipleChoiceField(choices=categories,
-                                                            label='Κάντε κλικ εδώ για να επιλέξετε κατηγορία')
+                                                            label='Επιλέξτε κατηγορία')
         # widget=forms.CheckboxSelectMultiple())
 
 
@@ -54,7 +54,7 @@ class SignUpForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
         # self.fields['password1'].help_text = 'Something that doesnt look awful'
-        self.fields['password2'].help_text = 'Πληκτρολογήστε τον ίδιο κωδικό'
+        self.fields['password2'].help_text = ''
         self.fields['password1'].label = 'Κωδικός'
         self.fields['password2'].label = 'Επιβεβαίωση κωδικού'
 

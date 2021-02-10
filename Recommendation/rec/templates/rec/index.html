@@ -59,7 +59,8 @@
         $(document).ready(function() {
         $('#id_City').select2({
         placeholder: "Διαθέσιμες περιοχές",
-        allowClear: false
+        allowClear: false,
+        width: '200px',
     });
     });
     </script>
@@ -71,6 +72,7 @@
             $('#id_Category').select2({
             placeholder: 'Πρώτα επιλέξτε μια περιοχή',
             disabled : true,
+            width: '200px',
             });}
         else{
             if($("#id_Location").val()!=""){
@@ -79,6 +81,7 @@
             $('#id_Category').select2({
             placeholder: 'Διαθέσιμες κατηγορίες',
             disabled : false,
+            width: '200px',
             });}
     });
     </script>
@@ -128,7 +131,7 @@ function myFunction() {
     </button>
     <div class="dropdown-content">
       <a href="/show_profile/">Προφίλ</a>
-      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="/show_reviews/">Αξιολογήσεις</a>
       <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
@@ -141,7 +144,7 @@ function myFunction() {
 </div>
  {% endif %}
 
-<h2>Προτάσεις για περισσότερες από 3000 επιχειρήσεις</h2>
+<h2>Προτάσεις για περισσότερες από 2000 επιχειρήσεις</h2>
 
 {% if user.is_authenticated %}
 {% else %}

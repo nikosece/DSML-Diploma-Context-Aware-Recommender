@@ -48,7 +48,7 @@ for c in price_level:
 
 
 for key, b in businesses.items():
-	foto = BusinessPhoto(height=b['photos']['height'],width=b['photos']['width'], html_attributions=b['photos']['html_attributions'],photo_reference=b['photos']['html_attributions'])
+	foto = BusinessPhoto(height=b['photos']['height'],width=b['photos']['width'], html_attributions=b['photos']['html_attributions'],photo_reference=b['photos']['photo_reference'])
 	foto.save()
 	cat_list = []
 	for cat in b['categories']:

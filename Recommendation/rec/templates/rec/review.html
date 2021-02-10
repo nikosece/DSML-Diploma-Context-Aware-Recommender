@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <title>Recommender</title>
     <link rel="stylesheet"  href="{%  static  'css/apply_review.css'  %}">
@@ -13,7 +14,8 @@
         $(document).ready(function() {
         $('#id_City').select2({
         placeholder: "Διαθέσιμες περιοχές",
-        allowClear: false
+        allowClear: false,
+        width: '200px',
     });
     });
     </script>
@@ -23,11 +25,13 @@
             $('#id_Business').select2({
             placeholder: 'Πρώτα επιλέξτε μια περιοχή',
             disabled : true,
+            width: '200px',
             });}
         else{
             $('#id_Business').select2({
             placeholder: 'Διαθέσιμες επιχειρίσεις',
             disabled : false,
+            width: '200px',
             });}
     });
     </script>
@@ -52,7 +56,7 @@
     </button>
     <div class="dropdown-content">
       <a href="/show_profile/">Προφίλ</a>
-      <a href="/show_reviews/">Οι αξιολογήσεις μου</a>
+      <a href="/show_reviews/">Αξιολογήσεις</a>
       <a href="{% url 'logout' %}">Αποσύνδεση</a>
     </div>
   </div>
