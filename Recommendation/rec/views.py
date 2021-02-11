@@ -177,8 +177,8 @@ def results(request, price_level=None, sort_type=None):
             else:
                 row_list = []
             return render(request, 'rec/results.html', {'rows': row_list, 'sort': "Προκαθορισμένο"})
-        else:
-            return render(request, 'rec/results.html',
+    else:
+        return render(request, 'rec/results.html',
                           {'rows': request.session['row_list'], 'sort': request.session['sort']})
 
 

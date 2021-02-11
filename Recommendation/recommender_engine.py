@@ -77,12 +77,14 @@ class RecommenderEngine:
             distance = i.distance
             rating_count = i.review_count
             fm_score = 100 * i.score
-            normalized_rate = 100 * (rating - min_rate) / (max_rate - min_rate)
-            normalized_count = 100 * (rating_count - min_count) / (max_count - min_count)
-            # rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
-            if max_di == min_di:
+            if len(df) == 1:
+                normalized_rate = 100
+                normalized_count = 100
                 normalized_di = 100
             else:
+                normalized_rate = 100 * (rating - min_rate) / (max_rate - min_rate)
+                normalized_count = 100 * (rating_count - min_count) / (max_count - min_count)
+                # rating_contribution = RatingExtractor.get_rating_weight_with_quantity(rating, rating_count, moderate)
                 normalized_di = 100 * (max_di - distance) / (max_di - min_di)
             final_score = RecommenderEngine.calculate_final_score(fm_score, normalized_rate, normalized_count,
                                                                   normalized_di, vechile)
