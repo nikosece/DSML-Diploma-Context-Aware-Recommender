@@ -256,11 +256,11 @@ def review(request):
 
 
 def apply_review(request, b_id=None):
-    global selected
     if request.method == 'POST':
         form = ReviewForm(data=request.POST)
         if form.is_valid():
             r_star = int(form.cleaned_data['stars'])  # user review stars
+            selected = Business.objects.get(business_id=request.session['selected'])
             check_review = Review.objects.filter(user=request.user, business=selected)
             if len(check_review) == 0:  # user review this business for first time
                 instance = form.save(commit=False)
@@ -285,6 +285,7 @@ def apply_review(request, b_id=None):
         if b_id is None:
             b_id = request.GET["Business"]
         selected = Business.objects.get(business_id=b_id)
+        request.session['selected'] = b_id
         form = ReviewForm()
     return render(request, 'rec/apply_review.html', {'b': selected, 'form': form})
 

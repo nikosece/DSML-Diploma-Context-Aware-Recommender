@@ -9,6 +9,12 @@
     <title>Recommender</title>
 </head>
 <body>
+<script>
+    function handleClick(myRadio) {
+        var x = document.getElementById("id_stars");
+        x.value= parseInt(myRadio.value);
+        }
+</script>
 <div class="topnav">
   <a href="/">Home</a>
   <a href="/review/">Review</a>
@@ -76,7 +82,19 @@
 <form action="/apply_review/" method="post">
   {% csrf_token %}
   {{ form.as_p }}
-  <button type="submit">Υποβολή</button>
+   <div class="rate">
+    <input type="radio" id="star5" name="rate" onclick="handleClick(this);" value=5 />
+    <label for="star5" title="">5 stars</label>
+    <input type="radio" id="star4" name="rate" onclick="handleClick(this);" value=4 />
+    <label for="star4" title="">4 stars</label>
+    <input type="radio" id="star3" name="rate" onclick="handleClick(this);" value=3 />
+    <label for="star3" title="">3 stars</label>
+    <input type="radio" id="star2" name="rate" onclick="handleClick(this);" value=2 />
+    <label for="star2" title="">2 stars</label>
+    <input type="radio" id="star1" name="rate" onclick="handleClick(this);" value=1 />
+    <label for="star1" title="">1 star</label>
+  </div>
+  <button style="margin-top: 4.4rem" type="submit">Υποβολή</button>
 </form>
 </body>
 </html>

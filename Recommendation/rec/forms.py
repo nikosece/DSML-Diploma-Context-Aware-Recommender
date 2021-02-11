@@ -82,6 +82,10 @@ class SignInForm(AuthenticationForm):
 
 
 class ReviewForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ReviewForm, self).__init__(*args, **kwargs)
+        self.fields["stars"].widget = forms.HiddenInput()
+
     class Meta:
         model = Review
         fields = ['title', 'content', 'stars']
