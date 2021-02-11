@@ -119,14 +119,15 @@ def index(request):
     return render(request, 'rec/index.html', {'form': form, 'form2': form2, 'form4': vechiles})
 
 
-def results(request, sort_type=None):
+def results(request, price_level=None, sort_type=None):
     if sort_type:
         name_map = {"distance": "Απόσταση", "stars": "Βαθμολογία", "score": "Προκαθορισμένο",
                     "r_count": "Πλήθος κριτικών"}
         top_10_recommendations = pd.DataFrame(columns=request.session['columns'])
         values = request.session['top_10_recommendations']
         for i in values:
-            top_10_recommendations = top_10_recommendations.append(pd.DataFrame([i], columns=top_10_recommendations.columns), ignore_index=True)
+            top_10_recommendations = top_10_recommendations.append(
+                pd.DataFrame([i], columns=top_10_recommendations.columns), ignore_index=True)
         if sort_type == 'distance':
             top_10_recommendations = top_10_recommendations.sort_values(by=[sort_type])
         else:
@@ -152,23 +153,33 @@ def results(request, sort_type=None):
             request.session['origin'] = origin
             request.session['origin2'] = origin
             df_new = Business.objects.filter(business_id__in=request.session['df_new'])
-            df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
-            # df_new = model_predict(list(df_new), 50, selected_category)
-            dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
-                                                         selected_vechile)
-            dur = [d / 60 for d in dur]
-            for i in range(len(df_new)):
-                df_new[i].distance = dist[i]
-                df_new[i].duration = dur[i]
-            top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new, selected_vechile)
-            request.session['top_10_recommendations'] = top_10_recommendations.values.tolist()
-            request.session['columns'] = list(top_10_recommendations.columns)
-            row_list = row_result_create(top_10_recommendations)
-            request.session['row_list'] = row_list
-            request.session['sort'] = "Προκαθορισμένο"
+            if price_level != "0":
+                df_new = df_new.filter(price_level__name=price_level)
+            if df_new.count() > 0:
+                df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
+                if len(df_new) > 0:
+                    # df_new = model_predict(list(df_new), 50, selected_category)
+                    dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
+                                                                 selected_vechile)
+                    dur = [d / 60 for d in dur]
+                    for i in range(len(df_new)):
+                        df_new[i].distance = dist[i]
+                        df_new[i].duration = dur[i]
+                    top_10_recommendations = RecommenderEngine.get_recommendations_include_rating(df_new,
+                                                                                                  selected_vechile)
+                    request.session['top_10_recommendations'] = top_10_recommendations.values.tolist()
+                    request.session['columns'] = list(top_10_recommendations.columns)
+                    row_list = row_result_create(top_10_recommendations)
+                    request.session['row_list'] = row_list
+                    request.session['sort'] = "Προκαθορισμένο"
+                else:
+                    row_list = []
+            else:
+                row_list = []
             return render(request, 'rec/results.html', {'rows': row_list, 'sort': "Προκαθορισμένο"})
-    else:
-        return render(request, 'rec/results.html', {'rows': request.session['row_list'], 'sort': request.session['sort']})
+        else:
+            return render(request, 'rec/results.html',
+                          {'rows': request.session['row_list'], 'sort': request.session['sort']})
 
 
 def show_map(request):

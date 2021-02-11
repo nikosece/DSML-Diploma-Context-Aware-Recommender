@@ -157,12 +157,28 @@ function myFunction() {
 </form>
 
 
-<form action="/results/" method="POST">
+<form id="myForm" action="/results/0/" method="POST">
     {% csrf_token %}
     {{ form2.as_p }}
     {{ form4.as_p }}
+     <div class="slidecontainer">
+        <p>Επίπεδο Τιμών:</p>
+        <input type="range" min="0" max="4" value="0" step="1" id="myRange">
+        <label for="myRange" id="range_label"></label>
+        </div>
+<script>
+var x = {0:"Όλα", 1:"Φθηνά", 2:"Μέτρια", 3:"Ακριβά", 4:"Πολύ ακριβά"};
+var slider = document.getElementById("myRange");
+var output = document.getElementById("range_label");
+output.innerHTML = x[slider.value];
 
+slider.oninput = function() {
+  output.innerHTML = x[this.value];
+  $('#myForm').attr('action', '/results/' + this.value + '/');
+}
+</script>
     <input id="sumbit_button" type="submit" value="Προτάσεις">
 </form>
+
 </body>
 </html>

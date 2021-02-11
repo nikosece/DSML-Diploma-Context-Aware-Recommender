@@ -37,18 +37,20 @@
 </div>
 <div class="line_1">
     <p style="font-size: 15px">{{rows|length}} αποτελέσματα</p>
+    {% if rows|length > 0 %}
     <div class="sort_type">
     <button style="font-size: 15px" class="dropbtn">Ταξινόμιση κατά: {{sort}}
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="/results/score/">Προκαθορισμένο</a>
-      <a href="/results/stars/">Βαθμολογία</a>
-      <a href="/results/r_count/">Πλήθος κριτικών</a>
-      <a href="/results/distance/">Απόσταση</a>
+      <a href="/results/0/score/">Προκαθορισμένο</a>
+      <a href="/results/0/stars/">Βαθμολογία</a>
+      <a href="/results/0/r_count/">Πλήθος κριτικών</a>
+      <a href="/results/0/distance/">Απόσταση</a>
     </div>
   </div>
 </div>
+{% endif %}
 <div class="border">
     <hr style="border:3px solid #333333">
 </div>
