@@ -21,7 +21,7 @@ def deletion(a, b):
 
 
 def get_data(latitude, longitude, radius, search, pagetoken=None):
-    api_key = 'AIzaSyDZVMPpjO-_nBgUkWc-9VWUnFxyo0LBbqI'
+    api_key = ''
     url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     url = url + 'location=' + latitude + ',' + longitude + '&radius=' + radius + '&type=' + search + '&language=el' + '&key=' + api_key
     if pagetoken:
