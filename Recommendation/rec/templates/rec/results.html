@@ -63,7 +63,11 @@
         <p>{{r.address}}</p>
         </div>
         <div class="reviewstar">
-        <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}})</p></a>
+        {% if user.is_authenticated %}
+            <a href="/apply_review/{{r.b_id}}/"><p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}})</p></a>
+        {% else %}
+            <p style="text-align:left"><span class="fa fa-star checked"></span> {{r.stars}} ({{r.r_count}})</p>
+        {% endif %}
         </div>
         <div class="b_category">
             <p style="text-align: left"> <b>{{r.category}}</b></p>

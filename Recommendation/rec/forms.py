@@ -69,6 +69,12 @@ class ProfileForm(forms.ModelForm):
     class Meta(forms.ModelForm):
         model = CustomUser
         fields = ('email', 'first_name', 'last_name', 'preference')
+        labels = {
+            "email": "Email",
+            "first_name": "Όνομα",
+            "last_name": "Επώνυμο",
+            "preference": "Κατηγορίες"
+        }
 
 
 class SignInForm(AuthenticationForm):
