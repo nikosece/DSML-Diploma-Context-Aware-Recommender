@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import FirefoxOptions, FirefoxProfile
+from selenium.webdriver.common.action_chains import ActionChains
 import os
 import pickle
 import sys
@@ -33,18 +34,22 @@ class WebDriver:
 
     def get_location_data(self):
         try:
-            avg_rating = self.driver.find_element_by_class_name("section-star-display")
-            total_reviews = self.driver.find_element_by_class_name("section-rating-term")
+            # avg_rating = self.driver.find_element_by_class_name("section-star-display")
+            # total_reviews = self.driver.find_element_by_class_name("section-rating-term")
+            phone_number = self.driver.find_element_by_css_selector("[data-tooltip='Copy phone number']")
+            website = self.driver.find_element_by_css_selector("[data-item-id='authority']")
         except Exception as e:
             sys.exit(e)
 
         try:
-            self.location_data["rating"] = avg_rating.text
-            total_reviews = total_reviews.text[0:-1].split(" ")[0]
-            if '.' in total_reviews:
-                d = total_reviews.split('.')
-                total_reviews = ''.join(d)
-            self.location_data["reviews_count"] = total_reviews
+            # self.location_data["rating"] = avg_rating.text
+            # total_reviews = total_reviews.text[0:-1].split(" ")[0]
+            # if '.' in total_reviews:
+            #     d = total_reviews.split('.')
+            #     total_reviews = ''.join(d)
+            # self.location_data["reviews_count"] = total_reviews
+            self.location_data["contact"] = phone_number.text
+            self.location_data["website"] = website.text
         except Exception as e:
             print(e)
             pass
@@ -61,6 +66,33 @@ class WebDriver:
             return False
 
         return True
+
+    def click_open_close_time(self):
+
+        if len(list(self.driver.find_elements_by_class_name("cX2WmPgCkHi__section-info-hour-text"))) != 0:
+            element = self.driver.find_element_by_class_name("cX2WmPgCkHi__section-info-hour-text")
+            self.driver.implicitly_wait(5)
+            flag = True
+            try:
+                ActionChains(self.driver).move_to_element(element).click(element).perform()
+            except Exception as e:
+                flag = False
+            return flag
+
+    def get_location_open_close_time(self):
+
+        try:
+            days = self.driver.find_elements_by_class_name("lo7U087hsMA__row-header")
+            times = self.driver.find_elements_by_class_name("lo7U087hsMA__row-interval")
+
+            day = [a.text for a in days]
+            open_close_time = [a.text for a in times]
+
+            for i, j in zip(day, open_close_time):
+                self.location_data["Time"][i] = j
+
+        except:
+            pass
 
     def scroll_the_page(self):
         try:
@@ -116,9 +148,13 @@ class WebDriver:
             sys.exit(e)
 
     def scrape(self, url):  # Passed the URL as a variable
-        self.location_data["rating"] = "NA"
-        self.location_data["reviews_count"] = "NA"
-        self.location_data["Reviews"] = []
+        # self.location_data["rating"] = "NA"
+        # self.location_data["reviews_count"] = "NA"
+        # self.location_data["Reviews"] = []
+        # self.location_data["contact"] = "NA"
+        # self.location_data["website"] = "NA"
+        self.location_data["Time"] = {"Δευτέρα": "NA", "Τρίτη": "NA", "Τετάρτη": "NA", "Πέμπτη": "NA",
+                                      "Παρασκευή": "NA", "Σάββατο": "NA", "Κυριακή": "NA"}
         try:
             self.driver.get(url)  # Get is a method that will tell the driver to open at that particular URL
 
@@ -127,16 +163,17 @@ class WebDriver:
             sys.exit(e)
 
         time.sleep(2.5)  # Waiting for the page to load.
-
-        self.get_location_data()  # Calling the function to get all the location data.
-
-        if not self.click_all_reviews_button():
-            return self.location_data
-
-        time.sleep(2.5)  # Waiting for the all reviews page to load.
-
-        self.scroll_the_page()  # Scrolling the page to load all reviews.
-        self.get_reviews_data()  # Getting all the reviews data.
+        f_r = self.click_open_close_time()
+        # self.get_location_data()  # Calling the function to get all the location data.
+        if f_r:
+            self.get_location_open_close_time()
+        # if not self.click_all_reviews_button():
+        #     return self.location_data
+        #
+        # time.sleep(2.5)  # Waiting for the all reviews page to load.
+        #
+        # self.scroll_the_page()  # Scrolling the page to load all reviews.
+        # self.get_reviews_data()  # Getting all the reviews data.
 
         # self.driver.quit()  # Closing the driver instance.
 
@@ -145,7 +182,7 @@ class WebDriver:
 
 def get_keys():
     all_res1 = set()
-    for file in os.listdir("./reviews"):
+    for file in os.listdir("./schedule"):
         if file.endswith(".pickle"):
             all_res1.add(file.split(".")[0])
     return all_res1
@@ -161,10 +198,11 @@ def my_job(thead_keys):
         if b_id not in get_keys():
             url2 = url1 + b_id
             result = x_web.scrape(url2)
-            save_pickle(result, './reviews/' + b_id)
+            save_pickle(result, './schedule/' + b_id)
+            time.sleep(2.5)
             total_b = total_b + 1
             print("checked {} out of {}".format(total_b, len(thead_keys)))
-            if total_b % 2 == 0:
+            if total_b % 100 == 0:
                 print("Closing session")
                 x_web.driver.close()
                 del x_web
@@ -179,16 +217,16 @@ keys = keys - all_res
 keys = list(keys)
 keys.sort()
 print("Total businesses are: ", len(keys))
-# slice_size = len(keys) // 5
-# j = int(sys.argv[1])
-# if len(keys) > j:
-#     sleep_time = int(sys.argv[2])
-#     start = j * slice_size
-#     end = start + slice_size
-#     if j == 6 or j+1 == len(keys):
-#         argument = keys[start:]
-#     else:
-#         argument = keys[start:end]
-#     print('Total files to read: ', len(argument))
-#     time.sleep(sleep_time)
-my_job([keys[0]])
+slice_size = len(keys) // 7
+j = int(sys.argv[1])
+if len(keys) > j:
+    sleep_time = int(sys.argv[2])
+    start = j * slice_size
+    end = start + slice_size
+    if j == 6 or j+1 == len(keys):
+        argument = keys[start:]
+    else:
+        argument = keys[start:end]
+    print('Total files to read: ', len(argument))
+    time.sleep(sleep_time)
+    my_job(argument)

@@ -85,6 +85,19 @@ class BusinessPrice(models.Model):
         return self.name
 
 
+class BusinessDays(models.Model):
+    monday = models.CharField(max_length=100, default='NA')
+    tuesday = models.CharField(max_length=100, default='NA')
+    wednesday = models.CharField(max_length=100, default='NA')
+    thursday = models.CharField(max_length=100, default='NA')
+    friday = models.CharField(max_length=100, default='NA')
+    saturday = models.CharField(max_length=100, default='NA')
+    sunday = models.CharField(max_length=100, default='NA')
+
+    def __str__(self):
+        return 'Nothing to show'
+
+
 class BusinessPhoto(models.Model):
     height = models.PositiveSmallIntegerField()
     width = models.PositiveSmallIntegerField()
@@ -112,6 +125,8 @@ class Business(models.Model):
     review_count = models.PositiveSmallIntegerField()
     categories = models.ManyToManyField(BusinessCategory)
     photo = models.OneToOneField(BusinessPhoto, on_delete=models.CASCADE, )
+    days = models.ForeignKey(BusinessDays, on_delete=models.CASCADE, related_name='businesses',
+                             related_query_name='business', null=True)
 
     def __str__(self):
         return self.name
