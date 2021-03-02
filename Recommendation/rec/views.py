@@ -6,6 +6,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from recommender_engine import RecommenderEngine
 from functions import Functions
+import pytz
 from pandas import json_normalize
 from create_map import Create_map
 import numpy as np
@@ -13,6 +14,7 @@ import math
 import pandas as pd
 import pickle
 from scipy import sparse
+import datetime
 import pathlib
 
 
@@ -82,6 +84,61 @@ def model_predict(df, k=50, tags=None, user_id=None):
 
 def read_pickle(name):
     return pickle.load(open(name + ".pickle", "rb"))
+
+
+def create_time(var):
+    if var[1] == 'μ.μ.':
+        var[1] = 'PM'
+    else:
+        var[1] = 'AM'
+    m2 = " ".join(var)
+    return datetime.datetime.strptime(m2, '%I:%M %p')
+
+
+def time_in_range(start, end):
+    """Return true if x is in the range [start, end]"""
+    tz = pytz.timezone('Europe/Athens')
+    x = datetime.datetime.now(tz).time()
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
+
+
+def open_now(b_id):
+    b = Business.objects.get(business_id=b_id)
+    days = b.days.__dict__
+    day_map = {'monday': 'Δευτέρα', 'tuesday': 'Τρίτη', 'wednesday': 'Τετάρτη', 'thursday': 'Πέμπτη',
+               'friday': 'Παρασκευή',
+               'saturday': 'Σάββατο', 'sunday': 'Κυριακή'}
+    day_index = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday',
+                 4: 'friday',
+                 5: 'saturday', 6: 'sunday'}
+    today = datetime.datetime.today().weekday()
+    result = days[day_index[today]]
+    if result == 'Κλειστά':
+        return result + ' αυτή τη στιγμή'
+    elif result == 'NA':
+        return 'Άγνωστο'
+    else:
+        start, end = result.split('–')
+        m = re.match(r"(\d+\:\d+)\s*(.*)$", start)
+        start = [m.group(1), m.group(2)]
+        if start[1] == '':
+            start[1] = 'μ.μ.'
+        m = re.match(r"(\d+\:\d+)\s*(.*)$", end)
+        end = [m.group(1), m.group(2)]
+        if end[1] == '':
+            end[1] = 'μ.μ.'
+        start = create_time(start)
+        start = start.time()
+        end = create_time(end)
+        end = end.time()
+        in_r = time_in_range(start, end)
+        if in_r:
+            return "Ανοιχτά τώρα"
+        else:
+            return 'Κλειστά αυτή τη στιγμή'
 
 
 def create_categories_form(request):
@@ -179,7 +236,7 @@ def results(request, price_level=None, sort_type=None):
             return render(request, 'rec/results.html', {'rows': row_list, 'sort': "Προκαθορισμένο"})
     else:
         return render(request, 'rec/results.html',
-                          {'rows': request.session['row_list'], 'sort': request.session['sort']})
+                      {'rows': request.session['row_list'], 'sort': request.session['sort']})
 
 
 def show_map(request):
