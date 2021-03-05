@@ -106,9 +106,9 @@ class RecommenderEngine:
         :param r: normalized rating value
         :return: Returns value between 0 and 100"""
         if vechile == 0:
-            amount = cs * 0.15 + r * 0.15 + count * 0.7  # + distance * 100 * 0.2
+            amount = cs * 0.5 + r * 0.1 + count * 0.4  # + distance * 100 * 0.2
         else:
-            amount = cs * 0.15 + r * 0.1 + count * 0.35 + distance * 0.4
+            amount = cs * 0.25 + r * 0.1 + count * 0.25 + distance * 0.4
         return amount
 
     # Version-2

@@ -163,7 +163,7 @@ def results(request, price_level=None, sort_type=None):
                 df_new = df_new.filter(price_level__name=price_level)
             if df_new.count() > 0:
                 # df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
-                df_new = model_predict(list(df_new), 50, selected_category)
+                df_new = model_predict(list(df_new), 30, selected_category)
                 if len(df_new) > 0:
                     dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
                                                                  selected_vechile)
