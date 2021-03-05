@@ -46,6 +46,10 @@ def save_pickle(var, name):
 
 
 def model_predict(df, k=50, tags=None, user_id=None):
+    model = read_pickle("/home/anonymous/Documents/google_modelV4")
+    dataset = read_pickle('/home/anonymous/Documents/datasetV4')
+    item_features = read_pickle('/home/anonymous/Documents/item_featuresV4')
+    item_map = {value: key for key, value in dataset.mapping()[2].items()}
     if user_id is None:
         user_feature_map = dataset.mapping()[1]
         user_id = 0
@@ -67,7 +71,7 @@ def model_predict(df, k=50, tags=None, user_id=None):
     else:
         features = user_features
     t_idx = {value: key for key, value in item_map.items()}
-    array_save = np.array([item_map[ind.business_id] for ind in df])
+    array_save = np.array([dataset.mapping()[2][ind.business_id] for ind in df])
     scores = model.predict(user_id, array_save, user_features=features,
                            item_features=item_features, num_threads=12)
     m = scores.max()
@@ -76,8 +80,9 @@ def model_predict(df, k=50, tags=None, user_id=None):
         scores[s] = (scores[s] - mn) / (m - mn)
     # scores = [scores[x] for x in sorted_scores]
     for i in range(len(df)):
+        df[i].light = scores[i]
         df[i].score = scores[i]
-    top_items = sorted(df, key=lambda x: x.score, reverse=True)
+    top_items = sorted(df, key=lambda x: x.light, reverse=True)
     return top_items[0:k]
 
 
@@ -123,7 +128,7 @@ def index(request):
 def results(request, price_level=None, sort_type=None):
     if sort_type:
         name_map = {"distance": "Απόσταση", "stars": "Βαθμολογία", "score": "Προκαθορισμένο",
-                    "r_count": "Πλήθος κριτικών"}
+                    "r_count": "Πλήθος κριτικών", "light": "Lightfm"}
         top_10_recommendations = pd.DataFrame(columns=request.session['columns'])
         values = request.session['top_10_recommendations']
         for i in values:
@@ -157,9 +162,9 @@ def results(request, price_level=None, sort_type=None):
             if price_level != "0":
                 df_new = df_new.filter(price_level__name=price_level)
             if df_new.count() > 0:
-                df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
+                # df_new = RecommenderEngine.similarity_filter(list(df_new), 50, [", ".join(selected_category)])
+                df_new = model_predict(list(df_new), 50, selected_category)
                 if len(df_new) > 0:
-                    # df_new = model_predict(list(df_new), 50, selected_category)
                     dist, dur = Functions.calculate_distance_api(origin2, df_new,  # this is 90 % of running time
                                                                  selected_vechile)
                     dur = [d / 60 for d in dur]
