@@ -14,8 +14,6 @@ import math
 import pandas as pd
 import pickle
 from scipy import sparse
-import datetime
-import pathlib
 
 
 def row_result_create(df):
@@ -32,12 +30,13 @@ def row_result_create(df):
     b_id_list = df.id.to_list()
     r_count_list = df.r_count.to_list()
     address_list = df.address.to_list()
+    open_list = df.open.to_list()
     row_list = []
     for m in range(len(name_list)):
         row_list.append(
             {"name": name_list[m], "category": cat_list[m], "stars": star_list[m], "id": ids_list[m],
              "distance": distance_list[m], "duration": duration_list[m], "score": score_list[m],
-             "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m]})
+             "r_count": r_count_list[m], 'b_id': b_id_list[m], 'address': address_list[m], 'open': open_list[m]})
     return row_list
 
 
@@ -84,61 +83,6 @@ def model_predict(df, k=50, tags=None, user_id=None):
 
 def read_pickle(name):
     return pickle.load(open(name + ".pickle", "rb"))
-
-
-def create_time(var):
-    if var[1] == 'μ.μ.':
-        var[1] = 'PM'
-    else:
-        var[1] = 'AM'
-    m2 = " ".join(var)
-    return datetime.datetime.strptime(m2, '%I:%M %p')
-
-
-def time_in_range(start, end):
-    """Return true if x is in the range [start, end]"""
-    tz = pytz.timezone('Europe/Athens')
-    x = datetime.datetime.now(tz).time()
-    if start <= end:
-        return start <= x <= end
-    else:
-        return start <= x or x <= end
-
-
-def open_now(b_id):
-    b = Business.objects.get(business_id=b_id)
-    days = b.days.__dict__
-    day_map = {'monday': 'Δευτέρα', 'tuesday': 'Τρίτη', 'wednesday': 'Τετάρτη', 'thursday': 'Πέμπτη',
-               'friday': 'Παρασκευή',
-               'saturday': 'Σάββατο', 'sunday': 'Κυριακή'}
-    day_index = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday',
-                 4: 'friday',
-                 5: 'saturday', 6: 'sunday'}
-    today = datetime.datetime.today().weekday()
-    result = days[day_index[today]]
-    if result == 'Κλειστά':
-        return result + ' αυτή τη στιγμή'
-    elif result == 'NA':
-        return 'Άγνωστο'
-    else:
-        start, end = result.split('–')
-        m = re.match(r"(\d+\:\d+)\s*(.*)$", start)
-        start = [m.group(1), m.group(2)]
-        if start[1] == '':
-            start[1] = 'μ.μ.'
-        m = re.match(r"(\d+\:\d+)\s*(.*)$", end)
-        end = [m.group(1), m.group(2)]
-        if end[1] == '':
-            end[1] = 'μ.μ.'
-        start = create_time(start)
-        start = start.time()
-        end = create_time(end)
-        end = end.time()
-        in_r = time_in_range(start, end)
-        if in_r:
-            return "Ανοιχτά τώρα"
-        else:
-            return 'Κλειστά αυτή τη στιγμή'
 
 
 def create_categories_form(request):

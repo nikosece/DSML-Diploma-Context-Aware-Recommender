@@ -2,7 +2,92 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+import datetime
+import re
+import pytz
+from rec.models import Business
+import pathlib
 from rating_extractor import RatingExtractor
+
+
+def create_time(var):
+    if var[1] == 'μ.μ.':
+        var[1] = 'PM'
+    else:
+        var[1] = 'AM'
+    m2 = " ".join(var)
+    return datetime.datetime.strptime(m2, '%I:%M %p')
+
+
+def time_in_range(start, end):
+    """Return true if x is in the range [start, end]"""
+    tz = pytz.timezone('Europe/Athens')
+    x = datetime.datetime.now(tz).time()
+    if start <= end:
+        return start <= x <= end
+    else:
+        return start <= x or x <= end
+
+
+def nex_day(day):
+    if day == 6:
+        return 0
+    else:
+        return day + 1
+
+
+def find_opening(day, days, day_index, day_map):
+    day = nex_day(day)
+    while days[day_index[day]] == 'Κλειστά':
+        day = nex_day(day)
+    result = days[day_index[day]]
+    result = result.split('–')
+    return 'Ανοίγει {} {}'.format(day_map[day_index[day]], result[0])
+
+
+def open_now(b_id):
+    b = Business.objects.get(business_id=b_id)
+    days = b.days.__dict__
+    day_map = {'monday': 'Δευτέρα', 'tuesday': 'Τρίτη', 'wednesday': 'Τετάρτη', 'thursday': 'Πέμπτη',
+               'friday': 'Παρασκευή',
+               'saturday': 'Σάββατο', 'sunday': 'Κυριακή'}
+    day_index = {0: 'monday', 1: 'tuesday', 2: 'wednesday', 3: 'thursday',
+                 4: 'friday',
+                 5: 'saturday', 6: 'sunday'}
+    today = datetime.datetime.today().weekday()
+    result = days[day_index[today]]
+    if result == 'Κλειστά':
+        return find_opening(today, days, day_index, day_map)
+    elif result == 'NA':
+        return ' '
+    elif result == 'Ανοιχτό όλο το 24ωρο':
+        return "Ανοιχτά τώρα"
+    else:
+        start, end = result.split('–')
+        m = re.match(r"(\d+\:\d+)\s*(.*)$", start)
+        start = [m.group(1), m.group(2)]
+        if start[1] == '':
+            start[1] = 'μ.μ.'
+        m = re.match(r"(\d+\:\d+)\s*(.*)$", end)
+        end = [m.group(1), m.group(2)]
+        if end[1] == '':
+            end[1] = 'μ.μ.'
+        start = create_time(start)
+        start = start.time()
+        end = create_time(end)
+        end = end.time()
+        in_r = time_in_range(start, end)
+        if in_r:
+            return "Ανοιχτά τώρα"
+        else:
+            tz = pytz.timezone('Europe/Athens')
+            x = datetime.datetime.now(tz).time()
+            if x < start:
+                result = days[day_index[today]]
+                result = result.split('–')
+                return 'Ανοίγει σήμερα {} '.format(result[0])
+            else:
+                return find_opening(today, days, day_index, day_map)
 
 
 class RecommenderEngine:
@@ -107,7 +192,7 @@ class RecommenderEngine:
                                         'score': i.score, 'duration': i.duration,
                                         'latitude': i.latitude,
                                         'longitude': i.longtitude, 'id': i.business_id,
-                                        'r_count': i.review_count,
+                                        'r_count': i.review_count, 'open': open_now(i.business_id),
                                         'address': i.address
                                         },
                                        ignore_index=True)

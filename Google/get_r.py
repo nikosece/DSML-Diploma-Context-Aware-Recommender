@@ -71,7 +71,7 @@ class WebDriver:
 
         if len(list(self.driver.find_elements_by_class_name("cX2WmPgCkHi__section-info-hour-text"))) != 0:
             element = self.driver.find_element_by_class_name("cX2WmPgCkHi__section-info-hour-text")
-            self.driver.implicitly_wait(5)
+            self.driver.implicitly_wait(8)
             flag = True
             try:
                 ActionChains(self.driver).move_to_element(element).click(element).perform()
@@ -92,6 +92,7 @@ class WebDriver:
                 self.location_data["Time"][i] = j
 
         except:
+            print('Failed inside function')
             pass
 
     def scroll_the_page(self):
@@ -162,11 +163,13 @@ class WebDriver:
             self.driver.quit()
             sys.exit(e)
 
-        time.sleep(2.5)  # Waiting for the page to load.
+        time.sleep(3.5)  # Waiting for the page to load.
         f_r = self.click_open_close_time()
         # self.get_location_data()  # Calling the function to get all the location data.
         if f_r:
             self.get_location_open_close_time()
+        else:
+            print('Click failed')
         # if not self.click_all_reviews_button():
         #     return self.location_data
         #
@@ -184,7 +187,9 @@ def get_keys():
     all_res1 = set()
     for file in os.listdir("./schedule"):
         if file.endswith(".pickle"):
-            all_res1.add(file.split(".")[0])
+            test = pickle.load(open('./schedule/'+file, "rb"))
+            if test['Time']['Δευτέρα'] != 'NA':
+                all_res1.add(file.split(".")[0])
     return all_res1
 
 
@@ -210,7 +215,7 @@ def my_job(thead_keys):
                 print("session reopened")
 
 
-keys = pickle.load(open('./keys.pickle', "rb"))
+keys = pickle.load(open('./missing.pickle', "rb"))
 all_res = get_keys()
 keys = set(keys)
 keys = keys - all_res
